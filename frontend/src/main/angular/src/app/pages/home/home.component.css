@@ -1,0 +1,13 @@
+.main{
+  display: flex;
+  flex-flow: column wrap;
+  height: 98vh;
+  margin: 10px;
+}
+.header{
+  flex: 0 1 auto;
+  margin: 10px;
+}
+.content{
+  flex: 1 0 auto;
+}

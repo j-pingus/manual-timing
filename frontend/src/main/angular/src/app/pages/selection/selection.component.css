@@ -1,0 +1,7 @@
+.form{
+  display:flex;
+  flex-flow:row wrap;
+}
+.field{
+  flex:1 0 auto;
+}
