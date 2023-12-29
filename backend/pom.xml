@@ -19,7 +19,7 @@
     <vertx.version>4.5.1</vertx.version>
     <junit-jupiter.version>5.9.1</junit-jupiter.version>
 
-    <main.verticle>lu.even.manual_timing.MainVerticle</main.verticle>
+    <main.verticle>lu.even.manual_timing.verticles.HttpServerVerticle</main.verticle>
     <launcher.class>io.vertx.core.Launcher</launcher.class>
   </properties>
 
@@ -38,6 +38,15 @@
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-properties</artifactId>
     </dependency>
     <dependency>
@@ -49,6 +58,8 @@
       <artifactId>vertx-sockjs-service-proxy</artifactId>
     </dependency>
 
+    -->
+    <!-- TESTING -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-junit5</artifactId>
@@ -73,7 +84,7 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <release>11</release>
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
@@ -110,6 +121,14 @@
             <argument>run</argument>
             <argument>${main.verticle}</argument>
           </arguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>16</source>
+          <target>16</target>
         </configuration>
       </plugin>
     </plugins>
