@@ -1,12 +1,17 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatChipListboxChange, MatChipsModule} from "@angular/material/chips";
 import {FormsModule} from "@angular/forms";
-import {JsonPipe, NgIf} from "@angular/common";
+import {AsyncPipe, JsonPipe, NgForOf, NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {PoolConfigService} from "../../services/pool-config.service";
+import {Observable} from "rxjs";
+import {PoolConfig} from "../../domain/pool-config";
+import {RegistrationRequest} from "../../domain/registration-request";
+import {RegistrationService} from "../../services/registration.service";
 
 @Component({
   selector: 'app-selection',
@@ -20,23 +25,42 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatIconModule,
     MatButtonModule,
     NgIf,
-    MatTooltipModule
+    MatTooltipModule,
+    AsyncPipe,
+    NgForOf
   ],
   templateUrl: './selection.component.html',
   styleUrl: './selection.component.css'
 })
 export class SelectionComponent {
-  protected data={
-    name:'',
-    role:'',
-    lane:-1
+  public config: Observable<PoolConfig>;
+  protected data: RegistrationRequest = {
+    name: '',
+    role: '',
+    lane: -1
   };
-  roleSelected($event: MatChipListboxChange) {
-    this.data.role=$event.value;
-    console.log(this.data);
+
+  constructor(poolConfigClient: PoolConfigService,private registrationService:RegistrationService) {
+    this.config = poolConfigClient.get();
+  }
+
+  laneSelected($event: MatChipListboxChange) {
+    this.data.lane = $event.value;
+
   }
 
   nameProvided($event: Event) {
     console.log($event)
+  }
+
+  roleSelected($event: MatChipListboxChange) {
+    this.data.role = $event.value;
+    console.log(this.data);
+  }
+
+  register() {
+    this.registrationService.register(this.data).subscribe((data)=>{
+      console.log(data);
+    })
   }
 }

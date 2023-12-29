@@ -7,6 +7,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import lu.even.manual_timing.verticles.routes.PoolConfigRoute;
+import lu.even.manual_timing.verticles.routes.RegistrationRoute;
 
 public class HttpServerVerticle extends AbstractVerticle {
   private final int port;
@@ -16,14 +17,14 @@ public class HttpServerVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start(Promise<Void> startPromise){
+  public void start(Promise<Void> startPromise) {
     Router router = Router.router(vertx);
     EventBus bus = vertx.eventBus();
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
     router.route().handler(StaticHandler.create());
     PoolConfigRoute.route(router, bus);
-
+    RegistrationRoute.route(router, bus);
     router.route().failureHandler(handler -> {
       System.out.println("Error hapenned during routing:" + handler.failure());
 

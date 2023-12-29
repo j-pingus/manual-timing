@@ -1,10 +1,10 @@
-= Manual-timing
+# Manual-timing
 
 image:https://img.shields.io/badge/vert.x-4.5.1-purple.svg[link="https://vertx.io"]
 
 This application was generated using http://start.vertx.io
 
-== Building
+## Building (work in progress)
 
 To launch your tests:
 ```
@@ -16,15 +16,25 @@ To package your application:
 ./mvnw clean package
 ```
 
+## Developing
+### backend
 To run your backend application:
+start java class lu.even.manual_timing.MainApp from module backend in your favourite ide
 ```
-./mvnw install
 cd backend
-../mvnw clean compile exec:java
+mvn exec:java
 ```
 
-== Help
+### Angular
+To run your frontend application:
+```
+cd frontend/src/main/angular
+npm install
+npm run start-dev
+```
 
+## Help
+### Vert.x
 * https://vertx.io/docs/[Vert.x Documentation]
 * https://stackoverflow.com/questions/tagged/vert.x?sort=newest&pageSize=15[Vert.x Stack Overflow]
 * https://groups.google.com/forum/?fromgroups#!forum/vertx[Vert.x User Group]
