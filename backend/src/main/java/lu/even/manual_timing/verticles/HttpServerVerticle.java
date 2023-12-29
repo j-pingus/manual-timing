@@ -2,40 +2,36 @@ package lu.even.manual_timing.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import lu.even.manual_timing.Event;
-import lu.even.manual_timing.domain.PoolConfig;
+import lu.even.manual_timing.verticles.routes.PoolConfigRoute;
 
 public class HttpServerVerticle extends AbstractVerticle {
-  @Override
-  public void start(Promise<Void> startPromise) throws Exception {
-    Router router = Router.router(vertx);
+  private final int port;
 
+  public HttpServerVerticle(int port) {
+    this.port = port;
+  }
+
+  @Override
+  public void start(Promise<Void> startPromise){
+    Router router = Router.router(vertx);
+    EventBus bus = vertx.eventBus();
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
 
-    router.get("/poolconfig").handler(
-      rc->{
-        vertx.eventBus().<String>request(Event.POOL_CONFIG.getName(),new JsonObject(), reply -> {
-          if (reply.succeeded()) {
-            rc.response().end(reply.result().body());
-          } else {
-            rc.fail(500);
-          }
-        });
-      }
-    );
-    router.route().failureHandler(handler->{
-      System.out.println("Error hapenned during routing:"+handler.failure());
+    PoolConfigRoute.route(router, bus);
 
-      handler.response().end(handler.failure()!=null?handler.failure().getMessage():"Internal error");
+    router.route().failureHandler(handler -> {
+      System.out.println("Error hapenned during routing:" + handler.failure());
+
+      handler.response().end(handler.failure() != null ? handler.failure().getMessage() : "Internal error");
     });
-    vertx.createHttpServer().requestHandler(router).listen(8888, http -> {
+    vertx.createHttpServer().requestHandler(router).listen(port, http -> {
       if (http.succeeded()) {
         startPromise.complete();
-        System.out.println("HTTP server started on port 8888");
+        System.out.println("HTTP server started on port " + port);
       } else {
         startPromise.fail(http.cause());
       }

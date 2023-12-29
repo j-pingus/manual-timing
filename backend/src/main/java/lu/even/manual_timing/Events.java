@@ -1,10 +1,10 @@
 package lu.even.manual_timing;
 
-public enum Event {
+public enum Events {
   POOL_CONFIG("pool.config");
   private final String name;
 
-  Event(String name){
+  Events(String name){
     this.name=name;
   }
 

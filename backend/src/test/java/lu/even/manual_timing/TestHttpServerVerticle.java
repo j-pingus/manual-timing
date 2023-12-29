@@ -13,7 +13,7 @@ public class TestHttpServerVerticle {
 
   @BeforeEach
   void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new HttpServerVerticle(), testContext.succeeding(id -> testContext.completeNow()));
+    vertx.deployVerticle(new HttpServerVerticle(9999), testContext.succeeding(id -> testContext.completeNow()));
   }
 
   @Test

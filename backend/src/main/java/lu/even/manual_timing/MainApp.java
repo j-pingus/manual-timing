@@ -7,7 +7,7 @@ import lu.even.manual_timing.verticles.PoolConfigVerticle;
 public class MainApp {
   public static void main(String[] args) {
     Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new HttpServerVerticle());
+    vertx.deployVerticle(new HttpServerVerticle(8765));
     vertx.deployVerticle(new PoolConfigVerticle());
   }
 }
