@@ -28,7 +28,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 export class SelectionComponent {
   protected data={
     name:'',
-    role:''
+    role:'',
+    lane:-1
   };
   roleSelected($event: MatChipListboxChange) {
     this.data.role=$event.value;

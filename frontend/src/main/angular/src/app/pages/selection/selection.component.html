@@ -9,7 +9,7 @@
     <mat-chip-option value="control" color="warn">Control room</mat-chip-option>
   </mat-chip-listbox>
   <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
-          class="field" *ngIf="data.name && data.role">
+          class="field" *ngIf="data.name && data.role && (data.lane > -1 || data.role == 'control')">
     <mat-icon>watch</mat-icon>
   </button>
   <div class="data">
