@@ -5,6 +5,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 import lu.even.manual_timing.verticles.routes.PoolConfigRoute;
 
 public class HttpServerVerticle extends AbstractVerticle {
@@ -20,7 +21,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     EventBus bus = vertx.eventBus();
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
-
+    router.route().handler(StaticHandler.create());
     PoolConfigRoute.route(router, bus);
 
     router.route().failureHandler(handler -> {

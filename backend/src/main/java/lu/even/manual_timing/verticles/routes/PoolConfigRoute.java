@@ -7,7 +7,7 @@ import lu.even.manual_timing.Events;
 
 public class PoolConfigRoute {
   public static void route(Router router, EventBus bus){
-    router.get("/poolconfig").handler(
+    router.get("/api/poolconfig").handler(
       rc-> bus.<String>request(Events.POOL_CONFIG.getName(),new JsonObject(), reply -> {
         if (reply.succeeded()) {
           rc.response().end(reply.result().body());
