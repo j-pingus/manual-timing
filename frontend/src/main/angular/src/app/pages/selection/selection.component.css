@@ -1,7 +1,18 @@
 .form{
   display:flex;
-  flex-flow:row wrap;
+  flex-flow:column;
+  justify-content: flex-end;
+  align-content: center;
+
 }
 .field{
+  margin-bottom: 2vh;
   flex:1 0 auto;
+  align-self: center;
+}
+.data{
+  margin-top: 25vh;
+  border:4px dashed greenyellow;
+  background-color: lightblue;
+  padding: 10px;
 }

@@ -1,6 +1,18 @@
 <form class="form">
   <mat-form-field class="field">
     <mat-label>name</mat-label>
-    <input matInput placeholder="your name here">
+    <input [(ngModel)]="data.name" name="name" matInput placeholder="your name here">
   </mat-form-field>
+  <br/>
+  <mat-chip-listbox (change)="roleSelected($event)" class="field">
+    <mat-chip-option value="referee">Referee</mat-chip-option>
+    <mat-chip-option value="control" color="warn">Control room</mat-chip-option>
+  </mat-chip-listbox>
+  <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
+          class="field" *ngIf="data.name && data.role">
+    <mat-icon>watch</mat-icon>
+  </button>
+  <div class="data">
+    {{data | json}}
+  </div>
 </form>
