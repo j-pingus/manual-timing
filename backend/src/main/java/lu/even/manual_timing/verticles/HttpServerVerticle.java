@@ -23,14 +23,14 @@ public class HttpServerVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) {
     Router router = Router.router(vertx);
-    SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
+    /*SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
     SockJSBridgeOptions socksOptions = new SockJSBridgeOptions()
       .addOutboundPermitted(new PermittedOptions().setAddress(Events.MESSAGE.getName()));
     sockJSHandler.bridge(socksOptions, event -> {
       System.out.println(event.type());
       System.out.println(event.getRawMessage());
     });
-    router.route("message/*").handler(sockJSHandler);
+    router.route("message/*").handler(sockJSHandler);*/
     EventBus bus = vertx.eventBus();
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
