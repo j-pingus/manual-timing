@@ -5,18 +5,17 @@
   </mat-form-field>
   <br/>
   <mat-chip-listbox (change)="roleSelected($event)" class="field">
-    <mat-chip-option value="referee">Referee</mat-chip-option>
-    <mat-chip-option value="control" color="warn">Control room</mat-chip-option>
+    <mat-chip-option [selected]="data.role=='referee'" value="referee">Referee</mat-chip-option>
+    <mat-chip-option [selected]="data.role=='control'" value="control" color="warn">Control room</mat-chip-option>
   </mat-chip-listbox>
   <mat-chip-listbox (change)="laneSelected($event)" class="field" *ngIf="data.role=='referee'">
     <mat-chip-option *ngFor="let lane of (config | async)?.lanes" color="accent"
-                     [value]="lane">lane {{lane}}</mat-chip-option>
+                     [selected]="data.lane==lane" [value]="lane">lane {{lane}}</mat-chip-option>
   </mat-chip-listbox>
 
   <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
-          class="field" *ngIf="data.name && data.role && (data.lane > -1 || data.role == 'control')"
-          (click)="register()"
-  >
+          class="field" *ngIf="data?.name && data?.role && (data.lane || data?.role == 'control')"
+          (click)="register()">
     <mat-icon>watch</mat-icon>
   </button>
   <div class="data">

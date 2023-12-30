@@ -15,4 +15,15 @@
   background-position: right bottom;
   background-size: 30%;
 }
-
+.app-header{
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  width: 85vw;
+}
+span{
+  flex: 1 1 auto;
+}
+.filler{
+  flex: 1 0 auto;
+}
