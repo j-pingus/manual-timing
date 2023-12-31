@@ -8,5 +8,6 @@ export interface TimingMessage {
     body:any;
 }
 export enum TimingAction {
-    LOGIN='LOGIN'
+    LOGIN='LOGIN',
+    USER_MOVE='USER_MOVE'
 }

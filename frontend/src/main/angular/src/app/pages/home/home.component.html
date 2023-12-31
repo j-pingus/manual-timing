@@ -1,17 +1,15 @@
-<div class="main">
-  <mat-card class="header">
+<mat-card class="container">
     <mat-card-header>
-      <mat-card-title class="app-header"><span>Manual Timing</span><span class="filler"></span>
-        <button mat-mini-fab color="primary" aria-label="go to home page" matTooltip="Home"
-                                           (click)="navigateHome()">
-        <mat-icon>home</mat-icon>
-      </button></mat-card-title>
+        <mat-card-title class="app-header">
+            <span>Manual Timing</span>
+            <span class="filler"></span>
+            <button mat-mini-fab color="primary" aria-label="go to home page" matTooltip="Home"
+                    (click)="navigateHome()">
+                <mat-icon>home</mat-icon>
+            </button>
+        </mat-card-title>
     </mat-card-header>
-  </mat-card>
-  <br/>
-  <mat-card class="content">
-    <mat-card-content>
-      <router-outlet></router-outlet>
+    <mat-card-content class="scroll">
+        <router-outlet></router-outlet>
     </mat-card-content>
-  </mat-card>
-</div>
+</mat-card>

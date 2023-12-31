@@ -8,7 +8,7 @@ import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
 
-public class PoolConfigVerticle extends AbstractTimingVerticle<PoolConfig> {
+public class PoolConfigVerticle extends AbstractTimingVerticle {
     private PoolConfig poolConfig;
 
     public PoolConfigVerticle() {
@@ -18,7 +18,7 @@ public class PoolConfigVerticle extends AbstractTimingVerticle<PoolConfig> {
     }
 
     @Override
-    protected PoolConfig onMessage(EventMessage message) {
+    protected PoolConfig onMessage(EventTypes eventTypes, EventMessage message) {
         return switch (message.action()){
             case GET -> poolConfig;
             default -> null;

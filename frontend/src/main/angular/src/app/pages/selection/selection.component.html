@@ -14,7 +14,7 @@
   </mat-chip-listbox>
 
   <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
-          class="field" *ngIf="data?.name && data?.role && (data.lane || data?.role == 'control')"
+          class="field" *ngIf="data?.name && data?.role && (data.lane != undefined || data?.role == 'control')"
           (click)="register()">
     <mat-icon>watch</mat-icon>
   </button>

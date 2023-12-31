@@ -1,5 +1,6 @@
 export interface RegistrationRequest{
-  name?:string,
-  role?:string,
-  lane?:number
+  uuid?:string;
+  name?:string;
+  role?:string;
+  lane?:number;
 }

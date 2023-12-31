@@ -16,55 +16,65 @@ import {Constants} from "../../Constants";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-selection',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatChipsModule,
-    FormsModule,
-    JsonPipe,
-    MatIconModule,
-    MatButtonModule,
-    NgIf,
-    MatTooltipModule,
-    AsyncPipe,
-    NgForOf
-  ],
-  templateUrl: './selection.component.html',
-  styleUrl: './selection.component.css'
+    selector: 'app-selection',
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        MatChipsModule,
+        FormsModule,
+        JsonPipe,
+        MatIconModule,
+        MatButtonModule,
+        NgIf,
+        MatTooltipModule,
+        AsyncPipe,
+        NgForOf
+    ],
+    templateUrl: './selection.component.html',
+    styleUrl: './selection.component.css'
 })
 export class SelectionComponent implements OnInit {
-  public config: Observable<PoolConfig>;
-  protected data: RegistrationRequest = {};
+    public config: Observable<PoolConfig>;
+    protected data: RegistrationRequest = {};
 
-  constructor(poolConfigClient: PoolConfigService, private registrationService: RegistrationService, private router: Router) {
-    this.config = poolConfigClient.get();
-  }
+    constructor(poolConfigClient: PoolConfigService, private registrationService: RegistrationService, private router: Router) {
+        this.config = poolConfigClient.get();
+    }
 
-  laneSelected($event: MatChipListboxChange) {
-    this.data.lane = $event.value;
+    laneSelected($event: MatChipListboxChange) {
+        this.data.lane = $event.value;
+    }
 
-  }
+    ngOnInit(): void {
+        const storageData = localStorage.getItem(Constants.USER_DATA);
+        this.data = JSON.parse(storageData ? storageData : '{}') as RegistrationRequest;
+    }
 
-  ngOnInit(): void {
-    const storageData = localStorage.getItem(Constants.USER_DATA);
-    this.data = JSON.parse(storageData ? storageData : '{}') as RegistrationRequest;
-  }
+    register() {
+        if (sessionStorage.getItem(Constants.USER_ID) == null) {
+            this.registrationService.register(this.data).subscribe((data) => {
+                console.log(data);
+                localStorage.clear();
+                sessionStorage.clear();
+                sessionStorage.setItem(Constants.USER_ID, data);
+                localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
+                this.router.navigate(['/' + this.data.role]);
+            })
+        } else {
+            //make deep copy
+            const update:RegistrationRequest = JSON.parse(JSON.stringify( this.data))
+            update.uuid=sessionStorage.getItem(Constants.USER_ID) as string;
+            this.registrationService.change(update).subscribe(()=>{
+                localStorage.clear();
+                localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
+                this.router.navigate(['/' + this.data.role]);
+            })
+        }
+    }
 
-  register() {
-    this.registrationService.register(this.data).subscribe((data) => {
-      console.log(data);
-      localStorage.clear();
-      sessionStorage.clear();
-      sessionStorage.setItem(Constants.USER_ID, data);
-      localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
-      this.router.navigate(['/' + this.data.role]);
-    })
-  }
-
-  roleSelected($event: MatChipListboxChange) {
-    this.data.role = $event.value;
-    console.log(this.data);
-  }
+    roleSelected($event: MatChipListboxChange) {
+        this.data.role = $event.value;
+        console.log(this.data);
+    }
 }

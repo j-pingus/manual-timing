@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
 })
 export class RefereeComponent implements OnDestroy{
   private subscription:Subscription;
-  constructor(private messageService:BackendMessageService,private config:PoolConfigService) {
+  constructor(messageService:BackendMessageService) {
     this.subscription= messageService.subscribe(message=>
         //We can react from messages coming from server
         console.log('referee got message ',message));
@@ -21,9 +21,4 @@ export class RefereeComponent implements OnDestroy{
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
-
-    poolConfig() {
-        this.config.get().subscribe(data=>console.log('got config',data));
-    }
 }

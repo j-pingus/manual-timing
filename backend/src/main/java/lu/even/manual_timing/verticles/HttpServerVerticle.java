@@ -33,6 +33,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         //Configuration of specific business domain rest endpoints
         this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
         this.routePost("/api/registration", EventTypes.REGISTER);
+        this.routeGet("/api/registrations/lane/:id", EventTypes.REGISTER,EventAction.GET_BY_LANE);
+        this.routePut("/api/registration", EventTypes.REGISTER);
         //Generic failure management
         router.route().failureHandler(handler -> {
             System.out.println("Error happened during routing:" + handler.failure());
@@ -45,7 +47,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         SockJSBridgeOptions opts = new SockJSBridgeOptions()
                 .addOutboundPermitted(new PermittedOptions().setAddress(EventTypes.MESSAGE.getName()));
         // Create the event bus bridge and add it to the router.
-        router.mountSubRouter("/api/eventbus", SockJSHandler.create(vertx).bridge(opts));
+        router.route("/api/eventbus/*").subRouter(SockJSHandler.create(vertx).bridge(opts));
 
         vertx.createHttpServer().requestHandler(router).listen(port, http -> {
             if (http.succeeded()) {
@@ -60,21 +62,32 @@ public class HttpServerVerticle extends AbstractVerticle {
     public void routeGet(String url, EventTypes eventType) {
         router.get(url).handler(getRoutingHandler(eventType, EventAction.GET));
     }
+
+    public void routeGet(String url, EventTypes eventType, EventAction action) {
+        router.get(url).handler(getRoutingHandler(eventType, action));
+    }
+
     public void routePost(String url, EventTypes eventType) {
         router.post(url).handler(getRoutingHandler(eventType, EventAction.POST));
     }
 
+    public void routePut(String url, EventTypes eventType) {
+        router.put(url).handler(getRoutingHandler(eventType, EventAction.PUT));
+    }
+
     private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {
-        return event -> bus.<String>request(
-                eventType.getName(),
-                new EventMessage(action, event.body().asString()),
-                reply -> {
-                    if (reply.succeeded()) {
-                        event.response().end(reply.result().body());
-                    } else {
-                        event.fail(500);
-                    }
-                });
+        return event ->
+                //
+                bus.<String>request(
+                        eventType.getName(),
+                        new EventMessage(action, event.body().asString(), event.request().getParam("id")),
+                        reply -> {
+                            if (reply.succeeded()) {
+                                event.response().end(reply.result().body());
+                            } else {
+                                event.fail(500);
+                            }
+                        });
     }
 
 }

@@ -4,17 +4,25 @@ import {RegistrationRequest} from "../domain/registration-request";
 import {Observable} from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class RegistrationService {
-  private static SERVICE_URL = 'api/registration'
+    private static SERVICE_URL = 'api/registration'
 
-  constructor(private http: HttpClient) {
-  }
+    constructor(private http: HttpClient) {
+    }
 
-  register(request: RegistrationRequest): Observable<string> {
-    const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+    change(request: RegistrationRequest): Observable<any> {
+        return this.http.put(RegistrationService.SERVICE_URL, request);
+    }
 
-    return this.http.post<string>(RegistrationService.SERVICE_URL, request,{headers, responseType:'text' as 'json'});
-  }
+    getByLane(lane: number): Observable<Array<RegistrationRequest>> {
+        return this.http.get<Array<RegistrationRequest>>(RegistrationService.SERVICE_URL + 's/lane/' + lane);
+    }
+
+    register(request: RegistrationRequest): Observable<string> {
+        const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+
+        return this.http.post<string>(RegistrationService.SERVICE_URL, request, {headers, responseType: 'text' as 'json'});
+    }
 }

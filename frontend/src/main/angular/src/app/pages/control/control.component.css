@@ -1,0 +1,18 @@
+span + span:before {
+    content:", ";
+}
+mat-card + mat-card {
+    margin-top:5px;
+}
+mat-card{
+    width: 30vw;
+
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.container{
+    border: 2px solid blue;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
