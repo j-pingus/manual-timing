@@ -19,11 +19,14 @@
   display: flex;
   flex-flow: row;
   align-items: center;
-  width: 85vw;
+  width: 90vw;
 }
 span{
   flex: 1 1 auto;
 }
 .filler{
   flex: 1 0 auto;
+}
+button {
+  margin: 8px;
 }

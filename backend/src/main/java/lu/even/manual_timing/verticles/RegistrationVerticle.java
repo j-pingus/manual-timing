@@ -21,7 +21,7 @@ public class RegistrationVerticle extends AbstractTimingVerticle<String> {
                         Json.decodeValue(message.body(), RegistrationRequest.class);
                 String uuid = UUID.randomUUID().toString();
                 System.out.println("registered:" + request + " with id:" + uuid);
-                sendMessage(EventAction.LOGIN, request.name());
+                sendMessage(EventAction.LOGIN, request);
                 yield uuid;
 
             }
