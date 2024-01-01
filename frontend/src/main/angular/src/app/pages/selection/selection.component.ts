@@ -10,10 +10,11 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {PoolConfigService} from "../../services/pool-config.service";
 import {Observable} from "rxjs";
 import {PoolConfig} from "../../domain/pool-config";
-import {RegistrationRequest} from "../../domain/registration-request";
+import {User} from "../../domain/user";
 import {RegistrationService} from "../../services/registration.service";
 import {Constants} from "../../Constants";
 import {Router} from "@angular/router";
+import {UserUtils} from "../../utils/user.utils";
 
 @Component({
     selector: 'app-selection',
@@ -34,52 +35,42 @@ import {Router} from "@angular/router";
     templateUrl: './selection.component.html',
     styleUrl: './selection.component.css'
 })
-export class SelectionComponent implements OnInit {
-    public config: Observable<PoolConfig>;
-    protected data: RegistrationRequest = {};
+export class SelectionComponent {
+    public config$: Observable<PoolConfig>;
+    protected data: User = UserUtils.getSavedUser();
 
     constructor(poolConfigClient: PoolConfigService, private registrationService: RegistrationService, private router: Router) {
-        this.config = poolConfigClient.get();
+        this.config$ = poolConfigClient.get();
     }
 
     laneSelected($event: MatChipListboxChange) {
         this.data.lane = $event.value;
     }
 
-    ngOnInit(): void {
-        const storageData = localStorage.getItem(Constants.USER_DATA);
-        this.data = JSON.parse(storageData ? storageData : '{}') as RegistrationRequest;
-    }
-
     register() {
-        if (sessionStorage.getItem(Constants.USER_ID) == null) {
-            this.registrationService.register(this.data).subscribe((data) => {
-                sessionStorage.clear();
-                sessionStorage.setItem(Constants.USER_ID, data);
-                this.saveAndGo()
-
-            })
-        } else {
-            //make deep copy
+        if (UserUtils.isRegistered()) {
             this.data.uuid = sessionStorage.getItem(Constants.USER_ID) as string;
             this.registrationService.change(this.data).subscribe(() => {
                 this.saveAndGo();
+            })
+        } else {
+            this.registrationService.register(this.data).subscribe((data) => {
+                UserUtils.saveUserId(data);
+                this.saveAndGo()
             })
         }
     }
 
     roleSelected($event: MatChipListboxChange) {
         this.data.role = $event.value;
-        console.log(this.data);
     }
 
     private saveAndGo() {
-        localStorage.clear();
-        localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
+        UserUtils.saveUser(this.data);
         if (this.data.role == 'control') {
             this.router.navigate(['/' + this.data.role]);
         } else {
-            this.router.navigate(['/' + this.data.role, 0]);
+            this.router.navigate(['/' + this.data.role, 1]);
         }
     }
 }

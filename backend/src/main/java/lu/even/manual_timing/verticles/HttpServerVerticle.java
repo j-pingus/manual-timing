@@ -4,6 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -33,10 +34,15 @@ public class HttpServerVerticle extends AbstractVerticle {
         //Configuration of specific business domain rest endpoints
         this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
         this.routePost("/api/registration", EventTypes.REGISTER);
-        this.routeGet("/api/registrations/lane/:id", EventTypes.REGISTER,EventAction.GET_BY_LANE);
+        this.routeGet("/api/registrations/lane/:lane", EventTypes.REGISTER,EventAction.GET_BY_LANE);
         this.routePut("/api/registration", EventTypes.REGISTER);
         this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
-        this.routePut("/api/events", EventTypes.EVENT);
+        this.routePost("/api/event", EventTypes.EVENT);
+        this.routePost("/api/inscription", EventTypes.INSCRIPTION);
+        this.routeGet("/api/inscriptions/:event/lane/:lane", EventTypes.INSCRIPTION,EventAction.GET_BY_EVENT_LANE);
+        this.routeGet("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION,EventAction.GET_BY_EVENT_HEAT);
+        this.routePost("/api/time", EventTypes.MANUAL_TIME);
+        this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME,EventAction.GET_BY_EVENT_LANE);
         //Generic failure management
         router.route().failureHandler(handler -> {
             System.out.println("Error happened during routing:" + handler.failure());
@@ -82,7 +88,13 @@ public class HttpServerVerticle extends AbstractVerticle {
                 //
                 bus.<String>request(
                         eventType.getName(),
-                        new EventMessage(action, event.body().asString(), event.request().getParam("id")),
+                        new EventMessage(
+                                action,
+                                event.body().asString(),
+                                getId(event.request(),"event"),
+                                getId(event.request(),"heat"),
+                                getId(event.request(),"lane")
+                        ),
                         reply -> {
                             if (reply.succeeded()) {
                                 event.response().end(reply.result().body());
@@ -90,6 +102,14 @@ public class HttpServerVerticle extends AbstractVerticle {
                                 event.fail(500);
                             }
                         });
+    }
+
+    private int getId(HttpServerRequest request, String param) {
+        String paramValue = request.getParam(param);
+        if(paramValue!=null){
+            return Integer.parseInt(paramValue);
+        }
+        return -1;
     }
 
 }

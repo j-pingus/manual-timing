@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {RegistrationRequest} from "../domain/registration-request";
+import {User} from "../domain/user";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -12,15 +12,15 @@ export class RegistrationService {
     constructor(private http: HttpClient) {
     }
 
-    change(request: RegistrationRequest): Observable<any> {
+    change(request: User): Observable<any> {
         return this.http.put(RegistrationService.SERVICE_URL, request);
     }
 
-    getByLane(lane: number): Observable<Array<RegistrationRequest>> {
-        return this.http.get<Array<RegistrationRequest>>(RegistrationService.SERVICE_URL + 's/lane/' + lane);
+    getByLane(lane: number): Observable<Array<User>> {
+        return this.http.get<Array<User>>(RegistrationService.SERVICE_URL + 's/lane/' + lane);
     }
 
-    register(request: RegistrationRequest): Observable<string> {
+    register(request: User): Observable<string> {
         const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
 
         return this.http.post<string>(RegistrationService.SERVICE_URL, request, {headers, responseType: 'text' as 'json'});

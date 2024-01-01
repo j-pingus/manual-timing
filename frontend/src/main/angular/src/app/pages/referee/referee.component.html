@@ -1,25 +1,38 @@
 <mat-card>
     <mat-card-header>
         <mat-card-title>
-            <button [disabled]="eventId==0" color="primary"
-                    mat-icon-button aria-label="go to previous event" matTooltip="previous event"
+            <button [disabled]="eventId<=1" color="accent"
+                    mat-mini-fab aria-label="go to previous event" matTooltip="previous event"
                     (click)="previousEvent()">
                 <mat-icon>chevron_left</mat-icon>
             </button>
             <span class="filler"> </span>
-            <span>Event #{{event?.id}}: {{event?.description}}</span>
+            <span>Event #{{event?.id}}</span>
+            <span>Lane #{{user.lane}}</span>
+            <span>{{event?.description}}</span>
             <span class="filler"> </span>
-            <button [disabled]="(eventId+1)>=events.length" color="primary"
-                    mat-icon-button aria-label="go to next event" matTooltip="next event"
+            <button [disabled]="(eventId)>=events.length" color="accent"
+                    mat-mini-fab aria-label="go to next event" matTooltip="next event"
                     (click)="nextEvent()">
                 <mat-icon>chevron_right</mat-icon>
             </button>
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div *ngFor="let heat of heats">
-         <span>{{heat.id}}</span>
-         <span>{{heat.name}}</span>
+        <div *ngFor="let heat of heats" class="heat" [class.hidden]="heat.name == undefined">
+            <span class="circle">{{heat.id}}</span>
+            <span>{{heat.name}}</span>
+            <mat-form-field appearance="fill" class="time">
+                <mat-label>Time</mat-label>
+                <input matInput
+                       [disabled]="heat.name == undefined"
+                       [(ngModel)]="heat.time"
+                       (blur)="save(heat)"
+                >
+            </mat-form-field>
         </div>
     </mat-card-content>
 </mat-card>
+<div class="data">
+    {{heats | json}}
+</div>

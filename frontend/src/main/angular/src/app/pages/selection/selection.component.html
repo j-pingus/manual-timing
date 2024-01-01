@@ -9,7 +9,7 @@
     <mat-chip-option [selected]="data.role=='control'" value="control" color="warn">Control room</mat-chip-option>
   </mat-chip-listbox>
   <mat-chip-listbox (change)="laneSelected($event)" class="field" *ngIf="data.role=='referee'">
-    <mat-chip-option *ngFor="let lane of (config | async)?.lanes" color="accent"
+    <mat-chip-option *ngFor="let lane of (config$ | async)?.lanes" color="accent"
                      [selected]="data.lane==lane" [value]="lane">lane {{lane}}</mat-chip-option>
   </mat-chip-listbox>
 

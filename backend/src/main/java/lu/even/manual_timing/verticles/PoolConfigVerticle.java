@@ -1,10 +1,6 @@
 package lu.even.manual_timing.verticles;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.Json;
 import lu.even.manual_timing.domain.PoolConfig;
-import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
 
@@ -14,12 +10,12 @@ public class PoolConfigVerticle extends AbstractTimingVerticle {
     public PoolConfigVerticle() {
         super(EventTypes.POOL_CONFIG);
         //Default pool configuration
-        this.poolConfig = new PoolConfig(new int[]{0, 1, 2, 3, 4}, 25);
+        this.poolConfig = new PoolConfig(new int[]{1, 2, 3, 4, 5}, 25);
     }
 
     @Override
     protected PoolConfig onMessage(EventTypes eventTypes, EventMessage message) {
-        return switch (message.action()){
+        return switch (message.action()) {
             case GET -> poolConfig;
             default -> null;
         };

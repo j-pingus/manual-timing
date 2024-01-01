@@ -29,7 +29,7 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
         if (response != null) {
             eventMessage.reply(Json.encode(response));
         } else {
-            eventMessage.fail(500, "Unsuported operation in verticle");
+            eventMessage.fail(500, "Unsuported operation");
         }
     }
 
@@ -41,6 +41,10 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
      * @param body the message you want to send can be simple string or complex object
      */
     void sendMessage(EventAction action, Object body) {
-        vertx.eventBus().publish(EventTypes.MESSAGE.getName(), new EventMessage(action, Json.encode(body), null));
+        this.sendMessage(action, body, -1, -1, -1);
+    }
+
+    void sendMessage(EventAction action, Object body, int event, int heat, int lane) {
+        vertx.eventBus().publish(EventTypes.MESSAGE.getName(), new EventMessage(action, Json.encode(body), event, heat, lane));
     }
 }

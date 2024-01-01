@@ -1,12 +1,47 @@
+mat-card{
+    background-color: rgba(255, 255, 255, 0.7);
+
+}
 mat-card-title{
     display: flex;
     place-items: center;
     width: 90vw;
     min-width: 100%;
 }
+span + span {
+    margin-left: 10px;
+}
 span{
     flex:0 1 auto;
 }
 .filler{
     flex:1 0 auto;
+}
+.heat{
+    display: flex;
+    align-items: center;
+}
+.hidden{
+    display:none;
+}
+mat-form-field {
+    margin-left: 10px;
+}
+.circle {
+    flex: 0 0 auto;
+    margin:5px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    background-color: #073f8a;
+}
+.data{
+    margin-top: 25vh;
+    border:4px dashed greenyellow;
+    background-color: lightblue;
+    padding: 10px;
+    //display:none;
 }

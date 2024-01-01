@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {MatCardModule} from "@angular/material/card";
 import {PoolConfigService} from "../../services/pool-config.service";
 import {NgForOf} from "@angular/common";
-import {RegistrationRequest} from "../../domain/registration-request";
+import {User} from "../../domain/user";
 import {RegistrationService} from "../../services/registration.service";
 import {BackendMessageService} from "../../services/backend-message.service";
 import {TimingAction} from "../../domain/event-bus-message";
@@ -55,5 +55,5 @@ export class ControlComponent implements OnDestroy {
 
 interface LaneWithReferees {
     lane: number;
-    referees?: Array<RegistrationRequest>;
+    referees?: Array<User>;
 }

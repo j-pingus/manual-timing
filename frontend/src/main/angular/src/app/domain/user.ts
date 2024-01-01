@@ -1,4 +1,4 @@
-export interface RegistrationRequest{
+export interface User {
   uuid?:string;
   name?:string;
   role?:string;
