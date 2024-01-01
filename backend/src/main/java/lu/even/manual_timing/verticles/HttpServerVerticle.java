@@ -35,6 +35,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         this.routePost("/api/registration", EventTypes.REGISTER);
         this.routeGet("/api/registrations/lane/:id", EventTypes.REGISTER,EventAction.GET_BY_LANE);
         this.routePut("/api/registration", EventTypes.REGISTER);
+        this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
+        this.routePut("/api/events", EventTypes.EVENT);
         //Generic failure management
         router.route().failureHandler(handler -> {
             System.out.println("Error happened during routing:" + handler.failure());

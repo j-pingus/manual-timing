@@ -1,0 +1,12 @@
+mat-card-title{
+    display: flex;
+    place-items: center;
+    width: 90vw;
+    min-width: 100%;
+}
+span{
+    flex:0 1 auto;
+}
+.filler{
+    flex:1 0 auto;
+}

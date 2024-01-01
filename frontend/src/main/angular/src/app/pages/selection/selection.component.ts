@@ -54,21 +54,16 @@ export class SelectionComponent implements OnInit {
     register() {
         if (sessionStorage.getItem(Constants.USER_ID) == null) {
             this.registrationService.register(this.data).subscribe((data) => {
-                console.log(data);
-                localStorage.clear();
                 sessionStorage.clear();
                 sessionStorage.setItem(Constants.USER_ID, data);
-                localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
-                this.router.navigate(['/' + this.data.role]);
+                this.saveAndGo()
+
             })
         } else {
             //make deep copy
-            const update:RegistrationRequest = JSON.parse(JSON.stringify( this.data))
-            update.uuid=sessionStorage.getItem(Constants.USER_ID) as string;
-            this.registrationService.change(update).subscribe(()=>{
-                localStorage.clear();
-                localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
-                this.router.navigate(['/' + this.data.role]);
+            this.data.uuid = sessionStorage.getItem(Constants.USER_ID) as string;
+            this.registrationService.change(this.data).subscribe(() => {
+                this.saveAndGo();
             })
         }
     }
@@ -76,5 +71,15 @@ export class SelectionComponent implements OnInit {
     roleSelected($event: MatChipListboxChange) {
         this.data.role = $event.value;
         console.log(this.data);
+    }
+
+    private saveAndGo() {
+        localStorage.clear();
+        localStorage.setItem(Constants.USER_DATA, JSON.stringify(this.data));
+        if (this.data.role == 'control') {
+            this.router.navigate(['/' + this.data.role]);
+        } else {
+            this.router.navigate(['/' + this.data.role, 0]);
+        }
     }
 }

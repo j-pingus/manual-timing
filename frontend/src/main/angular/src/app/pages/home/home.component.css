@@ -1,10 +1,10 @@
 .container{
-  height: 100vh;
+  height: 90vh;
   display:flex;
   background-image: url( '/assets/cnw.svg' );
   background-repeat: no-repeat;
   background-position: right bottom;
-  background-size: 30%;
+  background-size: 25%;
 }
 .scroll{
   overflow: scroll;

@@ -9,7 +9,7 @@ export const routes: Routes = [
     component: SelectionComponent
   },
   {
-    path: 'referee',
+    path: 'referee/:id',
     component: RefereeComponent
   },
   {

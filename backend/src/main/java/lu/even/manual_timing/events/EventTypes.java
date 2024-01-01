@@ -6,6 +6,7 @@ public enum EventTypes {
     POOL_CONFIG("timing.pool.config"),
     REGISTER("timing.register"),
     MESSAGE("timing.message"),
+    EVENT("timing.event"),
     LANE("timing.lane");
     private final String name;
 
