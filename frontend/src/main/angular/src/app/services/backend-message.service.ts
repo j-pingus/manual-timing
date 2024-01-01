@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import EventBus from '@vertx/eventbus-bridge-client.js';
 import {EventBusMessage, TimingMessage} from "../domain/event-bus-message";
 import {Subject, Subscription} from "rxjs";
+import {environment} from "../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,8 @@ export class BackendMessageService {
 
     constructor() {
         const serverMessageSubject=new Subject<TimingMessage>();
-        const eventBus = new EventBus('http://localhost:8765/api/eventbus');
+        console.log('eventBus address:',environment.eventBus);
+        const eventBus = new EventBus(environment.eventBus);
          eventBus.onopen = function () {
             eventBus.registerHandler('timing.message', (error: any, message: EventBusMessage) => {
                 if (error) {
