@@ -7,13 +7,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ManualTimePipe implements PipeTransform {
   public static MINUTES_SEPARATOR= '\'';
   public static SECONDS_SEPARATOR='.';
-
+  private static SEARCH_ALL_NON_NUMERIC = /\D/g;
   transform(value: string): string {
     let [minutes,rest=""]=value.split(ManualTimePipe.MINUTES_SEPARATOR);
     let [seconds="",centiseconds="" ]=rest.split(ManualTimePipe.SECONDS_SEPARATOR);
-    minutes=minutes.replace(/^\D+/g, '');
-    seconds=seconds.replace(/^\D+/g, '');
-    centiseconds=centiseconds.replace(/^\D+/g, '');
+    minutes=minutes.replace(ManualTimePipe.SEARCH_ALL_NON_NUMERIC, '');
+    seconds=seconds.replace(ManualTimePipe.SEARCH_ALL_NON_NUMERIC, '');
+    centiseconds=centiseconds.replace(ManualTimePipe.SEARCH_ALL_NON_NUMERIC, '');
     if(minutes.length>2){
       seconds=minutes.slice(2)+seconds;
       minutes=minutes.slice(0,2);
