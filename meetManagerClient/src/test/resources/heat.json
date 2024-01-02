@@ -1,0 +1,61 @@
+{
+  "eventid": "1062",
+  "heatinfo": {
+    "key": "H",
+    "code": "1"
+  },
+  "status": 4,
+  "id": "2785",
+  "entries": [
+    {
+      "gender": "2",
+      "nation": "LUX",
+      "clubtext": "LUX - CNW",
+      "clubname": "Cercle de Natation Wiltz",
+      "clubcode": "CNW",
+      "athleteid": "4925",
+      "entrytime": "NT",
+      "id": "4926",
+      "agetext": "2010",
+      "uniqueid": 4925,
+      "swrid": "5478192",
+      "lane": 3,
+      "clubid": "4905",
+      "nametext": "Nageuse 1"
+    },
+    {
+      "gender": "2",
+      "nation": "BEL",
+      "clubtext": "BEL - PERRON",
+      "clubname": "Perron",
+      "clubcode": "PERRON",
+      "athleteid": "3612",
+      "entrytime": "NT",
+      "id": "3613",
+      "agetext": "2011",
+      "uniqueid": 3612,
+      "swrid": "5443539",
+      "lane": 4,
+      "clubid": "2959",
+      "nametext": "Nageuse 2"
+    },
+    {
+      "gender": "2",
+      "nation": "GER",
+      "clubtext": "GER - 7162",
+      "clubname": "White Sharks BKS e.V.",
+      "clubcode": "7162",
+      "athleteid": "4462",
+      "entrytime": "NT",
+      "id": "4463",
+      "agetext": "2012",
+      "uniqueid": 4462,
+      "swrid": "5561848",
+      "lane": 5,
+      "clubid": "4451",
+      "nametext": "Nageuse 3"
+    }
+  ],
+  "time": "09:00",
+  "code": "1"
+}

@@ -141,6 +141,7 @@ Temporary Items
 
 ### Maven ###
 backend/target/
+meetManagerClient/target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -186,3 +187,4 @@ nbdist/
 
 ### intellij ###
 /.idea/
+/meetManagerClient/target/

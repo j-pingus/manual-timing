@@ -11,6 +11,7 @@ public class MainApp {
         vertx.deployVerticle(new SwimmingEventVerticle());
         vertx.deployVerticle(new InscriptionVerticle());
         vertx.deployVerticle(new ManualTimeVerticle());
+        vertx.deployVerticle(new TeamManagerVerticle("evenge.fritz.box",8585));
         vertx.deployVerticle(new HttpServerVerticle(8765));
         //Uncomment to view on server log messages being sent to the browser
         /*vertx.eventBus().consumer(EventTypes.MESSAGE.getName(),h->{

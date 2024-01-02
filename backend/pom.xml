@@ -17,7 +17,6 @@
   <properties>
 
     <vertx.version>4.5.1</vertx.version>
-    <junit-jupiter.version>5.9.1</junit-jupiter.version>
 
     <launcher.class>lu.even.manual_timing.MainApp</launcher.class>
   </properties>
@@ -75,6 +74,17 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit-jupiter.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>lu.even</groupId>
+      <artifactId>meetManagerClient</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>lu.even</groupId>
+      <artifactId>meetManagerClient</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
