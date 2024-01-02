@@ -43,6 +43,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         this.routeGet("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION,EventAction.GET_BY_EVENT_HEAT);
         this.routePost("/api/time", EventTypes.MANUAL_TIME);
         this.routeGet("/api/meetmanager/reload", EventTypes.MEET_MANAGER,EventAction.LOAD_EVENTS);
+        this.routeGet("/api/meetmanager/reloadheat/:event/:heat", EventTypes.MEET_MANAGER,EventAction.LOAD_HEAT);
         this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME,EventAction.GET_BY_EVENT_LANE);
         //Generic failure management
         router.route().failureHandler(handler -> {

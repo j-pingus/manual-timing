@@ -5,14 +5,12 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
+import lu.even.manual_timing.domain.Inscription;
 import lu.even.manual_timing.domain.SwimmingEvent;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
-import lu.even.meet_manager.domain.Event;
-import lu.even.meet_manager.domain.Events;
-import lu.even.meet_manager.domain.Gender;
-import lu.even.meet_manager.domain.Stroke;
+import lu.even.meet_manager.domain.*;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -21,6 +19,7 @@ public class TeamManagerVerticle extends AbstractTimingVerticle {
     private final String host;
     private final int port;
     private HttpClient client;
+
     public TeamManagerVerticle(String host, int port) {
         super(EventTypes.MEET_MANAGER);
         this.host = host;
@@ -40,8 +39,26 @@ public class TeamManagerVerticle extends AbstractTimingVerticle {
     protected Object onMessage(EventTypes eventType, EventMessage message) {
         return switch (message.action()) {
             case LOAD_EVENTS -> loadEvents();
+            case LOAD_HEAT -> loadHeat(message.eventId(), message.heatId());
             default -> null;
         };
+    }
+
+    private String loadHeat(int eventId, int heatId) {
+        client.request(HttpMethod.GET, "/heats/" + eventId + "/" + heatId)
+                .compose(req -> req.send().compose(HttpClientResponse::body))
+                .onSuccess(hc -> {
+                    var heat = Json.decodeValue(hc, HeatDetails.class);
+                    var inscriptions = heat.entries().stream()
+                            .map(e -> new Inscription(eventId, heatId, e.lane(), e.nametext()))
+                            .collect(Collectors.toList());
+                    vertx.eventBus().publish(
+                            EventTypes.INSCRIPTION.getName(),
+                            new EventMessage(EventAction.REPLACE_INSCRIPTIONS, Json.encode(inscriptions), eventId, heatId, -1)
+                    );
+                })
+                .onFailure(Throwable::printStackTrace);
+        return "";
     }
 
     private String loadEvents() {
@@ -50,8 +67,8 @@ public class TeamManagerVerticle extends AbstractTimingVerticle {
                 .onSuccess(hc -> {
                     Events events = Json.decodeValue(hc, Events.class);
                     var swimmingEvents = events.getDynamicValues().values().stream()
-                            .filter(e->e.heats().size()>0)
-                            .map(e->new SwimmingEvent(
+                            .filter(e -> !e.heats().isEmpty())
+                            .map(e -> new SwimmingEvent(
                                     toNumber(e.number()),
                                     e.heats().size(),
                                     e.isrelay(),
@@ -61,14 +78,23 @@ public class TeamManagerVerticle extends AbstractTimingVerticle {
                             .collect(Collectors.toList());
                     vertx.eventBus().publish(
                             EventTypes.EVENT.getName(),
-                            new EventMessage(EventAction.REPLACE_EVENTS,Json.encode(swimmingEvents),-1,-1,-1));
-                });
+                            new EventMessage(EventAction.REPLACE_EVENTS, Json.encode(swimmingEvents), -1, -1, -1));
+                    swimmingEvents.forEach(event -> {
+                        for (int heat = 1; heat <= event.heats(); heat++) {
+                            vertx.eventBus().publish(
+                                    EventTypes.MEET_MANAGER.getName(),
+                                    new EventMessage(EventAction.LOAD_HEAT, null, event.id(), heat, -1)
+                            );
+                        }
+                    });
+                })
+                .onFailure(Throwable::printStackTrace);
         return "";
     }
 
     private String describe(Event e) {
-        return e.distance()+ " "+
-                decodeStroke(e.stroke())+" "+
+        return e.distance() + " " +
+                decodeStroke(e.stroke()) + " " +
                 decodeGender(e.gender());
     }
 
@@ -81,7 +107,7 @@ public class TeamManagerVerticle extends AbstractTimingVerticle {
     }
 
     private int toNumber(String number) {
-        if(number!=null)
+        if (number != null)
             return Integer.parseInt(number);
         return -1;
     }

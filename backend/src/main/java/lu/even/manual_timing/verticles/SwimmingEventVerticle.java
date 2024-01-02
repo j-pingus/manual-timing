@@ -10,25 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SwimmingEventVerticle extends AbstractTimingVerticle {
-    //FIXME: replace with DB
-    private static SwimmingEvent[] DUMMY = new SwimmingEvent[]{
-            new SwimmingEvent(1, 5, false, "50m backstrocke men"),
-            new SwimmingEvent(2, 4, false, "50m backstrocke women"),
-            new SwimmingEvent(3, 7, false, "50m freestyle men"),
-            new SwimmingEvent(4, 2, false, "50m freestyle women"),
-    };
+
     private List<SwimmingEvent> events = new ArrayList<>();
 
     public SwimmingEventVerticle() {
         super(EventTypes.EVENT);
-        this.events.addAll(Arrays.asList(DUMMY));
     }
 
     @Override
     protected Object onMessage(EventTypes eventType, EventMessage message) {
         return switch (message.action()) {
             case GET_ALL -> this.events;
-            case REPLACE_EVENTS -> {this.events = Json.<List>decodeValue(message.body(), List.class);
+            case REPLACE_EVENTS -> {
+                this.events = Arrays.asList(
+                        Json.decodeValue(message.body(), SwimmingEvent[].class));
                 System.out.println("replaced:"+this.events);
                 yield "";
             }

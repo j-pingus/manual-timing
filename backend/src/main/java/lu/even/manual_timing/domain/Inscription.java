@@ -19,6 +19,16 @@ public class Inscription{
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "Inscription{" +
+                "event=" + event +
+                ", heat=" + heat +
+                ", lane=" + lane +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public void setEvent(int event) {
         this.event = event;
     }
