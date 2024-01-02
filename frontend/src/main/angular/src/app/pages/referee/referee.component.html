@@ -28,6 +28,7 @@
                        placeholder="mm'ss.ddd"
                        [disabled]="heat.name == undefined"
                        [(ngModel)]="heat.time"
+                       appManualTime
                        (blur)="save(heat)"
                 >
             </mat-form-field>
