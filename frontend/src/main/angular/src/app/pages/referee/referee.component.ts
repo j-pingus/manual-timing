@@ -17,6 +17,9 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {ManualTimeService} from "../../services/manual.time.service";
+import {Heat} from "../../domain/heat";
+import {ManualTimePipe} from "../../pipes/manual-time.pipe";
+import {ManualTimeDirective} from "../../directives/manual-time.directive";
 
 @Component({
     selector: 'app-referee',
@@ -30,7 +33,9 @@ import {ManualTimeService} from "../../services/manual.time.service";
         MatFormFieldModule,
         MatInputModule,
         FormsModule,
-        JsonPipe
+        JsonPipe,
+        ManualTimePipe,
+        ManualTimeDirective
     ],
     templateUrl: './referee.component.html',
     styleUrl: './referee.component.css'
@@ -152,10 +157,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
                 }).subscribe();
         }
     }
+
 }
 
-interface Heat {
-    id: number;
-    name?: string;
-    time?: string;
-}
+

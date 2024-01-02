@@ -24,9 +24,11 @@
             <span>{{heat.name}}</span>
             <mat-form-field appearance="fill" class="time">
                 <mat-label>Time</mat-label>
-                <input matInput
+                <input matInput pattern="\d{2}'\d{2}.\d{3}"
+                       placeholder="mm'ss.ddd"
                        [disabled]="heat.name == undefined"
                        [(ngModel)]="heat.time"
+                       appManualTime
                        (blur)="save(heat)"
                 >
             </mat-form-field>
