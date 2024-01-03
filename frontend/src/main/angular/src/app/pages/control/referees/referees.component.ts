@@ -1,12 +1,12 @@
 import {Component, OnDestroy} from '@angular/core';
 import {MatCardModule} from "@angular/material/card";
-import {PoolConfigService} from "../../services/pool-config.service";
 import {NgForOf} from "@angular/common";
-import {User} from "../../domain/user";
-import {RegistrationService} from "../../services/registration.service";
-import {BackendMessageService} from "../../services/backend-message.service";
-import {TimingAction} from "../../domain/event-bus-message";
 import {Subscription} from "rxjs";
+import {PoolConfigService} from "../../../services/pool-config.service";
+import {RegistrationService} from "../../../services/registration.service";
+import {BackendMessageService} from "../../../services/backend-message.service";
+import {TimingAction} from "../../../domain/event-bus-message";
+import {User} from "../../../domain/user";
 
 @Component({
     selector: 'app-control',
@@ -15,10 +15,10 @@ import {Subscription} from "rxjs";
         MatCardModule,
         NgForOf
     ],
-    templateUrl: './control.component.html',
-    styleUrl: './control.component.css'
+    templateUrl: './referees.component.html',
+    styleUrl: './referees.component.css'
 })
-export class ControlComponent implements OnDestroy {
+export class RefereesComponent implements OnDestroy {
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
