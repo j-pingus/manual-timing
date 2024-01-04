@@ -19,4 +19,7 @@ export class ManualTimeService {
     public getByEventAndLane(event: number, lane: number): Observable<Array<ManualTime>> {
         return this.http.get<Array<ManualTime>>(ManualTimeService.SERVICE_URL + 's/' + event + '/lane/' + lane);
     }
+    public getByEventAndHeat(event: number, heat: number): Observable<Array<ManualTime>> {
+        return this.http.get<Array<ManualTime>>(ManualTimeService.SERVICE_URL + 's/' + event + '/heat/' + heat);
+    }
 }

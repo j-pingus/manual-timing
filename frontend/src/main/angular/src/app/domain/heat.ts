@@ -1,5 +1,5 @@
 export interface Heat {
     id: number;
-    name?: string;
+    swimmer?: string;
     time?: string;
 }

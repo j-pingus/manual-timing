@@ -19,14 +19,14 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div *ngFor="let heat of heats" class="heat" [class.hidden]="heat.name == undefined">
-            <span class="circle">{{heat.id}}</span>
-            <span>{{heat.name}}</span>
+        <div *ngFor="let heat of heats" [class.heat]="heat.swimmer!=undefined" [class.hidden]="heat.swimmer==undefined">
+            <span class="heatId">{{heat.id}}</span>
+            <span class="swimmer">{{heat.swimmer}}</span>
             <mat-form-field appearance="fill" class="time">
                 <mat-label>Time</mat-label>
                 <input matInput
                        placeholder="mm'ss.ddd"
-                       [disabled]="heat.name == undefined"
+                       [disabled]="heat.swimmer == undefined"
                        [(ngModel)]="heat.time"
                        appManualTime
                        (blur)="save(heat)"

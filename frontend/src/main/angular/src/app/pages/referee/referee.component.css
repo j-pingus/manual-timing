@@ -17,18 +17,24 @@ span{
 .filler{
     flex:1 0 auto;
 }
-.heat{
-    display: flex;
-    align-items: center;
-}
 .hidden{
     display:none;
 }
 mat-form-field {
     margin-left: 10px;
 }
-.circle {
-    flex: 0 0 auto;
+.heat{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px dashed lightgray;
+}
+.heat:hover{
+  border:2px dashed blue;
+}
+
+
+.heatId {
+    flex: 0 0 35px;
     margin:5px;
     width: 35px;
     height: 35px;
@@ -38,10 +44,17 @@ mat-form-field {
     color: white;
     background-color: #073f8a;
 }
+.swimmer{
+  flex: 0 1 250px;
+  text-align: right;
+}
+.time{
+  flex: 0 0 110px;
+}
 .data{
     margin-top: 25vh;
     border:4px dashed greenyellow;
     background-color: lightblue;
     padding: 10px;
-    //display:none;
+    display:none;
 }

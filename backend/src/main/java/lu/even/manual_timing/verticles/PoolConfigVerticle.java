@@ -7,10 +7,10 @@ import lu.even.manual_timing.events.EventTypes;
 public class PoolConfigVerticle extends AbstractTimingVerticle {
     private PoolConfig poolConfig;
 
-    public PoolConfigVerticle() {
+    public PoolConfigVerticle(PoolConfig config) {
         super(EventTypes.POOL_CONFIG);
         //Default pool configuration
-        this.poolConfig = new PoolConfig(new int[]{1, 2, 3, 4, 5}, 25);
+        this.poolConfig = config;
     }
 
     @Override

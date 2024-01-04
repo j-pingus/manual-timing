@@ -1,3 +1,31 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <span>{{event.description}}</span>
+      <mat-icon>refresh</mat-icon>
+    </mat-card-title>
+    <mat-card-subtitle>
+      <button mat-button (click)="previousEvent()" [disabled]="eventId<=1">&lt;</button>
+      <span>Event #{{event.id}}/{{maxEventId}}</span>
+      <button mat-button (click)="nextEvent()" [disabled]="eventId>=maxEventId">&gt;</button>
+      <span style="flex:1 1 auto;"></span>
+
+      <button matTooltip="previous Heat (<ctrl>+<p>)" mat-button (click)="previousHeat()" [disabled]="heatId<=1">&lt;</button>
+      <span>Heat #{{heatId}}/{{maxHeatId}}</span>
+      <button matTooltip="next Heat (<ctrl>+<n>)" mat-button (click)="nextHeat()" [disabled]="heatId>=maxHeatId && eventId>=maxEventId">&gt;</button>
+
+    </mat-card-subtitle>
+  </mat-card-header>
+    <mat-card-content >
+      <div class="lane" *ngFor="let lane of lanes">
+        <span class="laneId">{{lane.lane}}</span>
+        <span class="swimmer">{{lane.swimmer}}</span>
+        <span class="time">{{lane.time}}</span>
+      </div>
+    </mat-card-content>
+</mat-card>
+
+
 <ul>
     <li>select event/heat</li>
     <li>display manual times as they are added</li>

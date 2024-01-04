@@ -7,9 +7,9 @@ export interface EventBusMessage {
 export interface TimingMessage {
     action: TimingAction;
     body: any;
-    event: number;
-    heat: number;
-    lane: number;
+    eventId: number;
+    heatId: number;
+    laneId: number;
 }
 
 export enum TimingAction {

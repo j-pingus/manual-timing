@@ -1,0 +1,30 @@
+.lane{
+  display:flex;
+  align-items: center;
+}
+
+.lane:hover{
+  border:2px dashed blue;
+}
+div:nth-child(odd).lane{
+  background-color: rgba(7, 63, 138, 0.2);
+}
+.laneId {
+  flex: 0 0 35px;
+  margin:5px;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  background-color: #073f8a;
+}
+.swimmer{
+  flex: 0 1 300px;
+  text-align: right;
+  margin-right: 5px;
+}
+.time{
+  flex: 0 0 80px;
+}
