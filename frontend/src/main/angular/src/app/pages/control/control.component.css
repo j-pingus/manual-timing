@@ -1,0 +1,14 @@
+a + a{
+    margin-left:3px;
+}
+.activeRoute{
+    font-weight: bold;
+    color: gold;
+    border-top: 3px solid darkblue;
+    border-left: 3px solid darkblue;
+    border-right: 3px solid darkblue;
+}
+.container{
+    border: 3px solid darkblue;
+
+}
