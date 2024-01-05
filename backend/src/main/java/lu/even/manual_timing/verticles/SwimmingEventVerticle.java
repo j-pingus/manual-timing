@@ -4,11 +4,8 @@ import io.vertx.core.json.Json;
 import lu.even.manual_timing.domain.SwimmingEvent;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +19,7 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
   }
 
   @Override
-  protected Object onMessage(EventTypes eventType, EventMessage message){
+  protected Object onMessage(EventTypes eventType, EventMessage message) {
     try {
       return switch (message.action()) {
         case GET_ALL -> this.events;
@@ -37,8 +34,8 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
         case LOAD -> this.events = Arrays.asList(load("events", SwimmingEvent[].class));
         default -> null;
       };
-    }catch (IOException e){
-      logger.error("Error happened",e);
+    } catch (IOException e) {
+      logger.error("Error happened", e);
       return null;
     }
   }

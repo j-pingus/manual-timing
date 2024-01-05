@@ -41,13 +41,13 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
   private Object dumpMe() throws IOException{
     var data = this.inscriptions.values().stream()
       .flatMap(e->e.values().stream())
-      .flatMap(l->l.stream())
+      .flatMap(Collection::stream)
       .collect(Collectors.toList());
     return dump(data,"inscriptions");
   }
   private Object loadMe()throws IOException{
     var data = load("inscriptions",Inscription[].class);
-    Arrays.stream(data).forEach(i->this.save(i));
+    Arrays.stream(data).forEach(this::save);
     return data;
   }
   private String load(String body, int event, int heat) {

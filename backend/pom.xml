@@ -17,7 +17,7 @@
   <properties>
 
     <vertx.version>4.5.1</vertx.version>
-    <version.logback>1.2.11</version.logback>
+    <version.logback>1.4.12</version.logback>
     <version.slf4j>1.7.36</version.slf4j>
 
     <launcher.class>lu.even.manual_timing.MainApp</launcher.class>
