@@ -187,5 +187,7 @@ nbdist/
 
 ### intellij ###
 /.idea/
-/meetManagerClient/target/
 /configFile.json
+/events.json
+/inscriptions.json
+target/

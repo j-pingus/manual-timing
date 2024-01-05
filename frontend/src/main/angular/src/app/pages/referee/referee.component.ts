@@ -118,9 +118,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
   }
 
   private getEventInscriptions() {
-    if (this.user.lane && this.event?.id) {
+    if (this.user.lane != undefined && this.event) {
       this.subscription.add(
-        this.inscriptionsService.getByEventAndLane(this.event?.id, this.user.lane).subscribe(inscriptions => {
+        this.inscriptionsService.getByEventAndLane(this.event.id, this.user.lane).subscribe(inscriptions => {
           inscriptions.forEach(inscription => {
             this.heats[inscription.heat - 1].swimmer = inscription.name;
           })
@@ -130,9 +130,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
   }
 
   private getEventTimes() {
-    if (this.user.lane && this.event?.id) {
+    if (this.user.lane != undefined && this.event) {
       this.subscription.add(
-        this.manualTimeService.getByEventAndLane(this.event?.id, this.user.lane).subscribe(inscriptions => {
+        this.manualTimeService.getByEventAndLane(this.event.id, this.user.lane).subscribe(inscriptions => {
           inscriptions.forEach(time => {
             this.heats[time.heat - 1].time = time.time;
           })

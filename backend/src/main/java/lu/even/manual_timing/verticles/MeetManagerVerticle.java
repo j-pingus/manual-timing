@@ -11,6 +11,8 @@ import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
 import lu.even.meet_manager.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -19,7 +21,6 @@ public class MeetManagerVerticle extends AbstractTimingVerticle {
   private final String host;
   private final int port;
   private HttpClient client;
-
   public MeetManagerVerticle(String host, int port) {
     super(EventTypes.MEET_MANAGER);
     this.host = host;
@@ -37,7 +38,7 @@ public class MeetManagerVerticle extends AbstractTimingVerticle {
   @Override
   public void start() throws Exception {
     super.start();
-    System.out.println(this);
+    logger.info(this.toString());
     var options = new HttpClientOptions()
       .setDefaultHost(host)
       .setDefaultPort(port);

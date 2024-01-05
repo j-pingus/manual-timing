@@ -14,105 +14,109 @@ import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpServerVerticle extends AbstractVerticle {
-    private final int port;
-    private Router router;
-    private EventBus bus;
+  private static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
+  private final int port;
+  private Router router;
+  private EventBus bus;
 
-    public HttpServerVerticle(int port) {
-        this.port = port;
-    }
+  public HttpServerVerticle(int port) {
+    this.port = port;
+  }
 
-    @Override
-    public void start(Promise<Void> startPromise) {
-        router = Router.router(vertx);
-        bus = vertx.eventBus();
+  @Override
+  public void start(Promise<Void> startPromise) {
+    router = Router.router(vertx);
+    bus = vertx.eventBus();
 
-        // Body handler for parsing request bodies
-        router.route().handler(BodyHandler.create());
-        //Configuration of specific business domain rest endpoints
-        this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
-        this.routePost("/api/registration", EventTypes.REGISTER);
-        this.routeGet("/api/registrations/lane/:lane", EventTypes.REGISTER,EventAction.GET_BY_LANE);
-        this.routePut("/api/registration", EventTypes.REGISTER);
-        this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
-        this.routePost("/api/event", EventTypes.EVENT);
-        this.routePost("/api/inscription", EventTypes.INSCRIPTION);
-        this.routeGet("/api/inscriptions/:event/lane/:lane", EventTypes.INSCRIPTION,EventAction.GET_BY_EVENT_LANE);
-        this.routeGet("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION,EventAction.GET_BY_EVENT_HEAT);
-        this.routePost("/api/time", EventTypes.MANUAL_TIME);
-        this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME,EventAction.GET_BY_EVENT_LANE);
-        this.routeGet("/api/times/:event/heat/:heat", EventTypes.MANUAL_TIME,EventAction.GET_BY_EVENT_HEAT);
-        this.routeGet("/api/meet-manager/reload", EventTypes.MEET_MANAGER,EventAction.LOAD_EVENTS);
-        this.routeGet("/api/meet-manager/reloadheat/:event/:heat", EventTypes.MEET_MANAGER,EventAction.LOAD_HEAT);
-        //Generic failure management
-        router.route().failureHandler(handler -> {
-            System.out.println("Error happened during routing:" + handler.failure());
-            if (handler.failure() != null) {
-                handler.failure().printStackTrace();
-            }
-            handler.response().end(handler.failure() != null ? handler.failure().getMessage() : "Internal error");
+    // Body handler for parsing request bodies
+    router.route().handler(BodyHandler.create());
+    //Configuration of specific business domain rest endpoints
+    this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
+    this.routePost("/api/registration", EventTypes.REGISTER);
+    this.routeGet("/api/registrations/lane/:lane", EventTypes.REGISTER, EventAction.GET_BY_LANE);
+    this.routePut("/api/registration", EventTypes.REGISTER);
+    this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
+    this.routeGet("/api/events/dump", EventTypes.EVENT, EventAction.DUMP);
+    this.routeGet("/api/events/load", EventTypes.EVENT, EventAction.LOAD);
+    this.routePost("/api/event", EventTypes.EVENT);
+    this.routePost("/api/inscription", EventTypes.INSCRIPTION);
+    this.routeGet("/api/inscriptions/load", EventTypes.INSCRIPTION,EventAction.LOAD);
+    this.routeGet("/api/inscriptions/dump", EventTypes.INSCRIPTION,EventAction.DUMP);
+    this.routeGet("/api/inscriptions/:event/lane/:lane", EventTypes.INSCRIPTION, EventAction.GET_BY_EVENT_LANE);
+    this.routeGet("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION, EventAction.GET_BY_EVENT_HEAT);
+    this.routePost("/api/time", EventTypes.MANUAL_TIME);
+    this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_LANE);
+    this.routeGet("/api/times/:event/heat/:heat", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_HEAT);
+    this.routeGet("/api/meet-manager/reload", EventTypes.MEET_MANAGER, EventAction.LOAD_EVENTS);
+    this.routeGet("/api/meet-manager/reloadheat/:event/:heat", EventTypes.MEET_MANAGER, EventAction.LOAD_HEAT);
+    //Generic failure management
+    router.route().failureHandler(handler -> {
+      logger.error("Error happened during routing", handler.failure());
+      handler.response().end(handler.failure() != null ? handler.failure().getMessage() : "Internal error");
+    });
+    // Allow message events to be bridged to JavaScript client
+    SockJSBridgeOptions opts = new SockJSBridgeOptions()
+      .addOutboundPermitted(new PermittedOptions().setAddress(EventTypes.MESSAGE.getName()));
+    // Create the event bus bridge and add it to the router.
+    router.route("/api/eventbus/*").subRouter(SockJSHandler.create(vertx).bridge(opts));
+
+    vertx.createHttpServer().requestHandler(router).listen(port, http -> {
+      if (http.succeeded()) {
+        startPromise.complete();
+        logger.info("HTTP server started on port:{} ", port);
+      } else {
+        startPromise.fail(http.cause());
+      }
+    });
+  }
+
+  public void routeGet(String url, EventTypes eventType) {
+    router.get(url).handler(getRoutingHandler(eventType, EventAction.GET));
+  }
+
+  public void routeGet(String url, EventTypes eventType, EventAction action) {
+    router.get(url).handler(getRoutingHandler(eventType, action));
+  }
+
+  public void routePost(String url, EventTypes eventType) {
+    router.post(url).handler(getRoutingHandler(eventType, EventAction.POST));
+  }
+
+  public void routePut(String url, EventTypes eventType) {
+    router.put(url).handler(getRoutingHandler(eventType, EventAction.PUT));
+  }
+
+  private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {
+    return event ->
+      //
+      bus.<String>request(
+        eventType.getName(),
+        new EventMessage(
+          action,
+          event.body().asString(),
+          getId(event.request(), "event"),
+          getId(event.request(), "heat"),
+          getId(event.request(), "lane")
+        ),
+        reply -> {
+          if (reply.succeeded()) {
+            event.response().end(reply.result().body());
+          } else {
+            event.fail(500);
+          }
         });
-        // Allow message events to be bridged to JavaScript client
-        SockJSBridgeOptions opts = new SockJSBridgeOptions()
-                .addOutboundPermitted(new PermittedOptions().setAddress(EventTypes.MESSAGE.getName()));
-        // Create the event bus bridge and add it to the router.
-        router.route("/api/eventbus/*").subRouter(SockJSHandler.create(vertx).bridge(opts));
+  }
 
-        vertx.createHttpServer().requestHandler(router).listen(port, http -> {
-            if (http.succeeded()) {
-                startPromise.complete();
-                System.out.println("HTTP server started on port " + port);
-            } else {
-                startPromise.fail(http.cause());
-            }
-        });
+  private int getId(HttpServerRequest request, String param) {
+    String paramValue = request.getParam(param);
+    if (paramValue != null) {
+      return Integer.parseInt(paramValue);
     }
-
-    public void routeGet(String url, EventTypes eventType) {
-        router.get(url).handler(getRoutingHandler(eventType, EventAction.GET));
-    }
-
-    public void routeGet(String url, EventTypes eventType, EventAction action) {
-        router.get(url).handler(getRoutingHandler(eventType, action));
-    }
-
-    public void routePost(String url, EventTypes eventType) {
-        router.post(url).handler(getRoutingHandler(eventType, EventAction.POST));
-    }
-
-    public void routePut(String url, EventTypes eventType) {
-        router.put(url).handler(getRoutingHandler(eventType, EventAction.PUT));
-    }
-
-    private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {
-        return event ->
-                //
-                bus.<String>request(
-                        eventType.getName(),
-                        new EventMessage(
-                                action,
-                                event.body().asString(),
-                                getId(event.request(),"event"),
-                                getId(event.request(),"heat"),
-                                getId(event.request(),"lane")
-                        ),
-                        reply -> {
-                            if (reply.succeeded()) {
-                                event.response().end(reply.result().body());
-                            } else {
-                                event.fail(500);
-                            }
-                        });
-    }
-
-    private int getId(HttpServerRequest request, String param) {
-        String paramValue = request.getParam(param);
-        if(paramValue!=null){
-            return Integer.parseInt(paramValue);
-        }
-        return -1;
-    }
+    return -1;
+  }
 
 }

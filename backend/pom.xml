@@ -17,6 +17,8 @@
   <properties>
 
     <vertx.version>4.5.1</vertx.version>
+    <version.logback>1.2.11</version.logback>
+    <version.slf4j>1.7.36</version.slf4j>
 
     <launcher.class>lu.even.manual_timing.MainApp</launcher.class>
   </properties>
@@ -70,7 +72,25 @@
       <version>${junit-jupiter.version}</version>
       <scope>test</scope>
     </dependency>
- </dependencies>
+    <!-- Logback -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${version.logback}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${version.logback}</version>
+    </dependency>
+
+    <!-- SLF4J -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

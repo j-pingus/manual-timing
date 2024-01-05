@@ -5,6 +5,8 @@ import lu.even.manual_timing.domain.ManualTime;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class ManualTimeVerticle extends AbstractTimingVerticle {
   List<ManualTime> times;
-
+  private static final Logger logger = LoggerFactory.getLogger(ManualTimeVerticle.class);
   public ManualTimeVerticle() {
     super(EventTypes.MANUAL_TIME);
     times = new ArrayList<>();
@@ -45,7 +47,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
     ManualTime manualTime = Json.decodeValue(timingJson, ManualTime.class);
     times.remove(manualTime);
     times.add(manualTime);
-    System.out.println("time recorded:" + manualTime);
+    logger.info("time:{}",manualTime);
     sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
     return "";
   }
