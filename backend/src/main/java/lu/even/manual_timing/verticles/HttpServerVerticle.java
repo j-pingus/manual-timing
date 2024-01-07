@@ -4,55 +4,72 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class HttpServerVerticle extends AbstractVerticle {
   private static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
   private final int port;
+  private final String indexBody;
   private Router router;
   private EventBus bus;
 
-  public HttpServerVerticle(int port) {
+  public HttpServerVerticle(int port)throws IOException {
+
     this.port = port;
+    indexBody = IOUtils.resourceToString("/frontend/browser/index.html", Charset.defaultCharset());
+
   }
 
   @Override
   public void start(Promise<Void> startPromise) {
     router = Router.router(vertx);
     bus = vertx.eventBus();
-
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
+    //Handle static content in webcontent resource folder
+    router.route().handler(StaticHandler.create("frontend/browser"));
     //Configuration of specific business domain rest endpoints
+    // ==== Pool Config ====
     this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
+    // ==== User ====
     this.routePost("/api/registration", EventTypes.REGISTER);
     this.routeGet("/api/registrations/lane/:lane", EventTypes.REGISTER, EventAction.GET_BY_LANE);
     this.routePut("/api/registration", EventTypes.REGISTER);
+    // ==== Event ====
     this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
+    this.routeGet("/api/event/:event", EventTypes.EVENT);
     this.routeGet("/api/events/dump", EventTypes.EVENT, EventAction.DUMP);
     this.routeGet("/api/events/load", EventTypes.EVENT, EventAction.LOAD);
     this.routePost("/api/event", EventTypes.EVENT);
+    this.routePost("/api/events", EventTypes.EVENT, EventAction.REPLACE_EVENTS);
+    // ==== Inscriptions ====
     this.routePost("/api/inscription", EventTypes.INSCRIPTION);
-    this.routeGet("/api/inscriptions/load", EventTypes.INSCRIPTION,EventAction.LOAD);
-    this.routeGet("/api/inscriptions/dump", EventTypes.INSCRIPTION,EventAction.DUMP);
+    this.routePost("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION,EventAction.REPLACE_INSCRIPTIONS);
+    this.routeGet("/api/inscriptions/load", EventTypes.INSCRIPTION, EventAction.LOAD);
+    this.routeGet("/api/inscriptions/dump", EventTypes.INSCRIPTION, EventAction.DUMP);
     this.routeGet("/api/inscriptions/:event/lane/:lane", EventTypes.INSCRIPTION, EventAction.GET_BY_EVENT_LANE);
     this.routeGet("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION, EventAction.GET_BY_EVENT_HEAT);
+    // ==== time ====
     this.routePost("/api/time", EventTypes.MANUAL_TIME);
     this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_LANE);
     this.routeGet("/api/times/:event/heat/:heat", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_HEAT);
-    this.routeGet("/api/meet-manager/reload", EventTypes.MEET_MANAGER, EventAction.LOAD_EVENTS);
-    this.routeGet("/api/meet-manager/reloadheat/:event/:heat", EventTypes.MEET_MANAGER, EventAction.LOAD_HEAT);
     //Generic failure management
     router.route().failureHandler(handler -> {
       logger.error("Error happened during routing", handler.failure());
@@ -63,6 +80,11 @@ public class HttpServerVerticle extends AbstractVerticle {
       .addOutboundPermitted(new PermittedOptions().setAddress(EventTypes.MESSAGE.getName()));
     // Create the event bus bridge and add it to the router.
     router.route("/api/eventbus/*").subRouter(SockJSHandler.create(vertx).bridge(opts));
+
+    router.route("/*").method(HttpMethod.GET).handler(rc->{
+      logger.info("rerouting:{}",rc.request().path());
+      rc.response().send(indexBody);
+    });
 
     vertx.createHttpServer().requestHandler(router).listen(port, http -> {
       if (http.succeeded()) {
@@ -83,7 +105,11 @@ public class HttpServerVerticle extends AbstractVerticle {
   }
 
   public void routePost(String url, EventTypes eventType) {
-    router.post(url).handler(getRoutingHandler(eventType, EventAction.POST));
+    this.routePost(url, eventType, EventAction.POST);
+  }
+
+  public void routePost(String url, EventTypes eventType, EventAction action) {
+    router.post(url).handler(getRoutingHandler(eventType, action));
   }
 
   public void routePut(String url, EventTypes eventType) {

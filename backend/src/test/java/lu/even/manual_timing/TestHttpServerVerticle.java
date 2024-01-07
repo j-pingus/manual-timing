@@ -8,11 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.IOException;
+
 @ExtendWith(VertxExtension.class)
 public class TestHttpServerVerticle {
 
   @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
+  void deploy_verticle(Vertx vertx, VertxTestContext testContext) throws IOException {
     vertx.deployVerticle(new HttpServerVerticle(9999), testContext.succeeding(id -> testContext.completeNow()));
   }
 

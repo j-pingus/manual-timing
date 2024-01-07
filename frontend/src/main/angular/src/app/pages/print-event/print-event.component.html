@@ -1,0 +1,11 @@
+<h1>Event #:{{eventId}}:{{event.description}}</h1>
+<div *ngFor="let heat of heats; let i=index">
+  <h2>Heat #{{i + 1}}</h2>
+  <div *ngFor="let lane of heat">
+    <ng-container *ngIf="lane.name || lane.time">
+      <span class="lane">{{lane.lane}}</span>
+      <span class="swimmer">{{lane.name}}</span>
+      <span class="time">{{lane.time}}</span>
+    </ng-container>
+  </div>
+</div>

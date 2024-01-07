@@ -1,62 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>backend</artifactId>
-
   <parent>
-    <artifactId>manual-timing</artifactId>
     <groupId>lu.even</groupId>
+    <artifactId>manual-timing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
+  <artifactId>meetManagerProxy</artifactId>
   <properties>
-    <launcher.class>lu.even.manual_timing.MainApp</launcher.class>
+    <launcher.class>lu.even.meet_manager.MainApp</launcher.class>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
       <groupId>lu.even</groupId>
       <artifactId>meetManagerClient</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>lu.even</groupId>
-      <artifactId>frontend</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
-    </dependency>
-    <!-- TESTING -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit-jupiter.version}</version>
-      <scope>test</scope>
     </dependency>
     <!-- Logback -->
     <dependency>
@@ -77,7 +42,6 @@
       <version>${version.slf4j}</version>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -111,8 +75,7 @@
           <mainClass>${launcher.class}</mainClass>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
-
-
 </project>

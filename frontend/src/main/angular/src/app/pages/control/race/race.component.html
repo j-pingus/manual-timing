@@ -5,7 +5,8 @@
       <span>Event #{{event.id}}/{{maxEventId}}</span>
       <span>{{event.description}}</span>
       <button mat-button (click)="nextEvent()" [disabled]="eventId>=maxEventId">&gt;</button>
-      <mat-icon>refresh</mat-icon>
+      <a [matTooltip]="'print all heats for event '+eventId"  target="_blank" [routerLink]="['/print-event/',eventId]" mat-button>
+      <mat-icon>print</mat-icon></a>
     </mat-card-title>
     <mat-card-subtitle>
       <button matTooltip="previous Heat (<ctrl>+<p>)" mat-button (click)="previousHeat()" [disabled]="heatId<=1">&lt;</button>

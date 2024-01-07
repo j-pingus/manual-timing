@@ -15,6 +15,9 @@ export class EventService {
   getAll(): Observable<Array<SwimmingEvent>> {
     return this.http.get<Array<SwimmingEvent>>(EventService.SERVICE_URL+'s');
   }
+  get(event:number): Observable<SwimmingEvent> {
+    return this.http.get<SwimmingEvent>(EventService.SERVICE_URL+'/'+event);
+  }
 
   save(event:SwimmingEvent): Observable<string> {
     return this.http.post<string>(EventService.SERVICE_URL,event);

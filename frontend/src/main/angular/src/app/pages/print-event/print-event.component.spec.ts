@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MeetManagerComponent } from './meet-manager.component';
+import { PrintEventComponent } from './print-event.component';
 
-describe('MeetManagerComponent', () => {
-  let component: MeetManagerComponent;
-  let fixture: ComponentFixture<MeetManagerComponent>;
+describe('PrintEventComponent', () => {
+  let component: PrintEventComponent;
+  let fixture: ComponentFixture<PrintEventComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MeetManagerComponent]
+      imports: [PrintEventComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(MeetManagerComponent);
+    fixture = TestBed.createComponent(PrintEventComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

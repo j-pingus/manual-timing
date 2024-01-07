@@ -191,3 +191,4 @@ nbdist/
 /events.json
 /inscriptions.json
 target/
+/configProxy.json

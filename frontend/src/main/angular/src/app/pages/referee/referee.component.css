@@ -56,5 +56,5 @@ mat-form-field {
     border:4px dashed greenyellow;
     background-color: lightblue;
     padding: 10px;
-    display:flex;
+    display:none;
 }

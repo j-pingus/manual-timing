@@ -2,18 +2,18 @@ package lu.even.meet_manager.domain;
 
 public enum Gender {
     ALL("0", "All"),
-    MALE("1", "Male"),
-    FEMALE("2", "Female"),
+    MALE("1", "Men"),
+    FEMALE("2", "Women"),
     MIXED("3", "Mixed");
 
 
-    String code;
+    final String code;
 
     public String getDescription() {
         return description;
     }
 
-    String description;
+    final String description;
 
     Gender(String code, String description) {
         this.code = code;

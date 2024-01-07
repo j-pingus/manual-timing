@@ -22,8 +22,10 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
   protected Object onMessage(EventTypes eventType, EventMessage message) {
     try {
       return switch (message.action()) {
+        case GET -> getEvent(message.eventId());
         case GET_ALL -> this.events;
         case REPLACE_EVENTS -> {
+          System.out.println(message.body());
           this.events = Arrays.asList(
             Json.decodeValue(message.body(), SwimmingEvent[].class));
           logger.info("replaced:{}", this.events);
@@ -38,6 +40,10 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
       logger.error("Error happened", e);
       return null;
     }
+  }
+
+  private Object getEvent(int event) {
+    return this.events.stream().filter(e->e.id()==event).findAny().orElse(new SwimmingEvent(-1,-1,false,"Not found"));
   }
 
   private Object replaceEvent(SwimmingEvent event) {

@@ -1,0 +1,22 @@
+p{
+  border: 2px dashed green;
+}
+span{
+  border: 1px solid #888888;
+  margin-left:1px;
+  margin-bottom:1px;
+  display: inline-block;
+}
+span.lane{
+  width: 1rem;
+}
+span.swimmer{
+  min-width: 10rem;
+  text-align: right;
+}
+span.time{
+  min-width: 4rem;
+}
+span.time:after{
+  content:' ';
+}
