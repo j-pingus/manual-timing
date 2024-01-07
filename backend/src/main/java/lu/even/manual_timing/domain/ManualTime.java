@@ -3,66 +3,71 @@ package lu.even.manual_timing.domain;
 import java.util.Objects;
 
 public class ManualTime {
-    int event;
-    int heat;
-    int lane;
-    String time;
 
-    public ManualTime() {
-    }
+  int event;
+  int heat;
+  int lane;
+  String time;
 
-    public int getEvent() {
-        return event;
-    }
+  public ManualTime() {
+  }
 
-    public void setEvent(int event) {
-        this.event = event;
-    }
+  public int getEvent() {
+    return event;
+  }
 
-    public int getHeat() {
-        return heat;
-    }
+  public ManualTime setEvent(int event) {
+    this.event = event;
+    return this;
+  }
 
-    public void setHeat(int heat) {
-        this.heat = heat;
-    }
+  public int getHeat() {
+    return heat;
+  }
 
-    @Override
-    public String toString() {
-        return "ManualTime{" +
-                "event=" + event +
-                ", heat=" + heat +
-                ", lane=" + lane +
-                ", time='" + time + '\'' +
-                '}';
-    }
+  public ManualTime setHeat(int heat) {
+    this.heat = heat;
+    return this;
+  }
 
-    public int getLane() {
-        return lane;
-    }
+  @Override
+  public String toString() {
+    return "ManualTime{" +
+      "event=" + event +
+      ", heat=" + heat +
+      ", lane=" + lane +
+      ", time='" + time + '\'' +
+      '}';
+  }
 
-    public void setLane(int lane) {
-        this.lane = lane;
-    }
+  public int getLane() {
+    return lane;
+  }
 
-    public String getTime() {
-        return time;
-    }
+  public ManualTime setLane(int lane) {
+    this.lane = lane;
+    return this;
+  }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
+  public String getTime() {
+    return time;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ManualTime that = (ManualTime) o;
-        return event == that.event && heat == that.heat && lane == that.lane;
-    }
+  public ManualTime setTime(String time) {
+    this.time = time;
+    return this;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(event, heat, lane);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ManualTime that = (ManualTime) o;
+    return event == that.event && heat == that.heat && lane == that.lane;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(event, heat, lane);
+  }
 }

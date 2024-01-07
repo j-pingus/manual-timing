@@ -1,26 +1,106 @@
 package lu.even.manual_timing.verticles;
 
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.jdbc.JDBCClient;
+import lu.even.manual_timing.domain.ManualTime;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimingDatabaseVerticle extends AbstractTimingVerticle {
-  protected static final Logger logger = LoggerFactory.getLogger(TimingDatabaseVerticle.class);
+import java.util.stream.Collectors;
 
-  public TimingDatabaseVerticle() {
+public class TimingDatabaseVerticle extends AbstractTimingVerticle {
+  public static final String DATASOURCE_NAME = "manual-time";
+  protected static final Logger logger = LoggerFactory.getLogger(TimingDatabaseVerticle.class);
+  private final String url;
+  private JDBCClient client;
+
+  public TimingDatabaseVerticle(String url) {
     super(EventTypes.DATABASE);
     setRespond(false);
+    this.url = url;
+  }
+
+  @Override
+  public void start() throws Exception {
+    super.start();
+    logger.debug("Connecting to:{}", this.url);
+    JsonObject config = new JsonObject()
+      .put("url", this.url)
+      .put("datasourceName", DATASOURCE_NAME)
+      //.put("user", "sa")
+      //.put("password", "")
+      .put("max_pool_size", 16);
+    client = JDBCClient.create(vertx, config);
+    client.query("select * from times", arh -> {
+      logger.info("query succeeded:{}", arh.succeeded(), arh.cause());
+      if (arh.failed()) {
+        createTable(client);
+      } else {
+        var times = arh.result().getRows().stream().map(
+          row -> new ManualTime()
+            .setEvent(row.getInteger("EVENT"))
+            .setHeat(row.getInteger("HEAT"))
+            .setLane(row.getInteger("LANE"))
+            .setTime(row.getString("TIME"))
+        ).collect(Collectors.toList());
+        logger.info("Loaded times:{}", times);
+        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1);
+        //Send it to the verticle
+      }
+    });
+  }
+
+  private void createTable(JDBCClient client) {
+    client.getConnection(con -> {
+      if (con.succeeded()) {
+        con.result().execute("create table times(event int, heat int, lane int, time varchar)",
+          rh -> logger.info("table created:{}", rh.succeeded(), rh.cause())
+        );
+        con.result().close();
+      }
+    });
+
   }
 
   @Override
   protected Object onMessage(EventTypes eventType, EventMessage message) {
     if (message.action() == EventAction.SAVE_TIME) {
-      logger.info("Saving in DB:{}", message);
-    }else{
-      logger.debug("Not saving in DB:{}", message);
+      ManualTime time = Json.decodeValue(message.body(), ManualTime.class);
+      save(time);
     }
     return null;
+  }
+
+  private void save(ManualTime time) {
+    JsonArray params = new JsonArray()
+      .add(time.getTime())
+      .add(time.getEvent())
+      .add(time.getHeat())
+      .add(time.getLane());
+    client.updateWithParams(
+      "update times set time=? where event=? and heat=? and lane=?",
+      params,
+      uh -> {
+        if (uh.succeeded()) {
+          if (uh.result().getUpdated() == 1) {
+            logger.info("Updated: {}", time);
+          } else {
+            client.updateWithParams(
+              "insert into times(time,event,heat,lane)values(?,?,?,?)",
+              params,
+              uh2 -> {
+                if (uh2.succeeded()) {
+                  logger.info("inserted:{}", time);
+                }
+              });
+          }
+        }
+      }
+    );
   }
 }

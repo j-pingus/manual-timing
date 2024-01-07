@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,10 +25,17 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
   protected Object onMessage(EventTypes eventType, EventMessage message) {
     return switch (message.action()) {
       case POST -> save(message.body());
+      case REPLACE_TIMES -> loadTimes(message.body());
       case GET_BY_EVENT_LANE -> getByEventLane(message.eventId(), message.laneId());
       case GET_BY_EVENT_HEAT -> getByEventHeat(message.eventId(), message.heatId());
       default -> null;
     };
+  }
+
+  private Object loadTimes(String body) {
+    this.times = new ArrayList<>();
+    this.times.addAll(Arrays.asList(Json.decodeValue(body,ManualTime[].class)));
+    return "OK";
   }
 
   private List<ManualTime> getByEventLane(int event, int lane) {
@@ -48,7 +56,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
     times.remove(manualTime);
     times.add(manualTime);
     logger.info("time:{}",manualTime);
-    sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME,timingJson, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
+    sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME,manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
     sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
     return "";
   }

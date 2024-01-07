@@ -9,6 +9,7 @@
 		</encoder>
 	</appender>
 	<logger name="org" level="info"/>
+	<logger name="com" level="info"/>
 	<logger name="lu.even.manual_timing" level="debug"/>
 	<logger name="io" level="info"/>
 	<timestamp key="timestamp" datePattern="yyyyMMdd"/>
