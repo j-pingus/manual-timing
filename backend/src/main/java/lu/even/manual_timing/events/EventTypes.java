@@ -7,6 +7,7 @@ public enum EventTypes {
     EVENT("timing.event"),
     LANE("timing.lane"),
     INSCRIPTION("timing.inscription"),
+    DATABASE("timing.database"),
     MANUAL_TIME("timing.manual.time");
     private final String name;
 

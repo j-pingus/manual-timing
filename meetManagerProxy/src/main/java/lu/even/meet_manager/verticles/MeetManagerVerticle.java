@@ -39,12 +39,12 @@ public class MeetManagerVerticle extends AbstractVerticle {
     vertx.eventBus().consumer(EVENT_TYPE_HEAT, this::onHeatMessage);
     logger.info("verticle '{}' started", this);
     var options = new HttpClientOptions()
-      .setDefaultHost(meetManagerConfig.host)
-      .setDefaultPort(meetManagerConfig.port);
+      .setDefaultHost(meetManagerConfig.host())
+      .setDefaultPort(meetManagerConfig.port());
     meetManagerClient = vertx.createHttpClient(options);
     var options2 = new HttpClientOptions()
-      .setDefaultHost(manualTimeConfig.host)
-      .setDefaultPort(manualTimeConfig.port);
+      .setDefaultHost(manualTimeConfig.host())
+      .setDefaultPort(manualTimeConfig.port());
     manualTimeClient = vertx.createHttpClient(options2);
   }
 

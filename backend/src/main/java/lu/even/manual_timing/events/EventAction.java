@@ -17,5 +17,6 @@ public enum EventAction {
   LOAD_HEAT,
   REPLACE_INSCRIPTIONS,
   DUMP,
-  LOAD
+  LOAD,
+  SAVE_TIME;
 }

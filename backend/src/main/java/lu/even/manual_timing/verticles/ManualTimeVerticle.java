@@ -48,6 +48,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
     times.remove(manualTime);
     times.add(manualTime);
     logger.info("time:{}",manualTime);
+    sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME,timingJson, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
     sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
     return "";
   }

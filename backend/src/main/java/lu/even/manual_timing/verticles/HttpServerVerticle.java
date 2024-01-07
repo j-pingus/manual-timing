@@ -72,7 +72,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     this.routeGet("/api/times/:event/heat/:heat", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_HEAT);
     //Generic failure management
     router.route().failureHandler(handler -> {
-      logger.error("Error happened during routing", handler.failure());
+      logger.error("Error happened during routing:{}", handler.failure(),handler.failure());
       handler.response().end(handler.failure() != null ? handler.failure().getMessage() : "Internal error");
     });
     // Allow message events to be bridged to JavaScript client

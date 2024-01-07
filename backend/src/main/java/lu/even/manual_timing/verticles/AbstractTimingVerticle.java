@@ -17,9 +17,14 @@ import java.nio.charset.Charset;
 public abstract class AbstractTimingVerticle extends AbstractVerticle {
   protected static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
   private EventTypes[] eventTypes;
+  private boolean respond = true;
 
   public AbstractTimingVerticle(EventTypes... eventTypes) {
     this.eventTypes = eventTypes;
+  }
+
+  public void setRespond(boolean respond) {
+    this.respond = respond;
   }
 
   @Override
@@ -34,10 +39,12 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
     Object response = this.onMessage(
       EventTypes.getByName(eventMessage.address()),
       eventMessage.body());
-    if (response != null) {
-      eventMessage.reply(Json.encode(response));
-    } else {
-      eventMessage.fail(500, "Unsuported operation");
+    if (respond) {
+      if (response != null) {
+        eventMessage.reply(Json.encode(response));
+      } else {
+        eventMessage.fail(500, "Unsuported operation");
+      }
     }
   }
 
@@ -53,8 +60,13 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
   }
 
   void sendMessage(EventAction action, Object body, int event, int heat, int lane) {
-    vertx.eventBus().publish(EventTypes.MESSAGE.getName(), new EventMessage(action, Json.encode(body), event, heat, lane));
+    this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane);
   }
+
+  void sendMessage(EventTypes type, EventAction action, Object body, int event, int heat, int lane) {
+    vertx.eventBus().publish(type.getName(), new EventMessage(action, Json.encode(body), event, heat, lane));
+  }
+
   String dump(Object object, String id) throws IOException {
     FileUtils.writeStringToFile(new File(id + ".json"), Json.encode(object), Charset.defaultCharset());
     return "dumped " + id;
