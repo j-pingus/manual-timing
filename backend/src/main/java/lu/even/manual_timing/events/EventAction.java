@@ -19,5 +19,5 @@ public enum EventAction {
   REPLACE_INSCRIPTIONS,
   DUMP,
   LOAD,
-  SAVE_TIME;
+  SAVE_TIME
 }

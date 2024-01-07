@@ -36,6 +36,12 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
       //.put("password", "")
       .put("max_pool_size", 16);
     client = JDBCClient.create(vertx, config);
+    loadTimes();
+
+  }
+
+  //Load times from database and send them to Manual Time verticle for loading
+  private void loadTimes() {
     client.query("select * from times", arh -> {
       logger.info("query succeeded:{}", arh.succeeded(), arh.cause());
       if (arh.failed()) {
@@ -50,7 +56,6 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
         ).collect(Collectors.toList());
         logger.info("Loaded times:{}", times);
         sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1);
-        //Send it to the verticle
       }
     });
   }
@@ -76,6 +81,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
     return null;
   }
 
+  //Save time in DB
   private void save(ManualTime time) {
     JsonArray params = new JsonArray()
       .add(time.getTime())
@@ -96,9 +102,13 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
               uh2 -> {
                 if (uh2.succeeded()) {
                   logger.info("inserted:{}", time);
+                } else {
+                  logger.error("Could not insert:{}", time, uh2.cause());
                 }
               });
           }
+        } else {
+          logger.error("Could not update:{}", time, uh.cause());
         }
       }
     );

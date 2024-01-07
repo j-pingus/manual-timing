@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 
 public abstract class AbstractTimingVerticle extends AbstractVerticle {
   protected static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
-  private EventTypes[] eventTypes;
+  private final EventTypes[] eventTypes;
   private boolean respond = true;
 
   public AbstractTimingVerticle(EventTypes... eventTypes) {
