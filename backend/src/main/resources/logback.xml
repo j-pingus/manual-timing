@@ -19,8 +19,17 @@
 			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
 		</encoder>
 	</appender>
+	<appender name="USERLOG" class="ch.qos.logback.core.FileAppender">
+		<file>${logs_dir:-.}/${timestamp}-user.log</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
+		</encoder>
+	</appender>
 	<logger name="lu.even.manual_timing.verticles.ManualTimeVerticle" level="info">
 		<appender-ref ref="TIMELOG" />
+	</logger>
+	<logger name="lu.even.manual_timing.verticles.UserVerticle" level="info">
+		<appender-ref ref="USERLOG" />
 	</logger>
 	<root level="debug">
 		<appender-ref ref="STDOUT" />

@@ -6,7 +6,7 @@
   <parent>
     <groupId>lu.even</groupId>
     <artifactId>manual-timing</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>meetManagerProxy</artifactId>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>lu.even</groupId>
       <artifactId>meetManagerClient</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.1.0-SNAPSHOT</version>
     </dependency>
     <!-- Logback -->
     <dependency>
