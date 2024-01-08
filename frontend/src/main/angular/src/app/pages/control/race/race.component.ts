@@ -7,7 +7,7 @@ import {EventService} from "../../../services/events.service";
 import {InscriptionsService} from "../../../services/inscriptions.service";
 import {ManualTimeService} from "../../../services/manual.time.service";
 import {BackendMessageService} from "../../../services/backend-message.service";
-import {NgForOf} from "@angular/common";
+import {JsonPipe, NgForOf} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {TimingAction} from "../../../domain/event-bus-message";
@@ -26,7 +26,8 @@ import {ManualTimePipe} from "../../../pipes/manual-time.pipe";
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    ManualTimePipe
+    ManualTimePipe,
+    JsonPipe
   ],
   templateUrl: './race.component.html',
   styleUrl: './race.component.css'
@@ -73,7 +74,7 @@ export class RaceComponent implements OnDestroy {
     this.subscription.add(
       this.poolConfigService.get().subscribe(config => {
         this.lanes = config.lanes.map(lane => {
-          return {lane, swimmer: "", time: ""};
+          return {lane, swimmer: {lane,name:"",heat:-1,entrytime:"",clubcode:"",event:-1,nation:"",agetext:""}, time: ""};
         });
         this.loadEvents();
         this.loadInscriptions();
@@ -136,7 +137,7 @@ export class RaceComponent implements OnDestroy {
         inscriptions.forEach(inscription => {
           const lane = this.lanes.find(lane => lane.lane == inscription.lane);
           if (lane) {
-            lane.swimmer = inscription.name;
+            lane.swimmer = inscription;
           }
         })
       })

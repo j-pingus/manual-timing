@@ -83,7 +83,8 @@ public class MeetManagerVerticle extends AbstractVerticle {
       .onSuccess(hc -> {
         var heat = Json.decodeValue(hc, HeatDetails.class);
         var inscriptions = heat.entries().stream()
-          .map(e -> new Inscription(eventId, heatId, e.lane(), e.nametext()))
+          .map(e -> new Inscription(
+            eventId, heatId, e.lane(), e.nametext(),e.nation(),e.entrytime(),e.clubcode(),e.agetext()))
           .collect(Collectors.toList());
         logger.info("Sending inscriptions:{}",inscriptions);
         //post data

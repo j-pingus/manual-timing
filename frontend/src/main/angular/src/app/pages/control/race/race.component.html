@@ -17,8 +17,9 @@
     <mat-card-content >
       <div class="lane" *ngFor="let lane of lanes">
         <span class="laneId">{{lane.lane}}</span>
-        <span class="swimmer">{{lane.swimmer}}</span>
+        <span class="swimmer" [matTooltip]="'entry time:'+lane.swimmer.entrytime+', year:'+lane.swimmer.agetext">{{lane.swimmer.name}}</span>
         <span class="time">{{lane.time|manualTime}}</span>
+        <span class="time">{{lane.swimmer.clubcode}}</span>
       </div>
     </mat-card-content>
 </mat-card>
