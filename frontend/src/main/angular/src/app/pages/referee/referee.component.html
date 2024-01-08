@@ -19,6 +19,11 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
+        <div class="title">
+          <span class="heatId">heat</span>
+          <span class="swimmer">swimmer</span>
+          <span class="time"> </span>
+        </div>
         <div *ngFor="let heat of heats" [class.heat]="heat.swimmer!=undefined" [class.hidden]="heat.swimmer==undefined">
             <span class="heatId">{{heat.id}}</span>
             <span class="swimmer">{{heat.swimmer}}</span>

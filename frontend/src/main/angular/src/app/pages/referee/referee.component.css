@@ -28,6 +28,11 @@ mat-form-field {
     align-items: center;
     border-bottom: 1px dashed lightgray;
 }
+.title{
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+}
 .heat:hover{
   border:2px dashed blue;
 }

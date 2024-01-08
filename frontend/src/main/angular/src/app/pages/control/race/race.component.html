@@ -2,8 +2,7 @@
   <mat-card-header>
     <mat-card-title>
       <button mat-button (click)="previousEvent()" [disabled]="eventId<=1">&lt;</button>
-      <span>Event #{{event.id}}/{{maxEventId}}</span>
-      <span>{{event.description}}</span>
+      <span [matTooltip]="'event '+event.id+' of '+maxEventId">#{{event.id}} - {{event.description}}</span>
       <button mat-button (click)="nextEvent()" [disabled]="eventId>=maxEventId">&gt;</button>
       <a [matTooltip]="'print all heats for event '+eventId"  target="_blank" [routerLink]="['/print-event/',eventId]" mat-button>
       <mat-icon>print</mat-icon></a>
@@ -15,18 +14,15 @@
     </mat-card-subtitle>
   </mat-card-header>
     <mat-card-content >
-      <div class="lane" *ngFor="let lane of lanes">
+      <div class="title">
+      <span class="laneId">lane</span>
+      <span class="swimmer">swimmer</span>
+      <span class="time">time</span>
+      </div>
+      <div class="lane" *ngFor="let lane of lanes"  [matTooltip]="'entry time:'+lane.swimmer.entrytime+', year:'+lane.swimmer.agetext+', club:'+lane.swimmer.clubcode+', nation:'+lane.swimmer.nation">
         <span class="laneId">{{lane.lane}}</span>
-        <span class="swimmer" [matTooltip]="'entry time:'+lane.swimmer.entrytime+', year:'+lane.swimmer.agetext">{{lane.swimmer.name}}</span>
+        <span class="swimmer">{{lane.swimmer.name}}</span>
         <span class="time">{{lane.time|manualTime}}</span>
-        <span class="time">{{lane.swimmer.clubcode}}</span>
       </div>
     </mat-card-content>
 </mat-card>
-
-
-<ul>
-    <li>select event/heat</li>
-    <li>display manual times as they are added</li>
-    <li>have a refresh button to quickly import Meet Manager if changes</li>
-</ul>
