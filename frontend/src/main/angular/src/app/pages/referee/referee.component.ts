@@ -142,7 +142,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
   }
 
   save(heat: Heat) {
-    if (this.user.lane && this.eventId && heat.time) {
+    if (this.user.lane != undefined && this.eventId && heat.time) {
       this.manualTimeService.save(
         {
           time: heat.time,
