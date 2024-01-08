@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
   standalone: true
 })
 export class ManualTimePipe implements PipeTransform {
-  public static MINUTES_SEPARATOR = '\'';
+  public static MINUTES_SEPARATOR = ':';
   public static SECONDS_SEPARATOR = '.';
   private static SEARCH_ALL_NON_NUMERIC = /\D/g;
 

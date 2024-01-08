@@ -136,7 +136,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
       this.subscription.add(
         this.manualTimeService.getByEventAndLane(this.event.id, this.user.lane).subscribe(inscriptions => {
           inscriptions.forEach(time => {
-            this.heats[time.heat - 1].time = time.time;
+            this.heats[time.heat - 1].time = this.manualTime.transform(time.time);
           })
         })
       );
