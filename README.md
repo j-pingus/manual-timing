@@ -3,18 +3,30 @@
 image:https://img.shields.io/badge/vert.x-4.5.1-purple.svg[link="https://vertx.io"]
 
 This application was generated using http://start.vertx.io
+## prerequisites
+install the following tool
+- java 17
 
-## Building (work in progress)
+(tested fine on java 21)
+## Building
 
 To launch your tests:
 ```
-./mvnw clean test
+./mvnw test
 ```
 
 To package your application:
 ```
-./mvnw clean package
+./mvnw clean package -P build-frontend
 ```
+## Deploying
+
+1) Start the jar produced in the backend module. Exemple:
+```
+java -jar backend-1.0.0-fat.jar
+```
+2) edit the file configFile.json
+3) Start the jar again
 
 ## Developing
 ### backend
