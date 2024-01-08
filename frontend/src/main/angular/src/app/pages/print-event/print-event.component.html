@@ -5,7 +5,7 @@
     <ng-container *ngIf="lane.name || lane.time">
       <span class="lane">{{lane.lane}}</span>
       <span class="swimmer">{{lane.name}}</span>
-      <span class="time">{{lane.time}}</span>
+      <span class="time">{{lane.time | manualTime}}</span>
     </ng-container>
   </div>
 </div>

@@ -20,6 +20,7 @@ import {ManualTimeService} from "../../services/manual.time.service";
 import {Heat} from "../../domain/heat";
 import {ManualTimePipe} from "../../pipes/manual-time.pipe";
 import {ManualTimeDirective} from "../../directives/manual-time.directive";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-referee',
@@ -34,7 +35,6 @@ import {ManualTimeDirective} from "../../directives/manual-time.directive";
     MatInputModule,
     FormsModule,
     JsonPipe,
-    ManualTimePipe,
     ManualTimeDirective
   ],
   templateUrl: './referee.component.html',
@@ -47,13 +47,15 @@ export class RefereeComponent implements OnDestroy, OnInit {
   public eventId = 1;
   public heats: Array<Heat> = [];
   public user: User;
+  private manualTime = new ManualTimePipe();
 
   constructor(messageService: BackendMessageService,
               private eventService: EventService,
               private inscriptionsService: InscriptionsService,
               private manualTimeService: ManualTimeService,
               route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private snackBar: MatSnackBar) {
     this.subscription = new Subscription();
     this.subscription.add(route.params.subscribe(params => {
       this.eventId = +params['id']; // (+) converts string 'id' to a number
@@ -145,11 +147,11 @@ export class RefereeComponent implements OnDestroy, OnInit {
     if (this.user.lane != undefined && this.eventId && heat.time) {
       this.manualTimeService.save(
         {
-          time: heat.time,
+          time: this.manualTime.transform(heat.time),
           heat: heat.id,
           lane: this.user.lane,
           event: this.eventId
-        }).subscribe();
+        }).subscribe((data) => this.snackBar.open('Time saved'));
     }
   }
 

@@ -7,13 +7,15 @@ import {SwimmingEvent} from "../../domain/swimming-event";
 import {InscriptionsService} from "../../services/inscriptions.service";
 import {ManualTimeService} from "../../services/manual.time.service";
 import {NgForOf, NgIf} from "@angular/common";
+import {ManualTimePipe} from "../../pipes/manual-time.pipe";
 
 @Component({
   selector: 'app-print-event',
   standalone: true,
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    ManualTimePipe
   ],
   templateUrl: './print-event.component.html',
   styleUrl: './print-event.component.css'

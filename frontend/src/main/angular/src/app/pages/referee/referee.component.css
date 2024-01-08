@@ -58,3 +58,8 @@ mat-form-field {
     padding: 10px;
     display:none;
 }
+.funky{
+  background-color: deeppink;
+  padding: 3px;
+  border: 3px dotted lime;
+}

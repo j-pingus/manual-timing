@@ -14,6 +14,7 @@ import {TimingAction} from "../../../domain/event-bus-message";
 import {Lane} from "../../../domain/Lane";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {ManualTimePipe} from "../../../pipes/manual-time.pipe";
 
 @Component({
   selector: 'app-race',
@@ -24,7 +25,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ManualTimePipe
   ],
   templateUrl: './race.component.html',
   styleUrl: './race.component.css'

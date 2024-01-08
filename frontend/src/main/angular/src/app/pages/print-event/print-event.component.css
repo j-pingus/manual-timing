@@ -11,7 +11,7 @@ span.lane{
   width: 1rem;
 }
 span.swimmer{
-  min-width: 10rem;
+  min-width: 15rem;
   text-align: right;
 }
 span.time{
