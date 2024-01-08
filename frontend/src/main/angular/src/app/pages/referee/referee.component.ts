@@ -151,7 +151,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
           heat: heat.id,
           lane: this.user.lane,
           event: this.eventId
-        }).subscribe((data) => this.snackBar.open('Time saved'));
+        }).subscribe(() => this.snackBar.open('Time saved'));
     }
   }
 
