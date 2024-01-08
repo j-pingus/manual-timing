@@ -3,4 +3,5 @@ export interface User {
   name?:string;
   role?:string;
   lane?:number;
+  password?:string;
 }

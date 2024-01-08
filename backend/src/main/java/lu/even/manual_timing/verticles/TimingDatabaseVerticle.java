@@ -1,5 +1,6 @@
 package lu.even.manual_timing.verticles;
 
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -42,8 +43,8 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
   //Load times from database and send them to Manual Time verticle for loading
   private void loadTimes() {
     client.query("select * from times", arh -> {
-      logger.info("query succeeded:{}", arh.succeeded(), arh.cause());
       if (arh.failed()) {
+        logger.warn("query succeeded:{} because:{}", arh.succeeded(), arh.cause().getMessage());
         createTable(client);
       } else {
         var times = arh.result().getRows().stream().map(
@@ -54,7 +55,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
             .setTime(row.getString("TIME"))
         ).collect(Collectors.toList());
         logger.info("Loaded times:{}", times);
-        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1);
+        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1,null);
       }
     });
   }
@@ -63,7 +64,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
     client.getConnection(con -> {
       if (con.succeeded()) {
         con.result().execute("create table times(event int, heat int, lane int, time varchar)",
-          rh -> logger.info("table created:{}", rh.succeeded(), rh.cause())
+          rh -> logger.info("table times created:{}", rh.succeeded(), rh.cause())
         );
         con.result().close();
       } else {
@@ -74,12 +75,12 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
   }
 
   @Override
-  protected Object onMessage(EventTypes eventType, EventMessage message) {
-    if (message.action() == EventAction.SAVE_TIME) {
-      ManualTime time = Json.decodeValue(message.body(), ManualTime.class);
+  protected void onMessage(EventTypes eventType, Message<EventMessage> message) {
+    if (message.body().action() == EventAction.SAVE_TIME) {
+      ManualTime time = Json.decodeValue(message.body().body(), ManualTime.class);
       save(time);
+      answer(message,"ok");
     }
-    return null;
   }
 
   //Save time in DB

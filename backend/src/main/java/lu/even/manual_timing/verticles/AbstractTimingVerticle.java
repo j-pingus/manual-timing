@@ -27,6 +27,15 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
     this.respond = respond;
   }
 
+  void answer(Message<EventMessage> message, Object response) {
+    if (this.respond)
+      if (response != null) {
+        message.reply(Json.encode(response));
+      } else {
+        message.fail(500,"cannot answer to "+message.body().action());
+      }
+  }
+
   @Override
   public void start() throws Exception {
     for (EventTypes eventType : eventTypes) {
@@ -36,19 +45,16 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
   }
 
   private void onMessage(Message<EventMessage> eventMessage) {
-    Object response = this.onMessage(
-      EventTypes.getByName(eventMessage.address()),
-      eventMessage.body());
-    if (respond) {
-      if (response != null) {
-        eventMessage.reply(Json.encode(response));
-      } else {
-        eventMessage.fail(500, "Unsuported operation");
-      }
+    try {
+      this.onMessage(
+        EventTypes.getByName(eventMessage.address()),
+        eventMessage);
+    }catch(Throwable e){
+      logger.warn("captured:",e);
     }
   }
 
-  protected abstract Object onMessage(EventTypes eventType, EventMessage message);
+  protected abstract void onMessage(EventTypes eventType, Message<EventMessage> eventMessage);
 
   /**
    * This message will reach the frontend
@@ -60,11 +66,11 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
   }
 
   void sendMessage(EventAction action, Object body, int event, int heat, int lane) {
-    this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane);
+    this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane, null);
   }
 
-  void sendMessage(EventTypes type, EventAction action, Object body, int event, int heat, int lane) {
-    vertx.eventBus().publish(type.getName(), new EventMessage(action, Json.encode(body), event, heat, lane));
+  void sendMessage(EventTypes type, EventAction action, Object body, int event, int heat, int lane, String authorization) {
+    vertx.eventBus().publish(type.getName(), new EventMessage(action, Json.encode(body), event, heat, lane, authorization));
   }
 
   String dump(Object object, String id) throws IOException {

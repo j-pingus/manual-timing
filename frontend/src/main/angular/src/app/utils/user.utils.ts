@@ -8,7 +8,9 @@ export class UserUtils {
         localStorage.setItem(Constants.USER_DATA, JSON.stringify(data));
 
     }
-
+    static logout(){
+      sessionStorage.removeItem(Constants.USER_ID);
+    }
     static saveUserId(data: string) {
         sessionStorage.clear();
         sessionStorage.setItem(Constants.USER_ID, data);

@@ -1,5 +1,6 @@
 package lu.even.manual_timing.verticles;
 
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import lu.even.manual_timing.domain.SwimmingEvent;
 import lu.even.manual_timing.events.EventMessage;
@@ -19,26 +20,25 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
   }
 
   @Override
-  protected Object onMessage(EventTypes eventType, EventMessage message) {
+  protected void onMessage(EventTypes eventType, Message<EventMessage> message) {
     try {
-      return switch (message.action()) {
-        case GET -> getEvent(message.eventId());
-        case GET_ALL -> this.events;
+      switch (message.body().action()) {
+        case GET -> answer(message,getEvent(message.body().eventId()));
+        case GET_ALL -> answer(message,this.events);
         case REPLACE_EVENTS -> {
-          System.out.println(message.body());
+          System.out.println(message.body().body());
           this.events = Arrays.asList(
-            Json.decodeValue(message.body(), SwimmingEvent[].class));
+            Json.decodeValue(message.body().body(), SwimmingEvent[].class));
           logger.info("replaced:{}", this.events);
-          yield "";
+          answer(message,"");
         }
-        case PUT -> replaceEvent(Json.decodeValue(message.body(), SwimmingEvent.class));
-        case DUMP -> dump(this.events, "events");
-        case LOAD -> this.events = Arrays.asList(load("events", SwimmingEvent[].class));
-        default -> null;
-      };
+        case PUT -> answer(message,replaceEvent(Json.decodeValue(message.body().body(), SwimmingEvent.class)));
+        case DUMP -> answer(message,dump(this.events, "events"));
+        case LOAD -> answer(message,this.events = Arrays.asList(load("events", SwimmingEvent[].class)));
+      }
     } catch (IOException e) {
       logger.error("Error happened", e);
-      return null;
+      message.fail(500,"Cannot perform I/O on server see logs");
     }
   }
 

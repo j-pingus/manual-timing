@@ -4,17 +4,19 @@ import java.util.Objects;
 
 public class User {
     private String uuid;
+    private String password;
     private String name;
     private String role;
     private int lane;
     public User(){
 
     }
-    public User(String uuid, String name, String role, int lane) {
+    public User(String uuid, String name, String role, int lane,String password) {
         this.uuid = uuid;
         this.name = name;
         this.role = role;
         this.lane = lane;
+        this.password = password;
     }
 
     @Override
@@ -33,8 +35,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", role='" + role + '\'' +
                 ", lane=" + lane +
                 '}';
@@ -71,4 +72,12 @@ public class User {
     public void setLane(int lane) {
         this.lane = lane;
     }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }

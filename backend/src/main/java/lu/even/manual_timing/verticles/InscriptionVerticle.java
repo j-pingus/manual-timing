@@ -1,5 +1,6 @@
 package lu.even.manual_timing.verticles;
 
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import lu.even.manual_timing.domain.Inscription;
 import lu.even.manual_timing.events.EventAction;
@@ -21,20 +22,19 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
   }
 
   @Override
-  protected Object onMessage(EventTypes eventType, EventMessage message) {
+  protected void onMessage(EventTypes eventType, Message<EventMessage> message) {
     try {
-      return switch (message.action()) {
-        case GET_BY_EVENT_LANE -> this.getByLane(message.eventId(), message.laneId());
-        case GET_BY_EVENT_HEAT -> this.getByHeat(message.eventId(), message.heatId());
-        case REPLACE_INSCRIPTIONS -> this.load(message.body(), message.eventId(), message.heatId());
-        case POST -> this.save(message.body());
-        case DUMP -> this.dumpMe();
-        case LOAD -> this.loadMe();
-        default -> null;
-      };
+      switch (message.body().action()) {
+        case GET_BY_EVENT_LANE -> answer(message,this.getByLane(message.body().eventId(), message.body().laneId()));
+        case GET_BY_EVENT_HEAT -> answer(message,this.getByHeat(message.body().eventId(), message.body().heatId()));
+        case REPLACE_INSCRIPTIONS -> answer(message,this.load(message.body().body(), message.body().eventId(), message.body().heatId()));
+        case POST -> answer(message,this.save(message.body().body()));
+        case DUMP -> answer(message,this.dumpMe());
+        case LOAD -> answer(message,this.loadMe());
+      }
     } catch (IOException e) {
       logger.error("Error happened", e);
-      return null;
+      message.fail(500,"Cannot perform I/O see server logs");
     }
   }
 

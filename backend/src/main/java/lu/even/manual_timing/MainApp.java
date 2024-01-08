@@ -13,7 +13,7 @@ public class MainApp {
     Config config = getConfig();
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(new PoolConfigVerticle(config.pool()));
-    vertx.deployVerticle(new UserVerticle());
+    vertx.deployVerticle(new UserVerticle(config.secret()));
     vertx.deployVerticle(new SwimmingEventVerticle());
     vertx.deployVerticle(new InscriptionVerticle());
     vertx.deployVerticle(new ManualTimeVerticle());
@@ -36,7 +36,7 @@ public class MainApp {
     if (configFile.exists()) {
       return mapper.readValue(configFile, Config.class);
     } else {
-      mapper.writeValue(configFile, new Config(8765,"jdbc:h2:file:/manualTime",new PoolConfig(new int[]{1,2,3},25)));
+      mapper.writeValue(configFile, new Config(8765,"secret!","jdbc:h2:file:/manualTime",new PoolConfig(new int[]{1,2,3},25)));
       throw new Error("No config file found, creating default in " + configFile.getAbsolutePath() + " review it, then start again");
     }
   }
