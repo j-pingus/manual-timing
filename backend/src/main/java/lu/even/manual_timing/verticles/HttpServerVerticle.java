@@ -101,6 +101,21 @@ public class HttpServerVerticle extends AbstractVerticle {
           )
       );
       logger.info("Starting http with ssl:{}", ssl);
+      if (ssl.redirect()) {
+        vertx
+          .createHttpServer()
+          .requestHandler(r -> {
+            r.response()
+              .setStatusCode(301)
+              .putHeader("Location", r.absoluteURI().replace("http", "https"))
+              .end();
+          })
+          .listen(80, http -> {
+            if (http.succeeded()) {
+              logger.info("HTTP server started on port:{} redirecting to https ", 80);
+            }
+          });
+      }
     } else {
       httpServer = vertx.createHttpServer();
     }
@@ -114,21 +129,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         startPromise.fail(http.cause());
       }
     });
-    if (ssl.redirect()) {
-      vertx
-        .createHttpServer()
-        .requestHandler(r -> {
-          r.response()
-            .setStatusCode(301)
-            .putHeader("Location", r.absoluteURI().replace("http", "https"))
-            .end();
-        })
-        .listen(80, http -> {
-          if (http.succeeded()) {
-            logger.info("HTTP server started on port:{} redirecting to https ", 80);
-          }
-        });
-    }
+
   }
 
   private Router createSocksHandler() {
