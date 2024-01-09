@@ -40,7 +40,7 @@ public class MainApp {
       mapper.writeValue(configFile,
         new Config(8765, "secret!", "jdbc:h2:file:./manualTime",
           new PoolConfig(new int[]{1, 2, 3}, 25),
-          new SslConfig("./store.jks", "changeit", "server-alias")));
+          new SslConfig("./store.jks", "changeit", "server-alias",false)));
       throw new Error("No config file found, creating default in " + configFile.getAbsolutePath() + " review it, then start again");
     }
   }

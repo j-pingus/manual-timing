@@ -100,7 +100,7 @@ public class HttpServerVerticle extends AbstractVerticle {
               .setAlias(ssl.alias())
           )
       );
-      logger.info("Starting http with ssl:{}",ssl);
+      logger.info("Starting http with ssl:{}", ssl);
     } else {
       httpServer = vertx.createHttpServer();
     }
@@ -114,8 +114,20 @@ public class HttpServerVerticle extends AbstractVerticle {
         startPromise.fail(http.cause());
       }
     });
-    if(redirect){
-
+    if (ssl.redirect()) {
+      vertx
+        .createHttpServer()
+        .requestHandler(r -> {
+          r.response()
+            .setStatusCode(301)
+            .putHeader("Location", r.absoluteURI().replace("http", "https"))
+            .end();
+        })
+        .listen(80, http -> {
+          if (http.succeeded()) {
+            logger.info("HTTP server started on port:{} redirecting to https ", 80);
+          }
+        });
     }
   }
 
