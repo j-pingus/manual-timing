@@ -6,7 +6,9 @@ import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.ReplyException;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.net.JksOptions;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -82,15 +84,23 @@ public class HttpServerVerticle extends AbstractVerticle {
       logger.info("rerouting:{}", rc.request().path());
       rc.response().send(indexBody);
     });
+    vertx.createHttpServer(
+        new HttpServerOptions()
+          .setSsl(true)
+          .setKeyStoreOptions(
+            new JksOptions()
+              .setPassword("changeit")
+              .setPath("./security/keystore.jks"))
+      )
+      .requestHandler(router).listen(port, http -> {
 
-    vertx.createHttpServer().requestHandler(router).listen(port, http -> {
-      if (http.succeeded()) {
-        startPromise.complete();
-        logger.info("HTTP server started on port:{} ", port);
-      } else {
-        startPromise.fail(http.cause());
-      }
-    });
+        if (http.succeeded()) {
+          startPromise.complete();
+          logger.info("HTTP server started on port:{} ", port);
+        } else {
+          startPromise.fail(http.cause());
+        }
+      });
   }
 
   private Router createSocksHandler() {
