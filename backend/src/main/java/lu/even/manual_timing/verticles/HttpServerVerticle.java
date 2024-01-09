@@ -90,15 +90,16 @@ public class HttpServerVerticle extends AbstractVerticle {
     });
     HttpServer httpServer;
     if (ssl != null) {
+      var jksOptions = new JksOptions()
+        .setPassword(ssl.password())
+        .setPath(ssl.keystore());
+      if (ssl.alias() != null) {
+        jksOptions.setAlias(ssl.alias());
+      }
       httpServer = vertx.createHttpServer(
         new HttpServerOptions()
           .setSsl(true)
-          .setKeyStoreOptions(
-            new JksOptions()
-              .setPassword(ssl.password())
-              .setPath(ssl.keystore())
-              .setAlias(ssl.alias())
-          )
+          .setKeyStoreOptions(jksOptions)
       );
       logger.info("Starting http with ssl:{}", ssl);
       if (ssl.redirect()) {
