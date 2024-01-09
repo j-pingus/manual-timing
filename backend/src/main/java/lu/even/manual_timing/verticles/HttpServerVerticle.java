@@ -6,6 +6,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.ReplyException;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.net.JksOptions;
@@ -16,6 +17,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import lu.even.manual_timing.domain.SslConfig;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
@@ -29,13 +31,15 @@ import java.nio.charset.Charset;
 public class HttpServerVerticle extends AbstractVerticle {
   private static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
   private final int port;
+  private final SslConfig ssl;
   private final String indexBody;
   private Router router;
   private EventBus bus;
 
-  public HttpServerVerticle(int port) throws IOException {
+  public HttpServerVerticle(int port, SslConfig ssl) throws IOException {
 
     this.port = port;
+    this.ssl = ssl;
     indexBody = IOUtils.resourceToString("/frontend/browser/index.html", Charset.defaultCharset());
 
   }
@@ -84,23 +88,35 @@ public class HttpServerVerticle extends AbstractVerticle {
       logger.info("rerouting:{}", rc.request().path());
       rc.response().send(indexBody);
     });
-    vertx.createHttpServer(
+    HttpServer httpServer;
+    if (ssl != null) {
+      httpServer = vertx.createHttpServer(
         new HttpServerOptions()
           .setSsl(true)
           .setKeyStoreOptions(
             new JksOptions()
-              .setPassword("changeit")
-              .setPath("./security/keystore.jks"))
-      )
-      .requestHandler(router).listen(port, http -> {
+              .setPassword(ssl.password())
+              .setPath(ssl.keystore())
+              .setAlias(ssl.alias())
+          )
+      );
+      logger.info("Starting http with ssl:{}",ssl);
+    } else {
+      httpServer = vertx.createHttpServer();
+    }
 
-        if (http.succeeded()) {
-          startPromise.complete();
-          logger.info("HTTP server started on port:{} ", port);
-        } else {
-          startPromise.fail(http.cause());
-        }
-      });
+    httpServer.requestHandler(router).listen(port, http -> {
+
+      if (http.succeeded()) {
+        startPromise.complete();
+        logger.info("HTTP server started on port:{} ", port);
+      } else {
+        startPromise.fail(http.cause());
+      }
+    });
+    if(redirect){
+
+    }
   }
 
   private Router createSocksHandler() {
