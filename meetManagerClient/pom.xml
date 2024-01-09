@@ -8,7 +8,7 @@
     <parent>
         <artifactId>manual-timing</artifactId>
         <groupId>lu.even</groupId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
