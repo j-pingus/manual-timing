@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lu.even.manual_timing.domain.Inscription;
 import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProduceIsoTable {
@@ -24,19 +22,25 @@ public class ProduceIsoTable {
       .collect(Collectors.toList());
     System.out.println(mapper.writeValueAsString(map));
   }
+
   @Test
-  public void listAllCountries() throws JsonProcessingException, IOException {
-     var inscriptions = new ObjectMapper()
-       .readValue(new File("../inscriptions.json").getAbsoluteFile(), Inscription[].class);
-      Map<String, Inscription> uniqueNations =  new HashMap<>();
+  public void listAllCountries() throws IOException {
+    File input = new File("../inscriptions.json").getAbsoluteFile();
+    if (input.exists()) {
+      var inscriptions = new ObjectMapper().readValue(input, Inscription[].class);
+      Map<String, Inscription> uniqueNations = new HashMap<>();
       Arrays.stream(inscriptions)
-       .forEach(i->{
-         if(! uniqueNations.containsKey(i.getNation())){
-           uniqueNations.put(i.getNation(),i);
-         }
-       });
-    System.out.println(uniqueNations);
+        .forEach(i -> {
+          if (!uniqueNations.containsKey(i.getNation())) {
+            uniqueNations.put(i.getNation(), i);
+          }
+        });
+      uniqueNations.entrySet().stream()
+        .sorted(Comparator.comparingInt(c -> c.getValue().getEvent()))
+        .forEach((e)-> System.out.println(e.getKey()+":"+e.getValue()));
+    }
   }
+
   private record CountryCodes(String iso2, String iso3) {
   }
 }
