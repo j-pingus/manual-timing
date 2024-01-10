@@ -11,6 +11,7 @@ export class ManualTimePipe implements PipeTransform {
 
   transform(value: string | undefined): string {
     if (!value) return '';
+    if (value.toUpperCase() == 'NT') return 'NT';
     let [minutes, rest = ""] = value.split(ManualTimePipe.MINUTES_SEPARATOR);
     let [seconds = "", centiseconds = ""] = rest.split(ManualTimePipe.SECONDS_SEPARATOR);
     minutes = minutes.replace(ManualTimePipe.SEARCH_ALL_NON_NUMERIC, '');

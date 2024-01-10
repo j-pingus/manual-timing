@@ -19,9 +19,9 @@
       <span class="swimmer">swimmer</span>
       <span class="time">time</span>
       </div>
-      <div class="lane" *ngFor="let lane of lanes"  [matTooltip]="'entry time:'+lane.swimmer.entrytime+', year:'+lane.swimmer.agetext+', club:'+lane.swimmer.clubcode+', nation:'+lane.swimmer.nation">
+      <div class="lane" *ngFor="let lane of lanes">
         <span class="laneId">{{lane.lane}}</span>
-        <span class="swimmer">{{lane.swimmer.name}}</span>
+        <span class="swimmer"><a href="javascript:void(0)" (click)="popup(lane.swimmer)">{{lane.swimmer.name}}</a></span>
         <span class="time">{{lane.time|manualTime}}</span>
       </div>
     </mat-card-content>

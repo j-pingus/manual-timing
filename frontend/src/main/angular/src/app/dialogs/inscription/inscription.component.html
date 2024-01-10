@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>
+  <span class="fi fi-{{flag}} fis"></span>
+  <span> {{inscription.name}} </span>
+  <span class="fi fi-{{flag}} fis"></span></h1>
+<div mat-dialog-content>
+  <p><span class="listTitle">entry time:</span>{{inscription.entrytime|manualTime}}</p>
+  <p><span class="listTitle">nation:</span>{{inscription.nation}}</p>
+  <p><span class="listTitle">club:</span>{{inscription.clubcode}}</p>
+  <p><span class="listTitle">year:</span>{{inscription.agetext}}</p>
+</div>
+<div>
+  <button mat-button (click)="close()">OK</button>
+</div>
