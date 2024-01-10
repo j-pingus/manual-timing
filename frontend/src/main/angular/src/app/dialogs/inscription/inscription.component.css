@@ -1,0 +1,9 @@
+.listTitle{
+  width: 100px;
+  text-align: right;
+  font-weight: bold;
+  display: inline-block;
+}
+h1{
+  text-align: center;
+}
