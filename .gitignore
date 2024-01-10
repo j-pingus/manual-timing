@@ -192,3 +192,8 @@ nbdist/
 /inscriptions.json
 target/
 /configProxy.json
+/*-time.log
+/*-user.log
+/database/*.db
+/security/*.jks
+/security/*.cer
