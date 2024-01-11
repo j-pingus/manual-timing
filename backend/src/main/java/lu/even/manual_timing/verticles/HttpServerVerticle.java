@@ -21,6 +21,7 @@ import lu.even.manual_timing.domain.SslConfig;
 import lu.even.manual_timing.events.EventAction;
 import lu.even.manual_timing.events.EventMessage;
 import lu.even.manual_timing.events.EventTypes;
+import lu.even.manual_timing.logger.ActivityLogger;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class HttpServerVerticle extends AbstractVerticle {
-  private static final Logger logger = LoggerFactory.getLogger(AbstractTimingVerticle.class);
+  private static final Logger logger = LoggerFactory.getLogger(HttpServerVerticle.class);
   private final int port;
   private final SslConfig ssl;
   private final String indexBody;
@@ -85,7 +86,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     router.route().handler(StaticHandler.create("frontend/browser"));
     //Hack for angular
     router.route("/*").method(HttpMethod.GET).handler(rc -> {
-      logger.info("rerouting:{}", rc.request().path());
+      ActivityLogger.log(rc.request());
       rc.response().send(indexBody);
     });
     HttpServer httpServer;
@@ -106,6 +107,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         vertx
           .createHttpServer()
           .requestHandler(r -> {
+            ActivityLogger.log(r);
             r.response()
               .setStatusCode(301)
               .putHeader("Location", r.absoluteURI().replace("http", "https"))
@@ -182,23 +184,26 @@ public class HttpServerVerticle extends AbstractVerticle {
   }
 
   private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {
-    return event -> bus.<String>request(
-      eventType.getName(),
-      new EventMessage(
-        action,
-        event.body().asString(),
-        getId(event.request(), "event"),
-        getId(event.request(), "heat"),
-        getId(event.request(), "lane"),
-        event.request().getHeader("Authorization")
-      ),
-      reply -> {
-        if (reply.succeeded()) {
-          event.response().end(reply.result().body());
-        } else {
-          event.fail(500, reply.cause());
-        }
-      });
+    return event -> {
+      ActivityLogger.log(event.request());
+      bus.<String>request(
+        eventType.getName(),
+        new EventMessage(
+          action,
+          event.body().asString(),
+          getId(event.request(), "event"),
+          getId(event.request(), "heat"),
+          getId(event.request(), "lane"),
+          event.request().getHeader("Authorization")
+        ),
+        reply -> {
+          if (reply.succeeded()) {
+            event.response().end(reply.result().body());
+          } else {
+            event.fail(500, reply.cause());
+          }
+        });
+    };
   }
 
   private int getId(HttpServerRequest request, String param) {

@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ManualTimeVerticle extends AbstractTimingVerticle {
-  List<ManualTime> times;
   private static final Logger logger = LoggerFactory.getLogger(ManualTimeVerticle.class);
+  List<ManualTime> times;
 
   public ManualTimeVerticle() {
     super(EventTypes.MANUAL_TIME);
@@ -64,7 +64,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
             ManualTime manualTime = Json.decodeValue(message.body().body(), ManualTime.class);
             times.remove(manualTime);
             times.add(manualTime);
-            logger.info("time:{}", manualTime);
+            logger.info("user '{}', save {}", user, manualTime);
             sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME, manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), message.body().authorization());
             sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
             message.reply("ok");
