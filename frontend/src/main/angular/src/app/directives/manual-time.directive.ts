@@ -1,26 +1,20 @@
-import {Directive, ElementRef, HostListener, OnInit} from '@angular/core';
-import {ManualTimePipe} from "../pipes/manual-time.pipe";
+import {Directive, ElementRef} from '@angular/core';
+import Cleave from "cleave.js";
 
 @Directive({
-    selector: '[appManualTime]',
-    standalone: true
+  selector: '[appManualTime]',
+  standalone: true
 })
-export class ManualTimeDirective implements OnInit{
-    private el: HTMLInputElement;
-    private manualTimePipe: ManualTimePipe;
+export class ManualTimeDirective {// implements OnInit{
+  private el: HTMLInputElement;
 
-    constructor(private elementRef: ElementRef
-    ) {
-        this.el = this.elementRef.nativeElement;
-        this.manualTimePipe = new ManualTimePipe();
-    }
-
-    ngOnInit(): void {
-        this.el.value = this.manualTimePipe.transform(this.el.value);
-    }
-
-    @HostListener("keyup", ["$event.target.value"])
-    onKeyUp(value: string) {
-        this.el.value = this.manualTimePipe.transform(value);
-    }
+  constructor(private elementRef: ElementRef
+  ) {
+    this.el = this.elementRef.nativeElement;
+    new Cleave(this.el, {
+      delimiters: [':', '.'],
+      blocks: [2, 2, 3],
+      numericOnly: true
+    });
+  }
 }

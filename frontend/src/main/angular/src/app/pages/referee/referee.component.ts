@@ -41,13 +41,13 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrl: './referee.component.css'
 })
 export class RefereeComponent implements OnDestroy, OnInit {
-  private subscription: Subscription;
   public events: Array<SwimmingEvent> = [];
   public event: SwimmingEvent | undefined;
   public eventId = 1;
   public heats: Array<Heat> = [];
   public user: User;
   private manualTime = new ManualTimePipe();
+  private subscription: Subscription;
 
   constructor(messageService: BackendMessageService,
               private eventService: EventService,
@@ -79,6 +79,14 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.user = UserUtils.getSavedUser();
   }
 
+  nextEvent() {
+    this.router.navigate(['/referee', this.eventId + 1]);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit(): void {
     if (!UserUtils.isRegistered()) {
       this.router.navigate(['/']);
@@ -86,8 +94,20 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.user = UserUtils.getSavedUser();
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  previousEvent() {
+    this.router.navigate(['/referee', this.eventId - 1]);
+  }
+
+  save(heat: Heat) {
+    if (this.user.lane != undefined && this.eventId && heat.time) {
+      this.manualTimeService.save(
+        {
+          time: this.manualTime.transform(heat.time),
+          heat: heat.id,
+          lane: this.user.lane,
+          event: this.eventId
+        }).subscribe(() => this.snackBar.open('Time saved'));
+    }
   }
 
   private getEvents() {
@@ -111,14 +131,6 @@ export class RefereeComponent implements OnDestroy, OnInit {
     ));
   }
 
-  previousEvent() {
-    this.router.navigate(['/referee', this.eventId - 1]);
-  }
-
-  nextEvent() {
-    this.router.navigate(['/referee', this.eventId + 1]);
-  }
-
   private getEventInscriptions() {
     if (this.user.lane != undefined && this.event) {
       this.subscription.add(
@@ -140,18 +152,6 @@ export class RefereeComponent implements OnDestroy, OnInit {
           })
         })
       );
-    }
-  }
-
-  save(heat: Heat) {
-    if (this.user.lane != undefined && this.eventId && heat.time) {
-      this.manualTimeService.save(
-        {
-          time: this.manualTime.transform(heat.time),
-          heat: heat.id,
-          lane: this.user.lane,
-          event: this.eventId
-        }).subscribe(() => this.snackBar.open('Time saved'));
     }
   }
 
