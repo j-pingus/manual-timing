@@ -15,7 +15,7 @@ import {InscriptionsService} from "../../services/inscriptions.service";
 import {TimingAction} from "../../domain/event-bus-message";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, NgControl} from "@angular/forms";
 import {ManualTimeService} from "../../services/manual.time.service";
 import {Heat} from "../../domain/heat";
 import {ManualTimePipe} from "../../pipes/manual-time.pipe";
@@ -98,8 +98,8 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.router.navigate(['/referee', this.eventId - 1]);
   }
 
-  save(heat: Heat) {
-    if (this.user.lane != undefined && this.eventId && heat.time) {
+  save(heat: Heat,model:NgControl) {
+    if (this.user.lane != undefined && this.eventId && !model.pristine) {
       this.manualTimeService.save(
         {
           time: this.manualTime.transform(heat.time),

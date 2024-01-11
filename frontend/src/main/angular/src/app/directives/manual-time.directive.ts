@@ -6,15 +6,13 @@ import Cleave from "cleave.js";
   standalone: true
 })
 export class ManualTimeDirective {// implements OnInit{
-  private el: HTMLInputElement;
-
   constructor(private elementRef: ElementRef
   ) {
-    this.el = this.elementRef.nativeElement;
-    new Cleave(this.el, {
+    new Cleave(this.elementRef.nativeElement, {
       delimiters: [':', '.'],
       blocks: [2, 2, 3],
-      numericOnly: true
+      //numericOnly: true,
+      numeralPositiveOnly:true
     });
   }
 }

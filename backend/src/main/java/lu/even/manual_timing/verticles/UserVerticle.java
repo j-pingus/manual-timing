@@ -53,6 +53,7 @@ public class UserVerticle extends AbstractTimingVerticle {
     if (Objects.equals(found.getRole(), request.getRole())) {
       found.setLane(request.getLane());
       logger.info("User changed lane:{}", request);
+      sendMessage(EventAction.LOGIN, request);
       return request;
     } else if (request.getRole().equals("control") || secret.equals(request.getPassword())) {
       this.users.remove(request);

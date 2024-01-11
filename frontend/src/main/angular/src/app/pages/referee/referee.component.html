@@ -33,8 +33,9 @@
                        placeholder="mm:ss.ddd"
                        [disabled]="heat.swimmer == undefined"
                        [(ngModel)]="heat.time"
+                       #model="ngModel"
                        appManualTime
-                       (blur)="save(heat)"
+                       (blur)="save(heat,model)"
                 >
             </mat-form-field>
         </div>
