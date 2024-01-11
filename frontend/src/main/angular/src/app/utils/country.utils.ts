@@ -21,7 +21,8 @@ export class CountryUtils {
     ["URY", "uy"], ["WLF", "wf"], ["MYT", "yt"],
     // non standard iso codes from splash
     ['GER', 'de'],
-    ['POR', 'pt']
+    ['POR', 'pt'],
+    ['RSA', 'za']
   ]);
 
   public static countryCodeIso2(countryCodeIso3: string): string {

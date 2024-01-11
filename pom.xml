@@ -94,7 +94,7 @@
   <modules>
     <module>frontend</module>
     <module>backend</module>
-    <module>meetManagerClient</module>
+    <module>shared</module>
     <module>meetManagerProxy</module>
   </modules>
 </project>
