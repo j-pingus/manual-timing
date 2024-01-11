@@ -98,7 +98,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.router.navigate(['/referee', this.eventId - 1]);
   }
 
-  save(heat: Heat,model:NgControl) {
+  save(heat: Heat, model: NgControl) {
     if (this.user.lane != undefined && this.eventId && !model.pristine) {
       this.manualTimeService.save(
         {
@@ -106,7 +106,13 @@ export class RefereeComponent implements OnDestroy, OnInit {
           heat: heat.id,
           lane: this.user.lane,
           event: this.eventId
-        }).subscribe(() => this.snackBar.open('Time saved'));
+        }).subscribe(() => {
+          model.reset(heat.time);
+          this.snackBar.open('Time saved', undefined, {
+            verticalPosition: 'top'
+          })
+        }
+      );
     }
   }
 
