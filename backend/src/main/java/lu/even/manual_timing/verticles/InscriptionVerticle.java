@@ -38,6 +38,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     }
   }
 
+
   private Object dumpMe() throws IOException{
     var data = this.inscriptions.values().stream()
       .flatMap(e->e.values().stream())
@@ -54,6 +55,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     Inscription[] list = Json.decodeValue(body, Inscription[].class);
     get(event).put(heat, Arrays.asList(list));
     logger.info("loaded inscriptions: " + get(event, heat));
+    sendMessage(EventAction.REFRESH_INSCRIPTIONS,"replaced",event,heat,-1);
     return "";
   }
 
@@ -76,10 +78,10 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     return save(Json.decodeValue(inscriptionJson, Inscription.class));
   }
   private Object save(Inscription inscription) {
-    var inscriptions = get(inscription.getEvent(), inscription.getHeat());
+    var inscriptions = get(inscription.event(), inscription.heat());
     inscriptions.remove(inscription);
     inscriptions.add(inscription);
-    this.sendMessage(EventAction.REFRESH_INSCRIPTIONS, "", inscription.getEvent(), inscription.getHeat(), inscription.getLane());
+    this.sendMessage(EventAction.REFRESH_INSCRIPTIONS, "", inscription.event(), inscription.heat(), inscription.lane());
     return "";
   }
 
@@ -91,7 +93,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     return get(event).entrySet()
       .stream()
       .flatMap(e -> e.getValue().stream())
-      .filter(i -> i.getLane() == lane)
+      .filter(i -> i.lane() == lane)
       .collect(Collectors.toList());
   }
 }

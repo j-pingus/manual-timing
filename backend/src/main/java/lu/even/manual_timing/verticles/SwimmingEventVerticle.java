@@ -43,7 +43,7 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
   }
 
   private Object getEvent(int event) {
-    return this.events.stream().filter(e->e.id()==event).findAny().orElse(new SwimmingEvent(-1,-1,false,"Not found"));
+    return this.events.stream().filter(e->e.id()==event).findAny().orElse(new SwimmingEvent(-1,-1,false,"Not found","99:99","99/99/9999", -1));
   }
 
   private Object replaceEvent(SwimmingEvent event) {

@@ -69,11 +69,11 @@ export class RefereeComponent implements OnDestroy, OnInit {
     }));
     this.subscription.add(messageService.subscribe(message => {
       //Refresh if data changed
-      if (this.user.lane == message.laneId && this.eventId == message.eventId) {
+      if (this.eventId == message.eventId) {
         if (message.action === TimingAction.REFRESH_INSCRIPTIONS) {
           this.getEventInscriptions();
         }
-        if (message.action === TimingAction.REFRESH_TIMES) {
+        if (this.user.lane == message.laneId && message.action === TimingAction.REFRESH_TIMES) {
           const heat = this.heats.find(h => h.id == message.heatId);
           if (heat) {
             heat.time = message.body;

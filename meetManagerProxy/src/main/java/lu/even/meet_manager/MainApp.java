@@ -32,7 +32,7 @@ public class MainApp {
     if (configFile.exists()) {
       return mapper.readValue(configFile, Config.class);
     } else {
-      mapper.writeValue(configFile, new Config(8766,new RemoteServerConfig("localhost",8585),new RemoteServerConfig("localhost",8765)));
+      mapper.writeValue(configFile, new Config(8766,new RemoteServerConfig("localhost",8585,false),new RemoteServerConfig("timing.cnw.lu",443,true)));
       throw new Error("No config file found, creating default in " + configFile.getAbsolutePath() + " review it, then start again");
     }
   }

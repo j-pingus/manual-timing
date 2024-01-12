@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class UserService {
-  private static SERVICE_URL = 'api/registration'
+  private static SERVICE_URL = 'api/user'
 
   constructor(private http: HttpClient) {
   }

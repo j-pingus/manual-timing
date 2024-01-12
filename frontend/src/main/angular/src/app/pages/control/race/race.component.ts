@@ -43,7 +43,7 @@ export class RaceComponent implements OnDestroy {
   private subscription: Subscription = new Subscription();
   public maxEventId: number = 0;
   public maxHeatId: number = 0;
-  public event: SwimmingEvent = {heats: 0, id: 0, description: 'not found'};
+  public event: SwimmingEvent = {heats: -1, id: -1, description: 'not found',time:"99:99",date:"99/99/9999",intermediates:-1};
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -65,10 +65,13 @@ export class RaceComponent implements OnDestroy {
     }));
     this.subscription.add(
       this.backendMessageService.subscribe(message => {
-
-        console.log('race', message);
-        if (message.action == TimingAction.REFRESH_TIMES && message.eventId == this.eventId && message.heatId == this.heatId) {
-          this.setTime(message.laneId, message.body);
+        if(message.eventId == this.eventId && message.heatId == this.heatId){
+          if (message.action === TimingAction.REFRESH_INSCRIPTIONS) {
+            this.loadInscriptions();
+          }
+          if (message.action == TimingAction.REFRESH_TIMES) {
+            this.setTime(message.laneId, message.body);
+          }
         }
       })
     );

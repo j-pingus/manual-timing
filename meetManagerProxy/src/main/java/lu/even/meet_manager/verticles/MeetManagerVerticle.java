@@ -1,6 +1,7 @@
 package lu.even.meet_manager.verticles;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -9,13 +10,15 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import lu.even.RemoteServerConfig;
 import lu.even.manual_timing.domain.Inscription;
+import lu.even.manual_timing.domain.PoolConfig;
 import lu.even.manual_timing.domain.SwimmingEvent;
 import lu.even.meet_manager.domain.*;
+import lu.even.meet_manager.utils.DistanceConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.Date;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MeetManagerVerticle extends AbstractVerticle {
@@ -23,6 +26,7 @@ public class MeetManagerVerticle extends AbstractVerticle {
   public static final String EVENT_TYPE_HEAT = "meet.manager.heat";
   protected static final Logger logger = LoggerFactory.getLogger(MeetManagerVerticle.class);
   RemoteServerConfig meetManagerConfig;
+  private PoolConfig poolConfig;
 
   public MeetManagerVerticle(RemoteServerConfig meetManagerConfig, RemoteServerConfig manualTimeConfig) {
     this.meetManagerConfig = meetManagerConfig;
@@ -33,19 +37,44 @@ public class MeetManagerVerticle extends AbstractVerticle {
   private HttpClient meetManagerClient;
   private HttpClient manualTimeClient;
 
+  interface OnSuccess {
+    void proceed(PoolConfig config);
+  }
 
-  public void start() throws Exception {
-    vertx.eventBus().consumer(EVENT_TYPE, this::onEventMessage);
-    vertx.eventBus().consumer(EVENT_TYPE_HEAT, this::onHeatMessage);
-    logger.info("verticle '{}' started", this);
-    var options = new HttpClientOptions()
-      .setDefaultHost(meetManagerConfig.host())
-      .setDefaultPort(meetManagerConfig.port());
-    meetManagerClient = vertx.createHttpClient(options);
-    var options2 = new HttpClientOptions()
-      .setDefaultHost(manualTimeConfig.host())
-      .setDefaultPort(manualTimeConfig.port());
-    manualTimeClient = vertx.createHttpClient(options2);
+  interface OnFailure {
+    void fail(Throwable exception);
+  }
+
+  @Override
+  public void start(Promise<Void> startPromise) throws Exception {
+    manualTimeClient = createClient(manualTimeConfig);
+    meetManagerClient = createClient(meetManagerConfig);
+    retrieveOptions((config) -> {
+      this.poolConfig = config;
+      vertx.eventBus().consumer(EVENT_TYPE, this::onEventMessage);
+      vertx.eventBus().consumer(EVENT_TYPE_HEAT, this::onEventHeatMessage);
+      logger.info("verticle '{}' started", this);
+      startPromise.complete();
+    }, startPromise::fail);
+  }
+
+  private HttpClient createClient(RemoteServerConfig httpConfig) {
+    var httpOptions = new HttpClientOptions()
+      .setDefaultHost(httpConfig.host())
+      .setDefaultPort(httpConfig.port())
+      .setSsl(httpConfig.ssl());
+    return vertx.createHttpClient(httpOptions);
+  }
+
+  private void retrieveOptions(OnSuccess onSuccessCallback, OnFailure onFailureCallback) {
+    manualTimeClient.request(HttpMethod.GET, "/api/poolconfig")
+      .compose(req -> req.send().compose(HttpClientResponse::body))
+      .onSuccess(hc -> {
+        var poolConfig = Json.decodeValue(hc, PoolConfig.class);
+        onSuccessCallback.proceed(poolConfig);
+      })
+      .onFailure(onFailureCallback::fail)
+    ;
   }
 
   private void onEventMessage(Message<String> stringMessage) {
@@ -56,12 +85,13 @@ public class MeetManagerVerticle extends AbstractVerticle {
       stringMessage.fail(500, "Failed");
     }
   }
-  private void onHeatMessage(Message<String> stringMessage) {
-    Object response = this.loadHeat(stringMessage.body());
+
+  private void onEventHeatMessage(Message<EventHeatMessage> eventHeatMessage) {
+    Object response = this.loadEventHeat(eventHeatMessage.body());
     if (response != null) {
-      stringMessage.reply(Json.encode(response));
+      eventHeatMessage.reply(Json.encode(response));
     } else {
-      stringMessage.fail(500, "Failed");
+      eventHeatMessage.fail(500, "Failed");
     }
   }
 
@@ -73,26 +103,38 @@ public class MeetManagerVerticle extends AbstractVerticle {
       '}';
   }
 
-  private String loadHeat(String eventHeat) {
-    String[] codes =eventHeat.split("_");
-    return this.loadHeat(Integer.parseInt(codes[0]),Integer.parseInt(codes[1]));
-  }
-  private String loadHeat(int eventId, int heatId) {
-    meetManagerClient.request(HttpMethod.GET, "/heats/" + eventId + "/" + heatId)
+  private String loadEventHeat(EventHeatMessage eventHeatMessage) {
+    meetManagerClient.request(HttpMethod.GET, "/heats/" + eventHeatMessage.event + "/" + eventHeatMessage.heat)
       .compose(req -> req.send().compose(HttpClientResponse::body))
       .onSuccess(hc -> {
         var heat = Json.decodeValue(hc, HeatDetails.class);
         var inscriptions = heat.entries().stream()
           .map(e -> new Inscription(
-            eventId, heatId, e.lane(), e.nametext(),e.nation(),e.entrytime(),e.clubcode(),e.agetext()))
+            eventHeatMessage.event, eventHeatMessage.heat, e.lane(), e.nametext(), e.nation(), e.entrytime(), e.clubcode(), e.agetext()))
           .collect(Collectors.toList());
-        logger.info("Sending inscriptions:{}",inscriptions);
-        //post data
-        manualTimeClient.request(HttpMethod.POST,"/api/inscriptions/"+eventId+"/heat/"+heatId)
-          .compose(req->req.send(Json.encode(inscriptions)));
+        loadIfDifferent(inscriptions, eventHeatMessage);
       })
       .onFailure(Throwable::printStackTrace);
     return "";
+  }
+
+  Map<EventHeatMessage, List<Inscription>> cacheInscriptions = new HashMap<>();
+
+  private void loadIfDifferent(List<Inscription> inscriptions, EventHeatMessage eventHeatMessage) {
+
+    if (cacheInscriptions.containsKey(eventHeatMessage) && cacheInscriptions.get(eventHeatMessage).equals(inscriptions)) {
+      logger.info("Not sending {} same as before",eventHeatMessage);
+      return;
+    }
+    logger.info("Sending inscriptions:{}", inscriptions);
+    //post data
+    manualTimeClient.request(HttpMethod.POST, "/api/inscriptions/" + eventHeatMessage.event + "/heat/" + eventHeatMessage.heat)
+      .compose(req -> req.send(Json.encode(inscriptions))
+        .onSuccess(hc -> {
+          cacheInscriptions.put(eventHeatMessage, inscriptions);
+        })
+      );
+
   }
 
   private String loadEvents() {
@@ -106,26 +148,39 @@ public class MeetManagerVerticle extends AbstractVerticle {
             toNumber(e.number()),
             e.heats().size(),
             e.isrelay(),
-            describe(e)
+            describe(e),
+            e.time(),
+            e.date(),
+            DistanceConverter.getIntermediates(e.distance(), this.poolConfig.length())
           ))
           .sorted(Comparator.comparingInt(SwimmingEvent::id))
           .collect(Collectors.toList());
-        logger.info("Sending events:{}",swimmingEvents);
-        manualTimeClient.request(HttpMethod.POST,"/api/events")
-          .compose(req->req.send(Json.encode(swimmingEvents)));
+        loadIfDifferent(swimmingEvents);
 
         swimmingEvents.forEach(event -> {
           for (int heat = 1; heat <= event.heats(); heat++) {
             vertx.eventBus().publish(
               EVENT_TYPE_HEAT,
-              event.id() + "_" + heat
+              new EventHeatMessage(event.id(), heat)
             );
           }
         });
 
       })
       .onFailure(Throwable::printStackTrace);
-    return "events loaded "+new Date();
+    return "events loaded " + new Date();
+  }
+  private List<SwimmingEvent> eventCache;
+  private void loadIfDifferent(List<SwimmingEvent> swimmingEvents) {
+    if(eventCache!=null && eventCache.equals(swimmingEvents)){
+      logger.info("Not sending events as they are the same");
+      return;
+    }
+    logger.info("Sending events:{}", swimmingEvents);
+    manualTimeClient.request(HttpMethod.POST, "/api/events")
+      .compose(req -> req.send(Json.encode(swimmingEvents))
+        .onSuccess(hc->this.eventCache=swimmingEvents)
+      );
   }
 
   private String describe(Event e) {
@@ -149,4 +204,8 @@ public class MeetManagerVerticle extends AbstractVerticle {
       return Integer.parseInt(number);
     return -1;
   }
+
+  record EventHeatMessage(int event, int heat) implements Serializable {
+  }
+
 }

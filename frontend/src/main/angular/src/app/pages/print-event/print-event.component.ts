@@ -23,7 +23,7 @@ import {ManualTimePipe} from "../../pipes/manual-time.pipe";
 export class PrintEventComponent implements OnDestroy {
   private subscription: Subscription = new Subscription();
   public eventId: number = 0;
-  public event: SwimmingEvent = {heats: -1, id: -1, description: "Not found"};
+  public event: SwimmingEvent = {heats: -1, id: -1, description: "Not found",time:"99:99",date:"99/99/9999",intermediates:-1};
   public heats: Array<Array<Time>> = [];
 
   ngOnDestroy(): void {

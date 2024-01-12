@@ -9,7 +9,7 @@
     </mat-card-title>
     <mat-card-subtitle>
       <button matTooltip="previous Heat (<ctrl>+<p>)" mat-button (click)="previousHeat()" [disabled]="heatId<=1">&lt;</button>
-      <span>Heat #{{heatId}}/{{maxHeatId}}</span>
+      <span>Heat #{{heatId}}/{{maxHeatId}} - {{event.date}} {{event.time}}</span>
       <button matTooltip="next Heat (<ctrl>+<n>)" mat-button (click)="nextHeat()" [disabled]="heatId>=maxHeatId && eventId>=maxEventId">&gt;</button>
     </mat-card-subtitle>
   </mat-card-header>
