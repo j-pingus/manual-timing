@@ -8,16 +8,16 @@
       <mat-icon>print</mat-icon></a>
     </mat-card-title>
     <mat-card-subtitle>
-      <button matTooltip="previous Heat (<ctrl>+<p>)" mat-button (click)="previousHeat()" [disabled]="heatId<=1">&lt;</button>
-      <span>Heat #{{heatId}}/{{maxHeatId}}</span>
-      <button matTooltip="next Heat (<ctrl>+<n>)" mat-button (click)="nextHeat()" [disabled]="heatId>=maxHeatId && eventId>=maxEventId">&gt;</button>
+      <button i18n-matTooltip matTooltip="previous Heat (<ctrl>+<p>)" mat-button (click)="previousHeat()" [disabled]="heatId<=1">&lt;</button>
+      <span><ng-container i18n>Heat</ng-container> #{{heatId}}/{{maxHeatId}}</span>
+      <button i18n-matTooltip matTooltip="next Heat (<ctrl>+<n>)" mat-button (click)="nextHeat()" [disabled]="heatId>=maxHeatId && eventId>=maxEventId">&gt;</button>
     </mat-card-subtitle>
   </mat-card-header>
     <mat-card-content >
       <div class="title">
-      <span class="laneId">lane</span>
-      <span class="swimmer">swimmer</span>
-      <span class="time">time</span>
+      <span class="laneId" i18n>Lane</span>
+      <span class="swimmer" i18n>Swimmer</span>
+      <span class="time" i18n>Time</span>
       </div>
       <div class="lane" *ngFor="let lane of lanes">
         <span class="laneId">{{lane.lane}}</span>

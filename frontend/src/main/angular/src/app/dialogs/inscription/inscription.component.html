@@ -1,13 +1,10 @@
-<h1 mat-dialog-title>
-  <span class="fi fi-{{flag}} fis"></span>
-  <span> {{inscription.name}} </span>
-  <span class="fi fi-{{flag}} fis"></span></h1>
+<h1 mat-dialog-title><span> {{inscription.name}} </span></h1>
 <div mat-dialog-content>
-  <p><span class="listTitle">entry time:</span>{{inscription.entrytime|manualTime}}</p>
-  <p><span class="listTitle">nation:</span>{{inscription.nation}}</p>
-  <p><span class="listTitle">club:</span>{{inscription.clubcode}}</p>
-  <p><span class="listTitle">year:</span>{{inscription.agetext}}</p>
+  <p><span class="listTitle" i18n>entry time</span>: {{inscription.entrytime|manualTime}}</p>
+  <p><span class="listTitle" i18n>nation</span>: {{inscription.nation}} <span class="fi fi-{{flag}} fis"></span></p>
+  <p><span class="listTitle" i18n>club</span>: {{inscription.clubcode}}</p>
+  <p><span class="listTitle" i18n>year</span>: {{inscription.agetext}}</p>
 </div>
 <div>
-  <button mat-button (click)="close()">OK</button>
+  <button mat-button (click)="close()" i18n>OK</button>
 </div>

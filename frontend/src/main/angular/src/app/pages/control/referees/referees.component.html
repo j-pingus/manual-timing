@@ -1,9 +1,9 @@
 <div class="container">
     <mat-card *ngFor="let lane of lanes">
         <mat-card-header>
-            <mat-card-title>lane {{lane.lane}}</mat-card-title>
+            <mat-card-title><ng-container i18n>Lane</ng-container> {{lane.lane}}</mat-card-title>
         </mat-card-header>
-        <mat-card-content>referees:
+        <mat-card-content><ng-container i18n>Referees</ng-container>:
             <span *ngFor="let referee of lane.referees ">{{referee.name}}</span>
         </mat-card-content>
     </mat-card>

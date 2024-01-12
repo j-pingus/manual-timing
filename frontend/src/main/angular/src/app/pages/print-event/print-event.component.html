@@ -1,6 +1,6 @@
-<h1>Event #:{{eventId}}:{{event.description}}</h1>
+<h1><ng-container i18n>Event</ng-container># {{eventId}}:{{event.description}}</h1>
 <div *ngFor="let heat of heats; let i=index">
-  <h2>Heat #{{i + 1}}</h2>
+  <h2><ng-container i18n>Heat</ng-container> #{{i + 1}}</h2>
   <div *ngFor="let lane of heat">
     <ng-container *ngIf="lane.name || lane.time">
       <span class="lane">{{lane.lane}}</span>

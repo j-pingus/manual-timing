@@ -1,23 +1,23 @@
 <form class="form">
   <mat-form-field class="field">
-    <mat-label>name</mat-label>
-    <input [(ngModel)]="data.name" name="name" matInput placeholder="your name here">
+    <mat-label i18n>name</mat-label>
+    <input [(ngModel)]="data.name" name="name" matInput i18n-placeholder placeholder="your name here">
   </mat-form-field>
   <br/>
   <mat-chip-listbox (change)="roleSelected($event)" class="field">
-    <mat-chip-option [selected]="data.role=='referee'" value="referee">Referee</mat-chip-option>
-    <mat-chip-option [selected]="data.role=='control'" value="control" color="warn">Control room</mat-chip-option>
+    <mat-chip-option [selected]="data.role=='referee'" value="referee" i18n>Referee</mat-chip-option>
+    <mat-chip-option [selected]="data.role=='control'" value="control" color="warn" i18n>Control room</mat-chip-option>
   </mat-chip-listbox>
   <mat-chip-listbox (change)="laneSelected($event)" class="field" *ngIf="data.role=='referee'">
     <mat-chip-option *ngFor="let lane of (config$ | async)?.lanes" color="accent"
-                     [selected]="data.lane==lane" [value]="lane">lane {{lane}}</mat-chip-option>
+                     [selected]="data.lane==lane" [value]="lane"><ng-container i18n>Lane</ng-container> {{lane}}</mat-chip-option>
   </mat-chip-listbox>
   <mat-form-field class="field" *ngIf="needPassword">
-    <mat-label>password</mat-label>
+    <mat-label i18n>password</mat-label>
     <input [(ngModel)]="data.password" name="password" matInput type="password">
   </mat-form-field>
   <span class="error">{{errorMessage}}</span>
-  <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
+  <button mat-fab color="primary" i18n-matTooltip matTooltip="Start timing"
           class="field" *ngIf="data?.name && data?.role && (!needPassword || data.password ) && (data.lane != undefined || data?.role == 'control')"
           (click)="register()">
     <mat-icon>watch</mat-icon>

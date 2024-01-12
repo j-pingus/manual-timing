@@ -54,10 +54,7 @@ export class SelectionComponent {
       this.data.uuid = sessionStorage.getItem(Constants.USER_ID) as string;
       this.registrationService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
-          this.errorMessage = 'wrong password provided';
-          console.log("logging out");
-          UserUtils.logout();
-          this.computeNeedPassword();
+          this.badCredentials(true);
         } else {
           this.saveAndGo();
         }
@@ -65,7 +62,7 @@ export class SelectionComponent {
     } else {
       this.registrationService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
-          this.errorMessage = 'wrong password provided';
+          this.badCredentials(false);
         } else {
           UserUtils.saveUserId(data.uuid);
           this.saveAndGo()
@@ -96,5 +93,13 @@ export class SelectionComponent {
 
   private computeNeedPassword() {
     this.needPassword = (!UserUtils.isRegistered()) && this.data.role == 'referee';
+  }
+
+  private badCredentials(logout: boolean) {
+    this.errorMessage = $localize`wrong password provided`;
+    if (logout) {
+      UserUtils.logout();
+      this.computeNeedPassword();
+    }
   }
 }

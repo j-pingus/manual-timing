@@ -2,17 +2,17 @@
     <mat-card-header>
         <mat-card-title>
             <button [disabled]="eventId<=1" color="accent"
-                    mat-mini-fab aria-label="go to previous event" matTooltip="previous event"
+                    mat-mini-fab i18n-aria-label aria-label="go to previous event" i18n-matTooltip matTooltip="previous event"
                     (click)="previousEvent()">
                 <mat-icon>chevron_left</mat-icon>
             </button>
             <span class="filler"> </span>
-            <span>Event #{{event?.id}}</span>
-            <span>Lane #{{user.lane}}</span>
+            <span><ng-container i18n>Event</ng-container> #{{event?.id}}</span>
+            <span><ng-container i18n>Lane</ng-container> #{{user.lane}}</span>
             <span>{{event?.description}}</span>
             <span class="filler"> </span>
             <button [disabled]="(eventId)>=events.length" color="accent"
-                    mat-mini-fab aria-label="go to next event" matTooltip="next event"
+                    mat-mini-fab i18n-aria-label aria-label="go to next event" i18n-matTooltip matTooltip="next event"
                     (click)="nextEvent()">
                 <mat-icon>chevron_right</mat-icon>
             </button>
@@ -20,15 +20,15 @@
     </mat-card-header>
     <mat-card-content>
         <div class="title">
-          <span class="heatId">heat</span>
-          <span class="swimmer">swimmer</span>
+          <span class="heatId" i18n>Heat</span>
+          <span class="swimmer" i18n>Swimmer</span>
           <span class="time"> </span>
         </div>
         <div *ngFor="let heat of heats" [class.heat]="heat.swimmer!=undefined" [class.hidden]="heat.swimmer==undefined">
             <span class="heatId">{{heat.id}}</span>
             <span class="swimmer">{{heat.swimmer}}</span>
             <mat-form-field appearance="fill" class="time">
-                <mat-label>Time</mat-label>
+                <mat-label i18n>Time</mat-label>
                 <input matInput
                        placeholder="mm:ss.ddd"
                        [disabled]="heat.swimmer == undefined"
