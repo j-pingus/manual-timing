@@ -80,7 +80,7 @@ export class RaceComponent implements OnDestroy {
         this.lanes = config.lanes.map(lane => {
           return {
             lane,
-            swimmer: {lane, name: "", heat: -1, entrytime: "", clubcode: "", event: -1, nation: "", agetext: ""},
+            inscription: {lane, name: "", heat: -1, entrytime: "", clubcode: "", event: -1, nation: "", agetext: ""},
             time: ""
           };
         });
@@ -147,7 +147,7 @@ export class RaceComponent implements OnDestroy {
         inscriptions.forEach(inscription => {
           const lane = this.lanes.find(lane => lane.lane == inscription.lane);
           if (lane) {
-            lane.swimmer = inscription;
+            lane.inscription = inscription;
           }
         })
       })
@@ -172,8 +172,8 @@ export class RaceComponent implements OnDestroy {
 
   }
 
-  popup(swimmer: Inscription) {
-    this.dialog.open(InscriptionComponent,{data:swimmer});
+  popup(inscription: Inscription) {
+    this.dialog.open(InscriptionComponent,{data:inscription});
   }
 }
 

@@ -7,7 +7,7 @@
   background-size: 25%;
 }
 .scroll{
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .app-header{
   display: flex;

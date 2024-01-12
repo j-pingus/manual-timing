@@ -6,17 +6,17 @@ import {Observable} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationService {
+export class UserService {
   private static SERVICE_URL = 'api/registration'
 
   constructor(private http: HttpClient) {
   }
 
   getByLane(lane: number): Observable<Array<User>> {
-    return this.http.get<Array<User>>(RegistrationService.SERVICE_URL + 's/lane/' + lane);
+    return this.http.get<Array<User>>(UserService.SERVICE_URL + 's/lane/' + lane);
   }
 
   save(request: User): Observable<User> {
-    return this.http.post<User>(RegistrationService.SERVICE_URL, request);
+    return this.http.post<User>(UserService.SERVICE_URL, request);
   }
 }

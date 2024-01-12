@@ -14,9 +14,6 @@ mat-card{
 div.title span+span{
   text-align: center;
 }
-.lane:hover{
-  border:2px dashed blue;
-}
 div:nth-child(odd).lane{
   background-color: rgba(7, 63, 138, 0.2);
 }

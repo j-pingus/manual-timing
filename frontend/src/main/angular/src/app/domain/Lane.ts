@@ -2,6 +2,6 @@ import {Inscription} from "./inscription";
 
 export interface Lane {
   lane: number;
-  swimmer: Inscription;
+  inscription: Inscription;
   time: string;
 }

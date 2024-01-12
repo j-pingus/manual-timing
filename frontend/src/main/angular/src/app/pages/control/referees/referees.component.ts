@@ -3,7 +3,7 @@ import {MatCardModule} from "@angular/material/card";
 import {NgForOf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {PoolConfigService} from "../../../services/pool-config.service";
-import {RegistrationService} from "../../../services/registration.service";
+import {UserService} from "../../../services/user.service";
 import {BackendMessageService} from "../../../services/backend-message.service";
 import {TimingAction} from "../../../domain/event-bus-message";
 import {User} from "../../../domain/user";
@@ -28,7 +28,7 @@ export class RefereesComponent implements OnDestroy {
 
     constructor(
         poolConfigService: PoolConfigService,
-        private registrationService: RegistrationService,
+        private userService: UserService,
         messageService: BackendMessageService) {
         poolConfigService.get().subscribe(config => {
                 config.lanes.forEach((lane) => this.lanes.push({lane}));
@@ -45,7 +45,7 @@ export class RefereesComponent implements OnDestroy {
 
     private refreshReferees() {
         this.lanes.forEach((lane) => {
-            this.registrationService.getByLane(lane.lane)
+            this.userService.getByLane(lane.lane)
                 .subscribe(referees =>
                     lane.referees = referees
                 );

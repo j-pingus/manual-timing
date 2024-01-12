@@ -2,19 +2,20 @@ import {Directive, ElementRef} from '@angular/core';
 import Cleave from "cleave.js";
 
 @Directive({
-  selector: '[appManualTime]',
+  selector: 'input[appManualTime]',
   standalone: true
 })
-export class ManualTimeDirective {// implements OnInit{
-  constructor(private elementRef: ElementRef
+export class ManualTimeDirective {
+  constructor(private elementRef: ElementRef<HTMLInputElement>
   ) {
+    const nativeElement = elementRef.nativeElement;
     //Type 'tel' allows for custom formatting but
     //somehow forces mobile device
     //to use the default numerical keypad
-    if(this.elementRef.nativeElement.type!=='tel'){
-      this.elementRef.nativeElement.type='tel';
+    if(nativeElement.type!=='tel'){
+      nativeElement.type='tel';
     }
-    new Cleave(this.elementRef.nativeElement, {
+    new Cleave(nativeElement, {
       delimiters: [':', '.'],
       blocks: [2, 2, 3],
       numericOnly: true

@@ -33,10 +33,10 @@ mat-form-field {
   align-items: center;
   border-bottom: 1px solid black;
 }
-.heat:hover{
-  border:2px dashed blue;
-}
 
+div.heat+div.heat{
+  background-color: rgba(7, 63, 138, 0.2);
+}
 
 .heatId {
     flex: 0 0 35px;

@@ -55,9 +55,8 @@ public class HttpServerVerticle extends AbstractVerticle {
     // ==== Pool Config ====
     this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
     // ==== User ====
-    this.routePost("/api/registration", EventTypes.REGISTER);
-    this.routeGet("/api/registrations/lane/:lane", EventTypes.REGISTER, EventAction.GET_BY_LANE);
-    this.routePut("/api/registration", EventTypes.REGISTER);
+    this.routePost("/api/user", EventTypes.USER);
+    this.routeGet("/api/users/lane/:lane", EventTypes.USER, EventAction.GET_BY_LANE);
     // ==== Event ====
     this.routeGet("/api/events", EventTypes.EVENT, EventAction.GET_ALL);
     this.routeGet("/api/event/:event", EventTypes.EVENT);

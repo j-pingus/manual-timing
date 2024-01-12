@@ -11,7 +11,7 @@ import {PoolConfigService} from "../../services/pool-config.service";
 import {Observable} from "rxjs";
 import {PoolConfig} from "../../domain/pool-config";
 import {User} from "../../domain/user";
-import {RegistrationService} from "../../services/registration.service";
+import {UserService} from "../../services/user.service";
 import {Constants} from "../../Constants";
 import {Router} from "@angular/router";
 import {UserUtils} from "../../utils/user.utils";
@@ -41,7 +41,7 @@ export class SelectionComponent {
   public needPassword = false;
   protected data: User = UserUtils.getSavedUser();
 
-  constructor(poolConfigClient: PoolConfigService, private registrationService: RegistrationService, private router: Router) {
+  constructor(poolConfigClient: PoolConfigService, private userService: UserService, private router: Router) {
     this.config$ = poolConfigClient.get();
   }
 
@@ -52,7 +52,7 @@ export class SelectionComponent {
   register() {
     if (UserUtils.isRegistered()) {
       this.data.uuid = sessionStorage.getItem(Constants.USER_ID) as string;
-      this.registrationService.save(this.data).subscribe((data) => {
+      this.userService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
           this.errorMessage = 'wrong password provided';
           console.log("logging out");
@@ -63,7 +63,7 @@ export class SelectionComponent {
         }
       })
     } else {
-      this.registrationService.save(this.data).subscribe((data) => {
+      this.userService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
           this.errorMessage = 'wrong password provided';
         } else {

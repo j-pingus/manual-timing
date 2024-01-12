@@ -21,7 +21,7 @@ public class UserVerticle extends AbstractTimingVerticle {
   private final String secret;
 
   public UserVerticle(String secret) {
-    super(EventTypes.REGISTER);
+    super(EventTypes.USER);
     this.users = new ArrayList<>();
     this.secret = secret;
   }

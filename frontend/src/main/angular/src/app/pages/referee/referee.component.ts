@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BackendMessageService} from "../../services/backend-message.service";
 import {Subscription} from "rxjs";
 import {EventService} from "../../services/events.service";
-import {JsonPipe, NgForOf} from "@angular/common";
+import {JsonPipe, NgForOf, NgIf} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
@@ -21,6 +21,9 @@ import {Heat} from "../../domain/heat";
 import {ManualTimePipe} from "../../pipes/manual-time.pipe";
 import {ManualTimeDirective} from "../../directives/manual-time.directive";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Inscription} from "../../domain/inscription";
+import {InscriptionComponent} from "../../dialogs/inscription/inscription.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-referee',
@@ -35,7 +38,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     MatInputModule,
     FormsModule,
     JsonPipe,
-    ManualTimeDirective
+    ManualTimeDirective,
+    NgIf
   ],
   templateUrl: './referee.component.html',
   styleUrl: './referee.component.css'
@@ -55,7 +59,8 @@ export class RefereeComponent implements OnDestroy, OnInit {
               private manualTimeService: ManualTimeService,
               route: ActivatedRoute,
               private router: Router,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog) {
     this.subscription = new Subscription();
     this.subscription.add(route.params.subscribe(params => {
       this.eventId = +params['id']; // (+) converts string 'id' to a number
@@ -142,8 +147,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
       this.subscription.add(
         this.inscriptionsService.getByEventAndLane(this.event.id, this.user.lane).subscribe(inscriptions => {
           inscriptions.forEach(inscription => {
-            this.heats[inscription.heat - 1].swimmer = inscription.name;
-          })
+            this.heats[inscription.heat - 1].inscription = inscription;
+          });
+          console.log('heats:',this.heats);
         })
       );
     }
@@ -161,6 +167,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
     }
   }
 
+  popup(inscription: Inscription) {
+    this.dialog.open(InscriptionComponent,{data:inscription});
+  }
 }
 
 

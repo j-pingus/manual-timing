@@ -1,5 +1,6 @@
+import {Inscription} from './inscription';
 export interface Heat {
     id: number;
-    swimmer?: string;
+    inscription?: Inscription;
     time?: string;
 }

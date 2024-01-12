@@ -56,7 +56,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
   }
 
   private void save(Message<EventMessage> message) {
-    vertx.eventBus().<String>request(EventTypes.REGISTER.getName(), new EventMessage(EventAction.GET, null, -1, -1, -1, message.body().authorization())
+    vertx.eventBus().<String>request(EventTypes.USER.getName(), new EventMessage(EventAction.GET, null, -1, -1, -1, message.body().authorization())
       , messageAsyncResult -> {
         if (messageAsyncResult.succeeded()) {
           User user = Json.decodeValue(messageAsyncResult.result().body(), User.class);
