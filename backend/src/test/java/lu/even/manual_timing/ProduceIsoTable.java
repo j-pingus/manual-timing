@@ -31,12 +31,12 @@ public class ProduceIsoTable {
       Map<String, Inscription> uniqueNations = new HashMap<>();
       Arrays.stream(inscriptions)
         .forEach(i -> {
-          if (!uniqueNations.containsKey(i.getNation())) {
-            uniqueNations.put(i.getNation(), i);
+          if (!uniqueNations.containsKey(i.nation())) {
+            uniqueNations.put(i.nation(), i);
           }
         });
       uniqueNations.entrySet().stream()
-        .sorted(Comparator.comparingInt(c -> c.getValue().getEvent()))
+        .sorted(Comparator.comparingInt(c -> c.getValue().event()))
         .forEach((e)-> System.out.println(e.getKey()+":"+e.getValue()));
     }
   }
