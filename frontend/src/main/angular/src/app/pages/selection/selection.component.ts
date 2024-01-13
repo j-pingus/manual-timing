@@ -66,6 +66,7 @@ export class SelectionComponent {
       this.userService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
           this.errorMessage = 'wrong password provided';
+          this.computeNeedPassword();
         } else {
           UserUtils.saveUserId(data.uuid);
           this.saveAndGo()

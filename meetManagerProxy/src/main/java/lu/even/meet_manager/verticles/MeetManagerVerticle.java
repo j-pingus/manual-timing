@@ -13,7 +13,7 @@ import lu.even.manual_timing.domain.Inscription;
 import lu.even.manual_timing.domain.PoolConfig;
 import lu.even.manual_timing.domain.SwimmingEvent;
 import lu.even.meet_manager.domain.*;
-import lu.even.meet_manager.utils.DistanceConverter;
+import lu.even.meet_manager.utils.EventConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,23 +26,16 @@ public class MeetManagerVerticle extends AbstractVerticle {
   public static final String EVENT_TYPE_HEAT = "meet.manager.heat";
   protected static final Logger logger = LoggerFactory.getLogger(MeetManagerVerticle.class);
   RemoteServerConfig meetManagerConfig;
+  RemoteServerConfig manualTimeConfig;
+  Map<EventHeatMessage, List<Inscription>> cacheInscriptions = new HashMap<>();
   private PoolConfig poolConfig;
+  private HttpClient meetManagerClient;
+  private HttpClient manualTimeClient;
+  private List<SwimmingEvent> eventCache;
 
   public MeetManagerVerticle(RemoteServerConfig meetManagerConfig, RemoteServerConfig manualTimeConfig) {
     this.meetManagerConfig = meetManagerConfig;
     this.manualTimeConfig = manualTimeConfig;
-  }
-
-  RemoteServerConfig manualTimeConfig;
-  private HttpClient meetManagerClient;
-  private HttpClient manualTimeClient;
-
-  interface OnSuccess {
-    void proceed(PoolConfig config);
-  }
-
-  interface OnFailure {
-    void fail(Throwable exception);
   }
 
   @Override
@@ -118,12 +111,10 @@ public class MeetManagerVerticle extends AbstractVerticle {
     return "";
   }
 
-  Map<EventHeatMessage, List<Inscription>> cacheInscriptions = new HashMap<>();
-
   private void loadIfDifferent(List<Inscription> inscriptions, EventHeatMessage eventHeatMessage) {
 
     if (cacheInscriptions.containsKey(eventHeatMessage) && cacheInscriptions.get(eventHeatMessage).equals(inscriptions)) {
-      logger.info("Not sending {} same as before",eventHeatMessage);
+      logger.info("Not sending {} same as before", eventHeatMessage);
       return;
     }
     logger.info("Sending inscriptions:{}", inscriptions);
@@ -142,19 +133,7 @@ public class MeetManagerVerticle extends AbstractVerticle {
       .compose(req -> req.send().compose(HttpClientResponse::body))
       .onSuccess(hc -> {
         Events events = Json.decodeValue(hc, Events.class);
-        var swimmingEvents = events.getDynamicValues().values().stream()
-          .filter(e -> !e.heats().isEmpty())
-          .map(e -> new SwimmingEvent(
-            toNumber(e.number()),
-            e.heats().size(),
-            e.isrelay(),
-            describe(e),
-            e.time(),
-            e.date(),
-            DistanceConverter.getIntermediates(e.distance(), this.poolConfig.length(),this.poolConfig.bothEndsTiming())
-          ))
-          .sorted(Comparator.comparingInt(SwimmingEvent::id))
-          .collect(Collectors.toList());
+        var swimmingEvents = EventConverter.convert(events, this.poolConfig.length(), this.poolConfig.bothEndsTiming());
         loadIfDifferent(swimmingEvents);
 
         swimmingEvents.forEach(event -> {
@@ -170,39 +149,25 @@ public class MeetManagerVerticle extends AbstractVerticle {
       .onFailure(Throwable::printStackTrace);
     return "events loaded " + new Date();
   }
-  private List<SwimmingEvent> eventCache;
+
   private void loadIfDifferent(List<SwimmingEvent> swimmingEvents) {
-    if(eventCache!=null && eventCache.equals(swimmingEvents)){
+    if (eventCache != null && eventCache.equals(swimmingEvents)) {
       logger.info("Not sending events as they are the same");
       return;
     }
     logger.info("Sending events:{}", swimmingEvents);
     manualTimeClient.request(HttpMethod.POST, "/api/events")
       .compose(req -> req.send(Json.encode(swimmingEvents))
-        .onSuccess(hc->this.eventCache=swimmingEvents)
+        .onSuccess(hc -> this.eventCache = swimmingEvents)
       );
   }
 
-  private String describe(Event e) {
-    return
-      (e.isrelay() ? "Relay " : "") +
-        e.distance() + " " +
-        decodeStroke(e.stroke()) + " " +
-        decodeGender(e.gender());
+  interface OnSuccess {
+    void proceed(PoolConfig config);
   }
 
-  private String decodeGender(String gender) {
-    return Gender.getByCode(gender).getDescription();
-  }
-
-  private String decodeStroke(String stroke) {
-    return Stroke.getByCode(stroke).getDescription();
-  }
-
-  private int toNumber(String number) {
-    if (number != null)
-      return Integer.parseInt(number);
-    return -1;
+  interface OnFailure {
+    void fail(Throwable exception);
   }
 
   record EventHeatMessage(int event, int heat) implements Serializable {

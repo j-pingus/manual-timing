@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,18 +46,20 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
     return times.stream().filter(
       t -> t.getLane() == lane
         && t.getEvent() == event
-    ).collect(Collectors.toList());
+    ).sorted(Comparator.comparingInt(ManualTime::getDistance))
+      .collect(Collectors.toList());
   }
 
   private List<ManualTime> getByEventHeat(int event, int heat) {
     return times.stream().filter(
       t -> t.getHeat() == heat
         && t.getEvent() == event
-    ).collect(Collectors.toList());
+    ).sorted(Comparator.comparingInt(ManualTime::getDistance))
+      .collect(Collectors.toList());
   }
 
   private void save(Message<EventMessage> message) {
-    vertx.eventBus().<String>request(EventTypes.USER.getName(), new EventMessage(EventAction.GET, null, -1, -1, -1, message.body().authorization())
+    vertx.eventBus().<String>request(EventTypes.USER.getName(), new EventMessage(EventAction.GET, null, -1, -1, -1, -1,message.body().authorization())
       , messageAsyncResult -> {
         if (messageAsyncResult.succeeded()) {
           User user = Json.decodeValue(messageAsyncResult.result().body(), User.class);
@@ -65,8 +68,8 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
             times.remove(manualTime);
             times.add(manualTime);
             logger.info("user '{}', save {}", user, manualTime);
-            sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME, manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), message.body().authorization());
-            sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane());
+            sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME, manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance(), message.body().authorization());
+            sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance());
             message.reply("ok");
             return;
           }

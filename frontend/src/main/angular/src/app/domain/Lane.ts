@@ -1,7 +1,8 @@
 import {Inscription} from "./inscription";
+import {TimeRecord} from "./time-record";
 
 export interface Lane {
   lane: number;
   inscription: Inscription;
-  time: string;
+  times: Array<TimeRecord>;
 }

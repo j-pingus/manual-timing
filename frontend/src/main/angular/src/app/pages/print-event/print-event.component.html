@@ -2,10 +2,10 @@
 <div *ngFor="let heat of heats; let i=index">
   <h2>Heat #{{i + 1}}</h2>
   <div *ngFor="let lane of heat">
-    <ng-container *ngIf="lane.name || lane.time">
+    <ng-container *ngIf="lane.name || lane.times.length>0">
       <span class="lane">{{lane.lane}}</span>
       <span class="swimmer">{{lane.name}}</span>
-      <span class="time">{{lane.time | manualTime}}</span>
+      <span class="time" *ngFor="let time of lane.times">{{time.distance}}m: {{time.time | manualTime}}</span>
     </ng-container>
   </div>
 </div>

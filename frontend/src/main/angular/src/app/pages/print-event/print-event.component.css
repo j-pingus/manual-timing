@@ -17,6 +17,6 @@ span.swimmer{
 span.time{
   min-width: 4rem;
 }
-span.time:after{
-  content:' ';
+span.time+span.time:before{
+  content:", ";
 }

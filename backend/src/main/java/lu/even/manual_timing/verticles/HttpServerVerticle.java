@@ -193,6 +193,7 @@ public class HttpServerVerticle extends AbstractVerticle {
           getId(event.request(), "event"),
           getId(event.request(), "heat"),
           getId(event.request(), "lane"),
+          getId(event.request(), "distance"),
           event.request().getHeader("Authorization")
         ),
         reply -> {

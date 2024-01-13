@@ -28,17 +28,19 @@
          [class.hidden]="heat.inscription==undefined">
       <ng-container *ngIf="heat.inscription!=undefined">
         <span class="heatId">{{heat.id}}</span>
-        <span class="swimmer"><a href="javascript:void(0)" (click)="popup(heat.inscription)">{{heat.inscription?.name}}</a></span>
+        <span class="swimmer"><a href="javascript:void(0)"
+                                 (click)="popup(heat.inscription)">{{heat.inscription?.name}}</a></span>
 
-        <mat-form-field appearance="fill" class="time">
-          <mat-label>Time</mat-label>
-          <input matInput
+        <mat-form-field appearance="fill" class="time" *ngFor="let time of heat.times;let i=index">
+          <mat-label>{{time.distance}}m</mat-label>
+          <input
+                 matInput
                  placeholder="mm:ss.ddd"
                  [disabled]="heat.inscription == undefined"
-                 [(ngModel)]="heat.time"
+                 [(ngModel)]="time.time"
                  #model="ngModel"
                  appManualTime
-                 (blur)="save(heat,model)"
+                 (blur)="save(heat.id,time,model)"
                  type="tel">
         </mat-form-field>
       </ng-container>

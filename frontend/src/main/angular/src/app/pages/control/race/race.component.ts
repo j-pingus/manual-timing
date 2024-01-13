@@ -18,6 +18,7 @@ import {ManualTimePipe} from "../../../pipes/manual-time.pipe";
 import {Inscription} from "../../../domain/inscription";
 import {MatDialog} from "@angular/material/dialog";
 import {InscriptionComponent} from "../../../dialogs/inscription/inscription.component";
+import {TimeRecord} from "../../../domain/time-record";
 
 @Component({
   selector: 'app-race',
@@ -43,7 +44,15 @@ export class RaceComponent implements OnDestroy {
   private subscription: Subscription = new Subscription();
   public maxEventId: number = 0;
   public maxHeatId: number = 0;
-  public event: SwimmingEvent = {heats: -1, id: -1, description: 'not found',time:"99:99",date:"99/99/9999",intermediates:-1};
+  private laneDelta: number = 0;
+  public event: SwimmingEvent = {
+    heats: -1,
+    id: -1,
+    description: 'not found',
+    time: "99:99",
+    date: "99/99/9999",
+    distances: []
+  };
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -65,12 +74,12 @@ export class RaceComponent implements OnDestroy {
     }));
     this.subscription.add(
       this.backendMessageService.subscribe(message => {
-        if(message.eventId == this.eventId && message.heatId == this.heatId){
+        if (message.eventId == this.eventId && message.heatId == this.heatId) {
           if (message.action === TimingAction.REFRESH_INSCRIPTIONS) {
             this.loadInscriptions();
           }
           if (message.action == TimingAction.REFRESH_TIMES) {
-            this.setTime(message.laneId, message.body);
+            this.setTime(this.lanes[message.laneId - this.laneDelta], {distance: message.distance, time: message.body});
           }
         }
       })
@@ -80,11 +89,12 @@ export class RaceComponent implements OnDestroy {
   private loadConfig() {
     this.subscription.add(
       this.poolConfigService.get().subscribe(config => {
+        this.laneDelta = config.lanes[0];
         this.lanes = config.lanes.map(lane => {
           return {
             lane,
             inscription: {lane, name: "", heat: -1, entrytime: "", clubcode: "", event: -1, nation: "", agetext: ""},
-            time: ""
+            times: []
           };
         });
         this.loadEvents();
@@ -148,10 +158,7 @@ export class RaceComponent implements OnDestroy {
     this.subscription.add(
       this.inscriptionService.getByEventAndHeat(this.eventId, this.heatId).subscribe(inscriptions => {
         inscriptions.forEach(inscription => {
-          const lane = this.lanes.find(lane => lane.lane == inscription.lane);
-          if (lane) {
-            lane.inscription = inscription;
-          }
+          this.lanes[inscription.lane - this.laneDelta].inscription = inscription;
         })
       })
     );
@@ -161,22 +168,19 @@ export class RaceComponent implements OnDestroy {
     this.subscription.add(
       this.manualTimeService.getByEventAndHeat(this.eventId, this.heatId).subscribe(times => {
         times.forEach(time => {
-          this.setTime(time.lane, time.time);
+          this.setTime(this.lanes[time.lane - this.laneDelta], {distance: time.distance, time: time.time});
         });
       })
     );
   }
 
-  private setTime(laneId: number, time: string) {
-    const lane = this.lanes.find(lane => lane.lane == laneId);
-    if (lane) {
-      lane.time = time;
-    }
-
+  private setTime(lane: Lane, timeRecord: TimeRecord) {
+    //TODO: order
+    lane.times.push(timeRecord);
   }
 
   popup(inscription: Inscription) {
-    this.dialog.open(InscriptionComponent,{data:inscription});
+    this.dialog.open(InscriptionComponent, {data: inscription});
   }
 }
 

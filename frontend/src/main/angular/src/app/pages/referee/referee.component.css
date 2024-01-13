@@ -25,6 +25,7 @@ mat-form-field {
 }
 .heat{
     display: flex;
+    flex-flow: wrap;
     align-items: center;
     border-bottom: 1px dashed lightgray;
 }
@@ -61,7 +62,7 @@ div:nth-child(odd).heat{
     border:4px dashed greenyellow;
     background-color: lightblue;
     padding: 10px;
-    display:none;
+    display:flex;
 }
 .funky{
   background-color: deeppink;

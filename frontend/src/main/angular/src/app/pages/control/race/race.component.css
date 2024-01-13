@@ -2,10 +2,7 @@ mat-card{
   background-color: rgba(255, 255, 255, 0.7);
 
 }
-.lane{
-  display:flex;
-  align-items: center;
-}
+
 .title{
   display:flex;
   align-items: center;
@@ -16,6 +13,11 @@ div.title span+span{
 }
 div:nth-child(odd).lane{
   background-color: rgba(7, 63, 138, 0.2);
+}
+.lane{
+  display:flex;
+  flex-flow: wrap;
+  align-items: center;
 }
 .laneId {
   flex: 0 0 35px;
@@ -34,5 +36,8 @@ div:nth-child(odd).lane{
   margin-right: 5px;
 }
 .time{
-  flex: 0 0 80px;
+  flex: 0 0 auto;
+}
+span.time+span.time:before{
+  content:", ";
 }
