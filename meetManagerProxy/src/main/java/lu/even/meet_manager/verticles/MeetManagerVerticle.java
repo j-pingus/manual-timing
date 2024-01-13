@@ -151,7 +151,7 @@ public class MeetManagerVerticle extends AbstractVerticle {
             describe(e),
             e.time(),
             e.date(),
-            DistanceConverter.getIntermediates(e.distance(), this.poolConfig.length())
+            DistanceConverter.getIntermediates(e.distance(), this.poolConfig.length(),this.poolConfig.bothEndsTiming())
           ))
           .sorted(Comparator.comparingInt(SwimmingEvent::id))
           .collect(Collectors.toList());
