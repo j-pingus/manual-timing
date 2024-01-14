@@ -21,7 +21,7 @@ span{
     display:none;
 }
 mat-form-field {
-    margin-left: 10px;
+    margin-left: 4px;
 }
 .heat{
     display: flex;
@@ -51,11 +51,15 @@ div:nth-child(odd).heat{
     background-color: #073f8a;
 }
 .swimmer{
-  flex: 0 1 250px;
+  flex: 0 1 auto;
+  width: 15rem;
+  display:inline-block;
   text-align: right;
 }
 .time{
-  flex: 0 0 110px;
+  flex: 0 0 auto;
+  margin: auto;
+  width: 6.2rem;
 }
 .data{
     margin-top: 25vh;
