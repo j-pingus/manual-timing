@@ -8,15 +8,23 @@ span{
   display: inline-block;
 }
 span.lane{
+  display: inline-block;
   width: 1rem;
+  text-align: center;
 }
 span.swimmer{
   min-width: 15rem;
   text-align: right;
 }
 span.time{
-  min-width: 4rem;
+  display: inline-block;
+  width: 4rem;
 }
-span.time+span.time:before{
-  content:", ";
+span.timeHeader{
+  display: inline-block;
+  width: 4rem;
+}
+.header{
+  font-weight: bolder;
+  text-align: center;
 }
