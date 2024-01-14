@@ -62,10 +62,6 @@ div:nth-child(odd).heat{
     border:4px dashed greenyellow;
     background-color: lightblue;
     padding: 10px;
-    display:flex;
+    display:none;
 }
-.funky{
-  background-color: deeppink;
-  padding: 3px;
-  border: 3px dotted lime;
-}
+

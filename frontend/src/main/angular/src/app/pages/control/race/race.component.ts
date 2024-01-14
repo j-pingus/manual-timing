@@ -99,7 +99,6 @@ export class RaceComponent implements OnDestroy {
         });
         this.loadEvents();
         this.loadInscriptions();
-        this.loadTimes();
       })
     );
   }
@@ -110,6 +109,12 @@ export class RaceComponent implements OnDestroy {
         this.event = events.find(e => e.id == this.eventId) || this.event;
         this.maxEventId = events[events.length - 1].id;
         this.maxHeatId = this.event.heats;
+        for(let lane of this.lanes){
+          if(lane.times.length==0){
+            lane.times = this.event.distances.map(distance=>{return {time:'',distance}});
+          }
+        }
+        this.loadTimes();
       })
     )
   }
@@ -175,8 +180,12 @@ export class RaceComponent implements OnDestroy {
   }
 
   private setTime(lane: Lane, timeRecord: TimeRecord) {
-    //TODO: order
-    lane.times.push(timeRecord);
+    for (let time of lane.times) {
+      if (time.distance == timeRecord.distance) {
+        time.time = timeRecord.time;
+        return;
+      }
+    }
   }
 
   popup(inscription: Inscription) {

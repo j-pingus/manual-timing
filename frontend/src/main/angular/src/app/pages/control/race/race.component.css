@@ -5,6 +5,7 @@ mat-card{
 
 .title{
   display:flex;
+  flex-flow: wrap;
   align-items: center;
   border-bottom: 1px solid black;
 }
@@ -31,13 +32,24 @@ div:nth-child(odd).lane{
   background-color: #073f8a;
 }
 .swimmer{
-  flex: 0 1 300px;
+  flex: 0 1 auto;
+  width: 8rem;
+  display:inline-block;
   text-align: right;
   margin-right: 5px;
 }
 .time{
   flex: 0 0 auto;
+  display: inline-block;
+  width: 4rem;
 }
-span.time+span.time:before{
-  content:", ";
+span.time+span.time{
+  border-left:1px solid black;
+}
+.data{
+  margin-top: 25vh;
+  border:4px dashed greenyellow;
+  background-color: lightblue;
+  padding: 10px;
+  display:none;
 }
