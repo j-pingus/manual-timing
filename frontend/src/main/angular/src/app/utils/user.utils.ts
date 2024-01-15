@@ -1,27 +1,31 @@
-import {Constants} from "../Constants";
 import {User} from "../domain/user";
 
 export class UserUtils {
+  private static USER_ID = 'user.id';
+  private static USER_DATA = 'user.data';
 
-    static saveUser(data: User) {
-        localStorage.clear();
-        localStorage.setItem(Constants.USER_DATA, JSON.stringify(data));
+  static saveUser(data: User) {
+    localStorage.setItem(UserUtils.USER_DATA, JSON.stringify(data));
+  }
 
-    }
-    static logout(){
-      sessionStorage.removeItem(Constants.USER_ID);
-    }
-    static saveUserId(data: string) {
-        sessionStorage.clear();
-        sessionStorage.setItem(Constants.USER_ID, data);
-    }
+  static getSavedUser(): User {
+    const storageData = localStorage.getItem(UserUtils.USER_DATA);
+    return JSON.parse(storageData ? storageData : '{}') as User;
+  }
 
-    static getSavedUser(): User {
-        const storageData = localStorage.getItem(Constants.USER_DATA);
-        return JSON.parse(storageData ? storageData : '{}') as User;
-    }
+  static logout() {
+    localStorage.removeItem(UserUtils.USER_ID);
+  }
 
-    static isRegistered() {
-        return sessionStorage.getItem(Constants.USER_ID) != null;
-    }
+  static saveUserId(data: string) {
+    localStorage.setItem(UserUtils.USER_ID, data);
+  }
+
+  static isRegistered() {
+    return localStorage.getItem(UserUtils.USER_ID) != null;
+  }
+
+  static getUserId(): string {
+    return localStorage.getItem(UserUtils.USER_ID) as string;
+  }
 }

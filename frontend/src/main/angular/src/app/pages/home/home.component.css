@@ -24,3 +24,7 @@ span{
 button {
   margin: 8px;
 }
+.error{
+  color: red;
+  font-weight: bolder;
+}

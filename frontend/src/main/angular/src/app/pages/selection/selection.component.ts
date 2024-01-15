@@ -12,7 +12,6 @@ import {Observable} from "rxjs";
 import {PoolConfig} from "../../domain/pool-config";
 import {User} from "../../domain/user";
 import {UserService} from "../../services/user.service";
-import {Constants} from "../../Constants";
 import {Router} from "@angular/router";
 import {UserUtils} from "../../utils/user.utils";
 
@@ -51,7 +50,7 @@ export class SelectionComponent {
 
   register() {
     if (UserUtils.isRegistered()) {
-      this.data.uuid = sessionStorage.getItem(Constants.USER_ID) as string;
+      this.data.uuid = UserUtils.getUserId();
       this.userService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
           this.errorMessage = 'wrong password provided';

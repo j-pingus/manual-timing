@@ -1,9 +1,9 @@
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Constants} from "../Constants";
 import {catchError, Observable, throwError} from "rxjs";
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {UserUtils} from "../utils/user.utils";
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()
@@ -12,7 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = 'Bearer: ' + sessionStorage.getItem(Constants.USER_ID);
+    const authToken = 'Bearer: ' + UserUtils.getUserId();
     const newReq = req.clone({
       setHeaders: {Authorization: authToken}
     });
