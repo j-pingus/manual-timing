@@ -8,6 +8,7 @@ import {InscriptionsService} from "../../services/inscriptions.service";
 import {ManualTimeService} from "../../services/manual.time.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {ManualTimePipe} from "../../pipes/manual-time.pipe";
+import {TimeRecord} from "../../domain/time-record";
 
 @Component({
   selector: 'app-print-event',
@@ -23,7 +24,7 @@ import {ManualTimePipe} from "../../pipes/manual-time.pipe";
 export class PrintEventComponent implements OnDestroy {
   private subscription: Subscription = new Subscription();
   public eventId: number = 0;
-  public event: SwimmingEvent = {heats: -1, id: -1, description: "Not found",time:"99:99",date:"99/99/9999",intermediates:-1};
+  public event: SwimmingEvent = {heats: -1, id: -1, description: "Not found",time:"99:99",date:"99/99/9999",distances:[]};
   public heats: Array<Array<Time>> = [];
 
   ngOnDestroy(): void {
@@ -71,7 +72,7 @@ export class PrintEventComponent implements OnDestroy {
           times=>times.forEach(t=>{
             this.heats[heat-1].forEach(time=>{
               if(time.lane==t.lane){
-                time.time=t.time;
+                time.times.push({time:t.time,distance:t.distance});
               }
             })
           })
@@ -85,7 +86,7 @@ export class PrintEventComponent implements OnDestroy {
         for (let heat = 1; heat <= this.event.heats; heat++) {
           const times:Array<Time>=[];
           config.lanes.forEach(lane=>
-            times.push({lane})
+            times.push({lane,times:[]})
           )
           this.heats.push(times);
           this.loadInscriptions(this.eventId,heat);
@@ -99,5 +100,5 @@ export class PrintEventComponent implements OnDestroy {
 interface Time {
   lane: number;
   name?: string;
-  time?: string;
+  times: Array<TimeRecord>;
 }

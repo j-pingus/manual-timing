@@ -7,9 +7,19 @@ public class ManualTime {
   int event;
   int heat;
   int lane;
+  int distance;
   String time;
 
   public ManualTime() {
+  }
+
+  public int getDistance() {
+    return distance;
+  }
+
+  public ManualTime setDistance(int distance) {
+    this.distance = distance;
+    return this;
   }
 
   public int getEvent() {
@@ -36,7 +46,8 @@ public class ManualTime {
       "event=" + event +
       ", heat=" + heat +
       ", lane=" + lane +
-      ", time='" + time + '\'' +
+      ", distance=" + distance +
+      "m, time='" + time + '\'' +
       '}';
   }
 
@@ -63,11 +74,11 @@ public class ManualTime {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ManualTime that = (ManualTime) o;
-    return event == that.event && heat == that.heat && lane == that.lane;
+    return event == that.event && heat == that.heat && lane == that.lane && distance == that.distance;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(event, heat, lane);
+    return Objects.hash(event, heat, lane, distance);
   }
 }

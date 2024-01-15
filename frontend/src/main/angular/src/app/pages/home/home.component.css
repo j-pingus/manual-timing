@@ -1,26 +1,36 @@
-.container{
-  height: 90vh;
-  display:flex;
-  background-image: url( '/assets/cnw.svg' );
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  background-size: 25%;
+@media only screen {
+  .container {
+    height: 90vh;
+    display: flex;
+    background-image: url('/assets/cnw.svg');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: 25%;
+  }
+  .scroll {
+    overflow-y: scroll;
+  }
 }
-.scroll{
-  overflow-y: scroll;
+@media print {
+  .noprint{
+    display: none;
+  }
 }
-.app-header{
+.app-header {
   display: flex;
   flex-flow: row;
   align-items: center;
   width: 90vw;
 }
-span{
+
+span {
   flex: 1 1 auto;
 }
-.filler{
+
+.filler {
   flex: 1 0 auto;
 }
+
 button {
   margin: 8px;
 }

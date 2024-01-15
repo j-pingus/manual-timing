@@ -52,10 +52,11 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
             .setEvent(row.getInteger("EVENT"))
             .setHeat(row.getInteger("HEAT"))
             .setLane(row.getInteger("LANE"))
+            .setDistance(row.getInteger("DISTANCE"))
             .setTime(row.getString("TIME"))
         ).collect(Collectors.toList());
         logger.info("Loaded times:{}", times);
-        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1,null);
+        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1,-1, null);
       }
     });
   }
@@ -63,7 +64,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
   private void createTable(JDBCClient client) {
     client.getConnection(con -> {
       if (con.succeeded()) {
-        con.result().execute("create table times(event int, heat int, lane int, time varchar)",
+        con.result().execute("create table times(event int, heat int, lane int, distance int, time varchar)",
           rh -> logger.info("table times created:{}", rh.succeeded(), rh.cause())
         );
         con.result().close();
@@ -79,7 +80,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
     if (message.body().action() == EventAction.SAVE_TIME) {
       ManualTime time = Json.decodeValue(message.body().body(), ManualTime.class);
       save(time);
-      answer(message,"ok");
+      answer(message, "ok");
     }
   }
 
@@ -89,9 +90,10 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
       .add(time.getTime())
       .add(time.getEvent())
       .add(time.getHeat())
-      .add(time.getLane());
+      .add(time.getLane())
+      .add(time.getDistance());
     client.updateWithParams(
-      "update times set time=? where event=? and heat=? and lane=?",
+      "update times set time=? where event=? and heat=? and lane=? and distance=?",
       params,
       uh -> {
         if (uh.succeeded()) {
@@ -99,7 +101,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
             logger.info("Updated: {}", time);
           } else {
             client.updateWithParams(
-              "insert into times(time,event,heat,lane)values(?,?,?,?)",
+              "insert into times(time,event,heat,lane,distance)values(?,?,?,?,?)",
               params,
               uh2 -> {
                 if (uh2.succeeded()) {

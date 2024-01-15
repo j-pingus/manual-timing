@@ -10,6 +10,7 @@ export interface TimingMessage {
     eventId: number;
     heatId: number;
     laneId: number;
+    distance: number;
 }
 
 export enum TimingAction {

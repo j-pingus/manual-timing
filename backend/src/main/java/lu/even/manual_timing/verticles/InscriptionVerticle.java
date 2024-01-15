@@ -55,7 +55,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     Inscription[] list = Json.decodeValue(body, Inscription[].class);
     get(event).put(heat, Arrays.asList(list));
     logger.info("loaded inscriptions: " + get(event, heat));
-    sendMessage(EventAction.REFRESH_INSCRIPTIONS,"replaced",event,heat,-1);
+    sendMessage(EventAction.REFRESH_INSCRIPTIONS,"replaced",event,heat,-1,-1);
     return "";
   }
 
@@ -81,7 +81,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     var inscriptions = get(inscription.event(), inscription.heat());
     inscriptions.remove(inscription);
     inscriptions.add(inscription);
-    this.sendMessage(EventAction.REFRESH_INSCRIPTIONS, "", inscription.event(), inscription.heat(), inscription.lane());
+    this.sendMessage(EventAction.REFRESH_INSCRIPTIONS, "", inscription.event(), inscription.heat(), inscription.lane(),-1);
     return "";
   }
 

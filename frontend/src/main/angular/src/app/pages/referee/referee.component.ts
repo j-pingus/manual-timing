@@ -24,6 +24,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Inscription} from "../../domain/inscription";
 import {InscriptionComponent} from "../../dialogs/inscription/inscription.component";
 import {MatDialog} from "@angular/material/dialog";
+import {TimeRecord} from "../../domain/time-record";
 
 @Component({
   selector: 'app-referee',
@@ -74,10 +75,11 @@ export class RefereeComponent implements OnDestroy, OnInit {
           this.getEventInscriptions();
         }
         if (this.user.lane == message.laneId && message.action === TimingAction.REFRESH_TIMES) {
-          const heat = this.heats.find(h => h.id == message.heatId);
-          if (heat) {
-            heat.time = message.body;
-          }
+          this.heats[message.heatId-1].times.forEach(tr=>{
+            if(tr.distance==message.distance){
+              tr.time=message.body;
+            }
+          })
         }
       }
     }));
@@ -103,16 +105,17 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.router.navigate(['/referee', this.eventId - 1]);
   }
 
-  save(heat: Heat, model: NgControl) {
+  save(heatId:number,timeRecord: TimeRecord, model: NgControl) {
     if (this.user.lane != undefined && this.eventId && !model.pristine) {
       this.manualTimeService.save(
         {
-          time: this.manualTime.transform(heat.time),
-          heat: heat.id,
+          time: this.manualTime.transform(timeRecord.time),
+          distance:timeRecord.distance,
+          heat: heatId,
           lane: this.user.lane,
           event: this.eventId
         }).subscribe(() => {
-          model.reset(heat.time);
+          model.reset(timeRecord.time);
           this.snackBar.open('Time saved', undefined, {
             verticalPosition: 'top'
           })
@@ -133,9 +136,12 @@ export class RefereeComponent implements OnDestroy, OnInit {
         }
         this.event = data[this.eventId - 1];
         this.heats = [];
+        var times: Array<TimeRecord> = [];
+        this.event.distances.forEach(distance => times.push({distance, time: ''}));
         for (let i = 1; i <= data[this.eventId - 1].heats; i++) {
-          this.heats.push({id: i});
+          this.heats.push({id: i, times: JSON.parse(JSON.stringify(times))});
         }
+        console.log('init heats:', this.heats);
         this.getEventInscriptions();
         this.getEventTimes();
       }
@@ -149,7 +155,6 @@ export class RefereeComponent implements OnDestroy, OnInit {
           inscriptions.forEach(inscription => {
             this.heats[inscription.heat - 1].inscription = inscription;
           });
-          console.log('heats:',this.heats);
         })
       );
     }
@@ -158,17 +163,25 @@ export class RefereeComponent implements OnDestroy, OnInit {
   private getEventTimes() {
     if (this.user.lane != undefined && this.event) {
       this.subscription.add(
-        this.manualTimeService.getByEventAndLane(this.event.id, this.user.lane).subscribe(inscriptions => {
-          inscriptions.forEach(time => {
-            this.heats[time.heat - 1].time = this.manualTime.transform(time.time);
+        this.manualTimeService.getByEventAndLane(this.event.id, this.user.lane).subscribe(manualTime => {
+          manualTime.forEach(time => {
+            this.heats[time.heat - 1].times.forEach(
+              timeRecord=>{
+                if(timeRecord.distance==time.distance){
+                  timeRecord.time=time.time;
+                }
+              }
+            )
           })
         })
       );
     }
   }
 
-  popup(inscription: Inscription) {
-    this.dialog.open(InscriptionComponent,{data:inscription});
+  popup(inscription: Inscription | undefined) {
+    if (inscription) {
+      this.dialog.open(InscriptionComponent, {data: inscription});
+    }
   }
 }
 

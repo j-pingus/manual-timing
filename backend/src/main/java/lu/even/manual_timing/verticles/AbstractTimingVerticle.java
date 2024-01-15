@@ -32,7 +32,7 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
       if (response != null) {
         message.reply(Json.encode(response));
       } else {
-        message.fail(500,"cannot answer to "+message.body().action());
+        message.fail(500, "cannot answer to " + message.body().action());
       }
   }
 
@@ -49,8 +49,8 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
       this.onMessage(
         EventTypes.getByName(eventMessage.address()),
         eventMessage);
-    }catch(Throwable e){
-      logger.warn("captured:",e);
+    } catch (Throwable e) {
+      logger.warn("captured:", e);
     }
   }
 
@@ -62,15 +62,15 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
    * @param body the message you want to send can be simple string or complex object
    */
   void sendMessage(EventAction action, Object body) {
-    this.sendMessage(action, body, -1, -1, -1);
+    this.sendMessage(action, body, -1, -1, -1, -1);
   }
 
-  void sendMessage(EventAction action, Object body, int event, int heat, int lane) {
-    this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane, null);
+  void sendMessage(EventAction action, Object body, int event, int heat, int lane, int distance) {
+    this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane, distance, null);
   }
 
-  void sendMessage(EventTypes type, EventAction action, Object body, int event, int heat, int lane, String authorization) {
-    vertx.eventBus().publish(type.getName(), new EventMessage(action, Json.encode(body), event, heat, lane, authorization));
+  void sendMessage(EventTypes type, EventAction action, Object body, int event, int heat, int lane, int distance, String authorization) {
+    vertx.eventBus().publish(type.getName(), new EventMessage(action, Json.encode(body), event, heat, lane, distance, authorization));
   }
 
   String dump(Object object, String id) throws IOException {

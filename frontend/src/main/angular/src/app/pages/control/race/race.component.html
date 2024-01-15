@@ -15,14 +15,17 @@
   </mat-card-header>
     <mat-card-content >
       <div class="title">
-      <span class="laneId">lane</span>
-      <span class="swimmer">swimmer</span>
-      <span class="time">time</span>
+        <span class="laneId">lane</span>
+        <span class="swimmer">swimmer</span>
+        <span class="time" *ngFor="let distance of event.distances">{{distance}}m</span>
       </div>
       <div class="lane" *ngFor="let lane of lanes">
         <span class="laneId">{{lane.lane}}</span>
         <span class="swimmer"><a href="javascript:void(0)" (click)="popup(lane.inscription)">{{lane.inscription?.name}}</a></span>
-        <span class="time">{{lane.time|manualTime}}</span>
+        <span class="time" *ngFor="let time of lane.times">{{time.time|manualTime}}</span>
       </div>
     </mat-card-content>
 </mat-card>
+<div class="data">
+  {{lanes | json}}
+</div>
