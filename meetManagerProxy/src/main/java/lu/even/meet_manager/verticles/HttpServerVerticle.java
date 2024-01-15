@@ -26,6 +26,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     router = Router.router(vertx);
     bus = vertx.eventBus();
     this.routeGet("/api/load",MeetManagerVerticle.EVENT_TYPE);
+    //this.routeGet("/api/stress",StressManagerVerticle.EVENT_TYPE);
     // Body handler for parsing request bodies
     router.route().handler(BodyHandler.create());
     //Handle static content in webcontent resource folder
