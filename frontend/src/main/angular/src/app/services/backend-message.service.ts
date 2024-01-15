@@ -12,7 +12,6 @@ export class BackendMessageService {
 
     constructor() {
         const serverMessageSubject=new Subject<TimingMessage>();
-        console.log('eventBus address:',environment.eventBus);
         const eventBus = new EventBus(environment.eventBus);
          eventBus.onopen = function () {
             eventBus.registerHandler('timing.message', (error: any, message: EventBusMessage) => {
@@ -20,7 +19,6 @@ export class BackendMessageService {
                     console.error('error:', error);
                 }
                 message.body.body = JSON.parse(message.body.body);
-                console.log('message:', message);
                 serverMessageSubject.next(message.body);
             });
         };

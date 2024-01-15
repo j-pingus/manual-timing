@@ -54,7 +54,6 @@ export class SelectionComponent {
       this.userService.save(this.data).subscribe((data) => {
         if (!data.uuid) {
           this.errorMessage = 'wrong password provided';
-          console.log("logging out");
           UserUtils.logout();
           this.computeNeedPassword();
         } else {
@@ -76,7 +75,6 @@ export class SelectionComponent {
 
   roleSelected($event: MatChipListboxChange) {
     if (this.data.role == 'control' && $event.value == 'referee') {
-      console.log("logging out");
       UserUtils.logout();
     }
     this.data.role = $event.value;

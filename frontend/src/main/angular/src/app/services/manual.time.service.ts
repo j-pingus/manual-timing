@@ -47,7 +47,6 @@ export class ManualTimeService {
   }
 
   private copyToLocal() {
-    console.log("save cache:", this.saveCache);
     this.cacheSize.next(this.saveCache.length);
     localStorage.setItem(ManualTimeService.CACHE_KEY, JSON.stringify(this.saveCache));
   }

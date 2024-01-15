@@ -1,14 +1,17 @@
 <mat-toolbar class="noprint" color="primary">
-    <span>CNW Manual Timing</span>
-    <span class="filler"></span>
-  <span *ngIf="cacheSize>0"><a mat-button color="warn" (click)="retrySaveTime()">You are offline!, retry saving by clicking here</a></span>
-    <button mat-mini-fab color="primary" aria-label="go to home page" matTooltip="Select another lane"
-            (click)="navigateHome()">
-        <mat-icon>home</mat-icon>
-    </button>
+  <span>CNW Manual Timing</span>
+  <span class="filler"></span>
+
+  <button mat-mini-fab color="primary" aria-label="go to home page" matTooltip="Select another lane"
+          (click)="navigateHome()">
+    <mat-icon>home</mat-icon>
+  </button>
 </mat-toolbar>
 <mat-card class="container">
-    <mat-card-content class="scroll">
-        <router-outlet></router-outlet>
-    </mat-card-content>
+  <span *ngIf="cacheSize>0">
+    <a mat-button mat-raised-button color="warn"
+       (click)="retrySaveTime()">You are offline!, when online again click here to save</a></span>
+  <mat-card-content class="scroll">
+    <router-outlet></router-outlet>
+  </mat-card-content>
 </mat-card>

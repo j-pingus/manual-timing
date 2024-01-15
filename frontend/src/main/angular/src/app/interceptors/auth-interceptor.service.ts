@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(newReq).pipe(
       catchError(error => {
         if (error.status == 401) {
-          console.error('please login');
           this._snackBar.open('You are not authorized to perform this operation, please login as referee');
           this.router.navigate(['/']);
         } else {

@@ -141,7 +141,6 @@ export class RefereeComponent implements OnDestroy, OnInit {
         for (let i = 1; i <= data[this.eventId - 1].heats; i++) {
           this.heats.push({id: i, times: JSON.parse(JSON.stringify(times))});
         }
-        console.log('init heats:', this.heats);
         this.getEventInscriptions();
         this.getEventTimes();
       }
