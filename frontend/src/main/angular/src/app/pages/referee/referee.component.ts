@@ -77,7 +77,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
         if (this.user.lane == message.laneId && message.action === TimingAction.REFRESH_TIMES) {
           this.heats[message.heatId-1].times.forEach(tr=>{
             if(tr.distance==message.distance){
-              tr.time=message.body;
+              tr.time=this.manualTime.transform(message.body);
             }
           })
         }
@@ -167,7 +167,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
             this.heats[time.heat - 1].times.forEach(
               timeRecord=>{
                 if(timeRecord.distance==time.distance){
-                  timeRecord.time=time.time;
+                  timeRecord.time=this.manualTime.transform(time.time);
                 }
               }
             )
