@@ -1,0 +1,21 @@
+.container{
+  height: 80vh;
+  width: 80vw;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.head{
+  flex:0 1 auto;
+  background-color: #8c8cff;
+  padding: 4px;
+  height: 20px;
+}
+.content{
+  flex:1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+.bigButton{
+  flex:1 1 auto;
+  font-size: xxx-large;
+}

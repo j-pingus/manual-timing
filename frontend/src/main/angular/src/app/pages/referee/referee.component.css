@@ -59,7 +59,7 @@ div:nth-child(odd).heat{
 .time{
   flex: 0 0 auto;
   margin: auto;
-  width: 6.2rem;
+  width: 6.7rem;
 }
 .data{
     margin-top: 25vh;
@@ -68,4 +68,6 @@ div:nth-child(odd).heat{
     padding: 10px;
     display:none;
 }
-
+.startTimer{
+  margin: 10px;
+}

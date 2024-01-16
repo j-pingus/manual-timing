@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="head">{{timerText}}</div>
+  <div class="content">
+    <button (click)="buttonPushed()"
+            mat-button mat-raised-button color="warn" class="bigButton">
+      {{buttonText}}
+    </button>
+    <button (click)="skip()"
+            mat-button mat-raised-button color="normal">
+      skip
+    </button>
+  </div>
+</div>

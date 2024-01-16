@@ -17,7 +17,7 @@
     <input [(ngModel)]="data.password" name="password" matInput type="password">
   </mat-form-field>
   <span class="error">{{errorMessage}}</span>
-  <button mat-fab color="primary" aria-label="Example icon button with a delete icon" matTooltip="Start timing"
+  <button mat-fab color="primary" aria-label="Start timing" matTooltip="Start timing"
           class="field" *ngIf="data?.name && data?.role && (!needPassword || data.password ) && (data.lane != undefined || data?.role == 'control')"
           (click)="register()">
     <mat-icon>watch</mat-icon>

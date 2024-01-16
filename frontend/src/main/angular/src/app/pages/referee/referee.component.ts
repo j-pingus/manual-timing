@@ -25,6 +25,8 @@ import {Inscription} from "../../domain/inscription";
 import {InscriptionComponent} from "../../dialogs/inscription/inscription.component";
 import {MatDialog} from "@angular/material/dialog";
 import {TimeRecord} from "../../domain/time-record";
+import {TimerComponent} from "../../dialogs/timer/timer.component";
+import {TimerData} from "../../domain/timer-data";
 
 @Component({
   selector: 'app-referee',
@@ -75,9 +77,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
           this.getEventInscriptions();
         }
         if (this.user.lane == message.laneId && message.action === TimingAction.REFRESH_TIMES) {
-          this.heats[message.heatId-1].times.forEach(tr=>{
-            if(tr.distance==message.distance){
-              tr.time=this.manualTime.transform(message.body);
+          this.heats[message.heatId - 1].times.forEach(tr => {
+            if (tr.distance == message.distance) {
+              tr.time = this.manualTime.transform(message.body);
             }
           })
         }
@@ -105,12 +107,12 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.router.navigate(['/referee', this.eventId - 1]);
   }
 
-  save(heatId:number,timeRecord: TimeRecord, model: NgControl) {
+  save(heatId: number, timeRecord: TimeRecord, model: NgControl) {
     if (this.user.lane != undefined && this.eventId && !model.pristine) {
       this.manualTimeService.save(
         {
           time: this.manualTime.transform(timeRecord.time),
-          distance:timeRecord.distance,
+          distance: timeRecord.distance,
           heat: heatId,
           lane: this.user.lane,
           event: this.eventId
@@ -165,9 +167,9 @@ export class RefereeComponent implements OnDestroy, OnInit {
         this.manualTimeService.getByEventAndLane(this.event.id, this.user.lane).subscribe(manualTime => {
           manualTime.forEach(time => {
             this.heats[time.heat - 1].times.forEach(
-              timeRecord=>{
-                if(timeRecord.distance==time.distance){
-                  timeRecord.time=this.manualTime.transform(time.time);
+              timeRecord => {
+                if (timeRecord.distance == time.distance) {
+                  timeRecord.time = this.manualTime.transform(time.time);
                 }
               }
             )
@@ -180,6 +182,19 @@ export class RefereeComponent implements OnDestroy, OnInit {
   popup(inscription: Inscription | undefined) {
     if (inscription) {
       this.dialog.open(InscriptionComponent, {data: inscription});
+    }
+  }
+
+  openTimer(heat: Heat) {
+    if (this.user.lane) {
+      var data: TimerData = {
+        times: JSON.parse(JSON.stringify(heat.times)),
+        eventId: this.eventId,
+        heatId: heat.id,
+        lane: this.user.lane,
+        minimumDelay: 3000 //10 seconds delay
+      }
+      this.dialog.open(TimerComponent, {data});
     }
   }
 }
