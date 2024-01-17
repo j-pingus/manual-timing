@@ -27,6 +27,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {TimeRecord} from "../../domain/time-record";
 import {TimerComponent} from "../../dialogs/timer/timer.component";
 import {TimerData} from "../../domain/timer-data";
+import {PoolConfigService} from "../../services/pool-config.service";
+import {PoolConfig} from "../../domain/pool-config";
 
 @Component({
   selector: 'app-referee',
@@ -55,6 +57,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
   public user: User;
   private manualTime = new ManualTimePipe();
   private subscription: Subscription;
+  private poolConfig: PoolConfig = {length: 0, lanes: [], bothEndsTiming: false, minTimeSeconds: 0};
 
   constructor(messageService: BackendMessageService,
               private eventService: EventService,
@@ -63,11 +66,12 @@ export class RefereeComponent implements OnDestroy, OnInit {
               route: ActivatedRoute,
               private router: Router,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private poolConfigService: PoolConfigService) {
     this.subscription = new Subscription();
     this.subscription.add(route.params.subscribe(params => {
       this.eventId = +params['id']; // (+) converts string 'id' to a number
-      this.getEvents();
+      this.getPoolConfig();
 
     }));
     this.subscription.add(messageService.subscribe(message => {
@@ -192,10 +196,17 @@ export class RefereeComponent implements OnDestroy, OnInit {
         eventId: this.eventId,
         heatId: heat.id,
         lane: this.user.lane,
-        minimumDelay: 3000 //10 seconds delay
+        minimumDelay: this.poolConfig.minTimeSeconds * 1000
       }
       this.dialog.open(TimerComponent, {data});
     }
+  }
+
+  private getPoolConfig() {
+    this.subscription.add(this.poolConfigService.get().subscribe((config) => {
+      this.poolConfig = config;
+      this.getEvents();
+    }))
   }
 }
 

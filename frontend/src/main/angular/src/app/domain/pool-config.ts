@@ -1,4 +1,6 @@
 export interface PoolConfig {
   lanes: Array<number>,
-  length: number
+  length: number,
+  minTimeSeconds:number,
+  bothEndsTiming:boolean
 }
