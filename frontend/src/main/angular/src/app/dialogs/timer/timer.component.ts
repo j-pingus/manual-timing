@@ -28,13 +28,14 @@ export class TimerComponent {
               @Inject(MAT_DIALOG_DATA) private timerData: TimerData,
               private manualTimeService: ManualTimeService,
               backendMessage: BackendMessageService) {
+    dialog.disableClose = true;
     backendMessage.subscribe((message) => {
       if (message.eventId == timerData.eventId &&
         message.heatId == timerData.heatId &&
         message.laneId == timerData.lane &&
-        message.action == TimingAction.REFRESH_TIMES){
-        const index = timerData.times.findIndex(t=>t.distance==message.distance);
-        if(index!=-1){
+        message.action == TimingAction.REFRESH_TIMES) {
+        const index = timerData.times.findIndex(t => t.distance == message.distance);
+        if (index != -1) {
           this.removeTime(index);
         }
       }
@@ -102,7 +103,12 @@ export class TimerComponent {
     }
     this.setTextWithDistance();
   }
-  public skip(){
-    this.removeTime(0);
+
+  public skip() {
+    if (this.startTimer == 0) {
+      this.dialog.close();
+    } else {
+      this.removeTime(0);
+    }
   }
 }
