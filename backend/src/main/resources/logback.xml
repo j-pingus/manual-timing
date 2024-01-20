@@ -7,6 +7,11 @@
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
 		</encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>TRACE</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
 	</appender>
 	<logger name="org" level="info"/>
 	<logger name="com" level="info"/>
@@ -30,6 +35,11 @@
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
 		</encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>TRACE</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
 	</appender>
 	<logger name="lu.even.manual_timing.verticles.ManualTimeVerticle" level="info">
 		<appender-ref ref="TIMELOG" />

@@ -5,7 +5,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.ReplyException;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
@@ -84,8 +83,8 @@ public class HttpServerVerticle extends AbstractVerticle {
     //Handle static content in webcontent resource folder
     router.route().handler(StaticHandler.create("frontend/browser"));
     //Hack for angular
-    router.route("/*").method(HttpMethod.GET).handler(rc -> {
-      ActivityLogger.log(rc.request());
+    router.route("/*").handler(rc -> {
+      ActivityLogger.logIndex(rc.request());
       rc.response().send(indexBody);
     });
     HttpServer httpServer;
@@ -106,7 +105,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         vertx
           .createHttpServer()
           .requestHandler(r -> {
-            ActivityLogger.log(r);
+            ActivityLogger.logToSsl(r);
             r.response()
               .setStatusCode(301)
               .putHeader("Location", r.absoluteURI().replace("http", "https"))
@@ -184,7 +183,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
   private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {
     return event -> {
-      ActivityLogger.log(event.request());
+      ActivityLogger.logAPI(event.request());
       bus.<String>request(
         eventType.getName(),
         new EventMessage(
