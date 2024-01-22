@@ -6,13 +6,15 @@ import {ManualTime} from "../../domain/manual-time";
 import {ManualTimeService} from "../../services/manual.time.service";
 import {BackendMessageService} from "../../services/backend-message.service";
 import {TimingAction} from "../../domain/event-bus-message";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @Component({
   selector: 'app-timer',
   standalone: true,
-  imports: [
-    MatButtonModule
-  ],
+    imports: [
+        MatButtonModule,
+        MatProgressBarModule
+    ],
   templateUrl: './timer.component.html',
   styleUrl: './timer.component.css'
 })
@@ -23,7 +25,7 @@ export class TimerComponent {
   interval: any = undefined;
   startTimer = 0;
   lastRecord = 0;
-
+  readyRate = 0;
   constructor(private dialog: MatDialogRef<TimerComponent>,
               @Inject(MAT_DIALOG_DATA) private timerData: TimerData,
               private manualTimeService: ManualTimeService,
@@ -68,6 +70,7 @@ export class TimerComponent {
   private updateTimerText() {
     var ellapsed = Date.now() - this.startTimer;
     this.timerText = this.millisToText(ellapsed);
+    this.readyRate = (Date.now()-this.lastRecord)/this.timerData.minimumDelay*100;
   }
 
   private millisToText(ellapsed: number): string {
