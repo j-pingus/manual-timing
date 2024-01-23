@@ -49,7 +49,9 @@ public class HttpServerVerticle extends AbstractVerticle {
     router = Router.router(vertx);
     bus = vertx.eventBus();
     // Body handler for parsing request bodies
-    router.route().handler(BodyHandler.create());
+    var bodyHandler = BodyHandler.create(false);
+    bodyHandler.setBodyLimit(500 * 1024);
+    router.route().handler(bodyHandler);
     //Configuration of specific business domain rest endpoints
     // ==== Pool Config ====
     this.routeGet("/api/poolconfig", EventTypes.POOL_CONFIG);
