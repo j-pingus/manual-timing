@@ -6,7 +6,7 @@
 
   <groupId>lu.even</groupId>
   <artifactId>manual-timing</artifactId>
-  <version>1.3.2-SNAPSHOT</version>
+  <version>1.3.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>manual-timing</name>
   <!-- FIXME change it to the project's website -->
