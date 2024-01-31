@@ -1,39 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+  <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS},%msg%n" />
+  <property name="LOG_PATTERN_CONSOLE" value="%d{HH:mm:ss.SSS} %-5level - %msg%n" />
+  <property name="DAY_FILENAME" value="-%d{yyyy-MM-dd}.log.gz"/>
+	<timestamp key="dayPattern" datePattern="yyyyMMdd"/>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
-		</encoder>
-    <filter class="ch.qos.logback.classic.filter.LevelFilter">
-      <level>TRACE</level>
-      <onMatch>DENY</onMatch>
-      <onMismatch>ACCEPT</onMismatch>
-    </filter>
-	</appender>
-	<logger name="org" level="info"/>
-	<logger name="com" level="info"/>
-	<logger name="lu.even.manual_timing" level="debug"/>
-	<logger name="io" level="info"/>
-	<timestamp key="timestamp" datePattern="yyyyMMdd"/>
-	<appender name="TIMELOG" class="ch.qos.logback.core.FileAppender">
-		<file>${logs_dir:-.}/${timestamp}-time.log</file>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
+			<pattern>${LOG_PATTERN_CONSOLE}</pattern>
 		</encoder>
 	</appender>
-	<appender name="USERLOG" class="ch.qos.logback.core.FileAppender">
-		<file>${logs_dir:-.}/${timestamp}-user.log</file>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
+	<appender name="TIMELOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logs_dir:-.}/time.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${logs_dir:-.}/time${DAY_FILENAME}</fileNamePattern>
+      <maxHistory>3</maxHistory>
+      <totalSizeCap>5MB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+			<pattern>${LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
-	<appender name="ACTIVITYLOG" class="ch.qos.logback.core.FileAppender">
-		<file>${logs_dir:-.}/${timestamp}-activity.log</file>
+	<appender name="USERLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logs_dir:-.}/user.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${logs_dir:-.}/user${DAY_FILENAME}</fileNamePattern>
+      <maxHistory>3</maxHistory>
+      <totalSizeCap>5MB</totalSizeCap>
+    </rollingPolicy>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	<appender name="ACTIVITYLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logs_dir:-.}/activity.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${logs_dir:-.}/activity${DAY_FILENAME}</fileNamePattern>
+      <maxHistory>3</maxHistory>
+      <totalSizeCap>5MB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+			<pattern>${LOG_PATTERN}</pattern>
 		</encoder>
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>TRACE</level>
@@ -41,11 +48,15 @@
       <onMismatch>DENY</onMismatch>
     </filter>
 	</appender>
-	<logger name="lu.even.manual_timing.verticles.ManualTimeVerticle" level="info">
-		<appender-ref ref="TIMELOG" />
-	</logger>
+  <logger name="org" level="info"/>
+  <logger name="com" level="info"/>
+  <logger name="lu.even.manual_timing" level="debug"/>
+  <logger name="io" level="info"/>
 	<logger name="lu.even.manual_timing.verticles.UserVerticle" level="info">
 		<appender-ref ref="USERLOG" />
+	</logger>
+	<logger name="lu.even.manual_timing.verticles.ManualTimeVerticle" level="info">
+		<appender-ref ref="TIMELOG" />
 	</logger>
 	<logger name="lu.even.manual_timing.logger.ActivityLogger" level="trace">
 		<appender-ref ref="ACTIVITYLOG" />
