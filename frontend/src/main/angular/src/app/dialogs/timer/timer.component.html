@@ -1,8 +1,9 @@
 <div class="container">
   <div class="head">{{timerText}}</div>
+  <mat-progress-bar mode="determinate"  [value]="readyRate"></mat-progress-bar>
   <div class="content">
     <button (click)="buttonPushed()"
-            mat-button mat-raised-button color="warn" class="bigButton">
+            mat-button mat-raised-button [color]="readyRate<100?'warn':'primary'" class="bigButton">
       {{buttonText}}
     </button>
     <button (click)="skip()"
@@ -10,4 +11,5 @@
       skip
     </button>
   </div>
+  <mat-progress-bar mode="determinate"  [value]="readyRate"></mat-progress-bar>
 </div>

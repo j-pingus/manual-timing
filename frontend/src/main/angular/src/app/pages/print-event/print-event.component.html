@@ -2,7 +2,7 @@
 <div *ngFor="let heat of heats; let i=index">
   <h2>Heat #{{i + 1}}</h2>
   <div>
-    <span class="lane header">lane</span>
+    <span class="lane header">#</span>
     <span class="swimmer header">swimmer</span>
     <span class="time header" *ngFor="let distance of event.distances">{{distance}}m</span>
   </div>
