@@ -1,1 +1,100 @@
-{"eventid":"1152","heatinfo":{"key":"H","code":"1"},"status":2,"id":"2906","entries":[{"nation":"LUX","clubtext":"","clubcode":"SCD","entrytime":"NT","teamnumber":"1","id":"3966","agetext":"","uniqueid":284,"lane":2,"clubid":"3713","nametext":"Schwammclub D\u00e9ifferdang 1"},{"nation":"LUX","clubtext":"","clubcode":"SL","entrytime":"NT","teamnumber":"1","id":"2400","agetext":"","uniqueid":76,"lane":3,"clubid":"2048","nametext":"Swimming Luxembourg 1"},{"nation":"LUX","clubtext":"","clubcode":"SHARKS","entrytime":"NT","teamnumber":"3","id":"1962","agetext":"","uniqueid":64,"athletes":[{"fullname":"Frida Rivellini","id":"1891","swrid":"5343988"},{"fullname":"James Maclear","id":"1841","swrid":"5459510"},{"fullname":"Giulio Zausa","id":"1936","swrid":"5278544"},{"fullname":"Sara Lansbergen","id":"1829","swrid":"5499719"}],"lane":4,"clubid":"1750","nametext":"Lux Sharks 3"},{"nation":"LUX","clubtext":"","clubcode":"SCDE","entrytime":"NT","teamnumber":"2","id":"5776","agetext":"","uniqueid":472,"lane":5,"clubid":"4739","nametext":"Swimming Club Le Dauphin Ettel 2"},{"nation":"LUX","clubtext":"","clubcode":"SCD","entrytime":"NT","teamnumber":"3","id":"3970","agetext":"","uniqueid":321,"lane":6,"clubid":"3713","nametext":"Schwammclub D\u00e9ifferdang 3"}],"time":"17:23","code":"1"}
+{
+  "eventid": "1152",
+  "heatinfo": {
+    "key": "H",
+    "code": "1"
+  },
+  "status": 2,
+  "id": "2906",
+  "entries": [
+    {
+      "nation": "LUX",
+      "clubtext": "",
+      "clubcode": "SCD",
+      "entrytime": "NT",
+      "teamnumber": "1",
+      "id": "3966",
+      "agetext": "",
+      "uniqueid": 284,
+      "lane": 2,
+      "clubid": "3713",
+      "nametext": "Schwammclub D\u00e9ifferdang 1"
+    },
+    {
+      "nation": "LUX",
+      "clubtext": "",
+      "clubcode": "SL",
+      "entrytime": "NT",
+      "teamnumber": "1",
+      "id": "2400",
+      "agetext": "",
+      "uniqueid": 76,
+      "lane": 3,
+      "clubid": "2048",
+      "nametext": "Swimming Luxembourg 1"
+    },
+    {
+      "nation": "LUX",
+      "clubtext": "",
+      "clubcode": "SHARKS",
+      "entrytime": "NT",
+      "teamnumber": "3",
+      "id": "1962",
+      "agetext": "",
+      "uniqueid": 64,
+      "athletes": [
+        {
+          "fullname": "Frida Rivellini",
+          "id": "1891",
+          "swrid": "5343988"
+        },
+        {
+          "fullname": "James Maclear",
+          "id": "1841",
+          "swrid": "5459510"
+        },
+        {
+          "fullname": "Giulio Zausa",
+          "id": "1936",
+          "swrid": "5278544"
+        },
+        {
+          "fullname": "Sara Lansbergen",
+          "id": "1829",
+          "swrid": "5499719"
+        }
+      ],
+      "lane": 4,
+      "clubid": "1750",
+      "nametext": "Lux Sharks 3"
+    },
+    {
+      "nation": "LUX",
+      "clubtext": "",
+      "clubcode": "SCDE",
+      "entrytime": "NT",
+      "teamnumber": "2",
+      "id": "5776",
+      "agetext": "",
+      "uniqueid": 472,
+      "lane": 5,
+      "clubid": "4739",
+      "nametext": "Swimming Club Le Dauphin Ettel 2"
+    },
+    {
+      "nation": "LUX",
+      "clubtext": "",
+      "clubcode": "SCD",
+      "entrytime": "NT",
+      "teamnumber": "3",
+      "id": "3970",
+      "agetext": "",
+      "uniqueid": 321,
+      "lane": 6,
+      "clubid": "3713",
+      "nametext": "Schwammclub D\u00e9ifferdang 3"
+    }
+  ],
+  "time": "17:23",
+  "code": "1"
+}
