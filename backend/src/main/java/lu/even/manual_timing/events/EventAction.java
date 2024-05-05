@@ -1,8 +1,6 @@
 package lu.even.manual_timing.events;
 
 public enum EventAction {
-  REFRESH_INSCRIPTIONS,
-  REFRESH_TIMES,
   GET,
   POST,
   LOGIN,
@@ -11,13 +9,11 @@ public enum EventAction {
   GET_BY_LANE,
   GET_ALL,
   GET_BY_EVENT_LANE,
-  REPLACE_TIMES,
   GET_BY_EVENT_HEAT,
-  LOAD_EVENTS,
-  REPLACE_EVENTS,
-  LOAD_HEAT,
-  REPLACE_INSCRIPTIONS,
+  REPLACE,
   DUMP,
   LOAD,
+  REFRESH,
+  PUBLISH,
   SAVE_TIME
 }

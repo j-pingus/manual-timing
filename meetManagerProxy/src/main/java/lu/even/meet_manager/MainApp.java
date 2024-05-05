@@ -5,7 +5,7 @@ import io.vertx.core.Vertx;
 import lu.even.RemoteServerConfig;
 import lu.even.meet_manager.verticles.HttpServerVerticle;
 import lu.even.meet_manager.verticles.MeetManagerVerticle;
-import lu.even.meet_manager.verticles.StressManagerVerticle;
+import lu.even.meet_manager.verticles.WebsocketClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ public class MainApp {
     vertx.deployVerticle(new MeetManagerVerticle(config.meetmanager(), config.timingApplication()));
     //vertx.deployVerticle(new StressManagerVerticle(config.timingApplication(), args[0]));
     vertx.deployVerticle(new HttpServerVerticle(config.port()));
+    vertx.deployVerticle(new WebsocketClient());
   }
 
   private static Config getConfig() throws IOException {

@@ -29,7 +29,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
   protected void onMessage(EventTypes eventType, Message<EventMessage> message) {
     switch (message.body().action()) {
       case POST -> save(message);
-      case REPLACE_TIMES -> answer(message, loadTimes(message.body().body()));
+      case REPLACE -> answer(message, loadTimes(message.body().body()));
       case GET_BY_EVENT_LANE -> answer(message, getByEventLane(message.body().eventId(), message.body().laneId()));
       case GET_BY_EVENT_HEAT -> answer(message, getByEventHeat(message.body().eventId(), message.body().heatId()));
     }
@@ -69,7 +69,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
             times.add(manualTime);
             logger.info("user '{}', save {}", user, manualTime);
             sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME, manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance(), message.body().authorization());
-            sendMessage(EventAction.REFRESH_TIMES, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance());
+            sendMessage(EventAction.REFRESH, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance());
             message.reply("ok");
             return;
           }

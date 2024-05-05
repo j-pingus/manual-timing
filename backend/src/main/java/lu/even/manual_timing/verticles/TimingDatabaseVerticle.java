@@ -56,7 +56,7 @@ public class TimingDatabaseVerticle extends AbstractTimingVerticle {
             .setTime(row.getString("TIME"))
         ).collect(Collectors.toList());
         logger.info("Loaded times:{}", times);
-        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE_TIMES, times, -1, -1, -1,-1, null);
+        sendMessage(EventTypes.MANUAL_TIME, EventAction.REPLACE, times, -1, -1, -1,-1, null);
       }
     });
   }

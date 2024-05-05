@@ -64,10 +64,10 @@ public class HttpServerVerticle extends AbstractVerticle {
     this.routeGet("/api/events/dump", EventTypes.EVENT, EventAction.DUMP);
     this.routeGet("/api/events/load", EventTypes.EVENT, EventAction.LOAD);
     this.routePost("/api/event", EventTypes.EVENT);
-    this.routePost("/api/events", EventTypes.EVENT, EventAction.REPLACE_EVENTS);
+    this.routePost("/api/events", EventTypes.EVENT, EventAction.REPLACE);
     // ==== Inscriptions ====
     this.routePost("/api/inscription", EventTypes.INSCRIPTION);
-    this.routePost("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION, EventAction.REPLACE_INSCRIPTIONS);
+    this.routePost("/api/inscriptions/:event/heat/:heat", EventTypes.INSCRIPTION, EventAction.REPLACE);
     this.routeGet("/api/inscriptions/load", EventTypes.INSCRIPTION, EventAction.LOAD);
     this.routeGet("/api/inscriptions/dump", EventTypes.INSCRIPTION, EventAction.DUMP);
     this.routeGet("/api/inscriptions/:event/lane/:lane", EventTypes.INSCRIPTION, EventAction.GET_BY_EVENT_LANE);
@@ -76,6 +76,9 @@ public class HttpServerVerticle extends AbstractVerticle {
     this.routePost("/api/time", EventTypes.MANUAL_TIME);
     this.routeGet("/api/times/:event/lane/:lane", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_LANE);
     this.routeGet("/api/times/:event/heat/:heat", EventTypes.MANUAL_TIME, EventAction.GET_BY_EVENT_HEAT);
+    // ==== meet manager ====
+    this.routeGet("/api/splash/refresh/:event",EventTypes.SPLASH,EventAction.REFRESH);
+    this.routeGet("/api/splash/publish/:event/:heat",EventTypes.SPLASH,EventAction.PUBLISH);
     //Generic failure management
     router.route().failureHandler(this::errorHandler);
     // Allow message events to be bridged to JavaScript client
@@ -122,7 +125,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     } else {
       httpServer = vertx.createHttpServer();
     }
-
+    new WebsocketServer(vertx).configure(httpServer);
     httpServer.requestHandler(router).listen(port, http -> {
 
       if (http.succeeded()) {
@@ -177,10 +180,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 
   public void routePost(String url, EventTypes eventType, EventAction action) {
     router.post(url).handler(getRoutingHandler(eventType, action));
-  }
-
-  public void routePut(String url, EventTypes eventType) {
-    router.put(url).handler(getRoutingHandler(eventType, EventAction.PUT));
   }
 
   private Handler<RoutingContext> getRoutingHandler(EventTypes eventType, EventAction action) {

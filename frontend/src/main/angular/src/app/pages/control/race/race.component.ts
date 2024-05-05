@@ -19,6 +19,7 @@ import {Inscription} from "../../../domain/inscription";
 import {MatDialog} from "@angular/material/dialog";
 import {InscriptionComponent} from "../../../dialogs/inscription/inscription.component";
 import {TimeRecord} from "../../../domain/time-record";
+import {SplashService} from "../../../services/splash.service";
 
 @Component({
   selector: 'app-race',
@@ -66,6 +67,7 @@ export class RaceComponent implements OnDestroy {
     private inscriptionService: InscriptionsService,
     private manualTimeService: ManualTimeService,
     private backendMessageService: BackendMessageService,
+    private splashService: SplashService,
     private dialog: MatDialog) {
     this.subscription.add(route.params.subscribe(params => {
       this.eventId = +params['event']; // (+) converts string 'id' to a number
@@ -109,9 +111,11 @@ export class RaceComponent implements OnDestroy {
         this.event = events.find(e => e.id == this.eventId) || this.event;
         this.maxEventId = events[events.length - 1].id;
         this.maxHeatId = this.event.heats;
-        for(let lane of this.lanes){
-          if(lane.times.length==0){
-            lane.times = this.event.distances.map(distance=>{return {time:'',distance}});
+        for (let lane of this.lanes) {
+          if (lane.times.length == 0) {
+            lane.times = this.event.distances.map(distance => {
+              return {time: '', distance}
+            });
           }
         }
         this.loadTimes();
@@ -190,6 +194,14 @@ export class RaceComponent implements OnDestroy {
 
   popup(inscription: Inscription) {
     this.dialog.open(InscriptionComponent, {data: inscription});
+  }
+
+  publish() {
+    this.splashService.publishHeat(this.eventId, this.heatId).subscribe();
+  }
+
+  refresh() {
+    this.splashService.refreshEvent(this.eventId).subscribe();
   }
 }
 

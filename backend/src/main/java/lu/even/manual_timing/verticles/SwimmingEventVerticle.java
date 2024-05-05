@@ -25,7 +25,7 @@ public class SwimmingEventVerticle extends AbstractTimingVerticle {
       switch (message.body().action()) {
         case GET -> answer(message, getEvent(message.body().eventId()));
         case GET_ALL -> answer(message, this.events);
-        case REPLACE_EVENTS -> {
+        case REPLACE -> {
           System.out.println(message.body().body());
           this.events = Arrays.asList(
             Json.decodeValue(message.body().body(), SwimmingEvent[].class));

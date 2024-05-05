@@ -27,7 +27,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
       switch (message.body().action()) {
         case GET_BY_EVENT_LANE -> answer(message,this.getByLane(message.body().eventId(), message.body().laneId()));
         case GET_BY_EVENT_HEAT -> answer(message,this.getByHeat(message.body().eventId(), message.body().heatId()));
-        case REPLACE_INSCRIPTIONS -> answer(message,this.load(message.body().body(), message.body().eventId(), message.body().heatId()));
+        case REPLACE -> answer(message,this.load(message.body().body(), message.body().eventId(), message.body().heatId()));
         case POST -> answer(message,this.save(message.body().body()));
         case DUMP -> answer(message,this.dumpMe());
         case LOAD -> answer(message,this.loadMe());
@@ -55,7 +55,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     Inscription[] list = Json.decodeValue(body, Inscription[].class);
     get(event).put(heat, Arrays.asList(list));
     logger.info("loaded inscriptions: " + get(event, heat));
-    sendMessage(EventAction.REFRESH_INSCRIPTIONS,"replaced",event,heat,-1,-1);
+    sendMessage(EventAction.REFRESH,"replaced",event,heat,-1,-1);
     return "";
   }
 
@@ -81,7 +81,7 @@ public class InscriptionVerticle extends AbstractTimingVerticle {
     var inscriptions = get(inscription.event(), inscription.heat());
     inscriptions.remove(inscription);
     inscriptions.add(inscription);
-    this.sendMessage(EventAction.REFRESH_INSCRIPTIONS, "", inscription.event(), inscription.heat(), inscription.lane(),-1);
+    this.sendMessage(EventAction.REFRESH, "", inscription.event(), inscription.heat(), inscription.lane(),-1);
     return "";
   }
 

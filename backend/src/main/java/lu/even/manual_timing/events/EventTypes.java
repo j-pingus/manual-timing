@@ -8,7 +8,8 @@ public enum EventTypes {
     LANE("timing.lane"),
     INSCRIPTION("timing.inscription"),
     DATABASE("timing.database"),
-    MANUAL_TIME("timing.manual.time");
+    MANUAL_TIME("timing.manual.time"),
+    SPLASH("timing.splash");
     private final String name;
 
     EventTypes(String name) {
