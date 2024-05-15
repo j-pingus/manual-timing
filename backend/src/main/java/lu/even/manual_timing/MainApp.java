@@ -20,6 +20,7 @@ public class MainApp {
     vertx.deployVerticle(new ManualTimeVerticle());
     vertx.deployVerticle(new TimingDatabaseVerticle(config.databaseUrl()));
     vertx.deployVerticle(new HttpServerVerticle(config.port(), config.ssl()));
+    vertx.deployVerticle(new WebSocketVerticle(7777));
     //Uncomment to view on server log messages being sent to the browser
         /*vertx.eventBus().consumer(EventTypes.MESSAGE.getName(),h->{
             System.out.println(

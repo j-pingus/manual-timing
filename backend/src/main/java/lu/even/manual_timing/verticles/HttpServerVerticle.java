@@ -84,7 +84,6 @@ public class HttpServerVerticle extends AbstractVerticle {
     // Allow message events to be bridged to JavaScript client
     // Create the event bus bridge and add it to the router.
     router.route("/api/eventbus/*").subRouter(this.createSocksHandler());
-
     //Handle static content in webcontent resource folder
     router.route().handler(StaticHandler.create("frontend/browser"));
     //Hack for angular
@@ -125,7 +124,6 @@ public class HttpServerVerticle extends AbstractVerticle {
     } else {
       httpServer = vertx.createHttpServer();
     }
-    new WebsocketServer(vertx).configure(httpServer);
     httpServer.requestHandler(router).listen(port, http -> {
 
       if (http.succeeded()) {

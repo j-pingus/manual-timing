@@ -17,7 +17,7 @@ public class MainApp {
     vertx.deployVerticle(new MeetManagerVerticle(config.meetmanager(), config.timingApplication()));
     //vertx.deployVerticle(new StressManagerVerticle(config.timingApplication(), args[0]));
     vertx.deployVerticle(new HttpServerVerticle(config.port()));
-    vertx.deployVerticle(new WebsocketClient());
+    vertx.deployVerticle(new WebsocketClient(config.websocket(), config.meetManagerPath()));
   }
 
   private static Config getConfig() throws IOException {
@@ -26,7 +26,12 @@ public class MainApp {
     if (configFile.exists()) {
       return mapper.readValue(configFile, Config.class);
     } else {
-      mapper.writeValue(configFile, new Config(8766, new RemoteServerConfig("localhost", 8585, false), new RemoteServerConfig("timing.cnw.lu", 443, true)));
+      mapper.writeValue(configFile, new Config(8766,
+        "./splash/",
+        new RemoteServerConfig("localhost", 8585, false),
+        new RemoteServerConfig("timing.cnw.lu", 443, true),
+        new RemoteServerConfig("timing.cnw.lu", 8765, false)
+        ));
       throw new Error("No config file found, creating default in " + configFile.getAbsolutePath() + " review it, then start again");
     }
   }
