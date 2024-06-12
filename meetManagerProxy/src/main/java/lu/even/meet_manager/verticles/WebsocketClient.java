@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class WebsocketClient extends AbstractVerticle {
   private static final Logger logger = LoggerFactory.getLogger(WebsocketClient.class);
+  private static final String CSV_DELIMITER = ";";
   private final File path;
   private final RemoteServerConfig websocketServerConfig;
 
@@ -29,6 +30,12 @@ public class WebsocketClient extends AbstractVerticle {
     if (!this.path.exists()) {
       this.path.mkdirs();
     }
+  }
+
+  private static String fixTime(String s) {
+    if (s.contains(":")) return s;
+    if (s.length() < 5) return "";
+    return s.substring(0, 2) + ":" + s.substring(2, 4) + "." + s.substring(4);
   }
 
   @Override
@@ -66,6 +73,7 @@ public class WebsocketClient extends AbstractVerticle {
   }
 
   private void refresh(EventMessage message) {
+    //TODO :-)
   }
 
   private void publish(EventMessage message) {
@@ -74,23 +82,26 @@ public class WebsocketClient extends AbstractVerticle {
     var lanes = times.stream().map(ManualTime::getLane).sorted().distinct().toList();
     try {
       StringBuffer sb = new StringBuffer();
-      sb.append("LANE,");
-      sb.append(distances.stream().map(d -> "TIME" + d).collect(Collectors.joining(",")));
+      sb.append("LANE");
+      sb.append(CSV_DELIMITER);
+      sb.append(distances.stream().map(d -> "TIME" + d).collect(Collectors.joining(CSV_DELIMITER)));
       sb.append("\n");
       lanes.forEach(l -> {
-        sb.append(l + ",");
+        sb.append(l);
+        sb.append(CSV_DELIMITER);
         sb.append(
           distances.stream().map(d ->
             times.stream()
               .filter(t -> t.getDistance() == d)
               .filter(t -> t.getLane() == l)
               .map(ManualTime::getTime)
+              .map(WebsocketClient::fixTime)
               .findFirst().orElse("")
-          ).collect(Collectors.joining(",")));
+          ).collect(Collectors.joining(CSV_DELIMITER)));
         sb.append("\n");
       });
       FileUtils.writeStringToFile(
-        new File(path, "test.csv"),
+        new File(path, "Event" + message.eventId() + "-Heat" + message.heatId() + ".txt"),
         sb.toString(),
         Charset.defaultCharset());
     } catch (IOException e) {

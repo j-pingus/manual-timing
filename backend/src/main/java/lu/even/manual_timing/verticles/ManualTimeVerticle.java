@@ -69,7 +69,7 @@ public class ManualTimeVerticle extends AbstractTimingVerticle {
             times.add(manualTime);
             logger.info("user '{}', save {}", user, manualTime);
             sendMessage(EventTypes.DATABASE, EventAction.SAVE_TIME, manualTime, manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance(), message.body().authorization());
-            sendMessage(EventAction.REFRESH, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance());
+            sendMessage(EventAction.TIME_SAVED, manualTime.getTime(), manualTime.getEvent(), manualTime.getHeat(), manualTime.getLane(), manualTime.getDistance());
             message.reply("ok");
             return;
           }

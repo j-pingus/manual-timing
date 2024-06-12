@@ -66,6 +66,7 @@ public abstract class AbstractTimingVerticle extends AbstractVerticle {
   }
 
   void sendMessage(EventAction action, Object body, int event, int heat, int lane, int distance) {
+    logger.info("Sending message '{}' to frontend:",action);
     this.sendMessage(EventTypes.MESSAGE, action, body, event, heat, lane, distance, null);
   }
 

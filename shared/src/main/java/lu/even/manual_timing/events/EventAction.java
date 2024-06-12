@@ -15,5 +15,6 @@ public enum EventAction {
   LOAD,
   REFRESH,
   PUBLISH,
-  SAVE_TIME
+  SAVE_TIME,
+  TIME_SAVED
 }

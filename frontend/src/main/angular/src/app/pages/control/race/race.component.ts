@@ -77,10 +77,10 @@ export class RaceComponent implements OnDestroy {
     this.subscription.add(
       this.backendMessageService.subscribe(message => {
         if (message.eventId == this.eventId && message.heatId == this.heatId) {
-          if (message.action === TimingAction.REFRESH_INSCRIPTIONS) {
+          if (message.action === TimingAction.REFRESH) {
             this.loadInscriptions();
           }
-          if (message.action == TimingAction.REFRESH_TIMES) {
+          if (message.action == TimingAction.TIME_SAVED) {
             this.setTime(this.lanes[message.laneId - this.laneDelta], {distance: message.distance, time: message.body});
           }
         }

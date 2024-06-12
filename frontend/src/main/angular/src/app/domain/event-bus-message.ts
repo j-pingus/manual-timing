@@ -15,7 +15,7 @@ export interface TimingMessage {
 
 export enum TimingAction {
     LOGIN = 'LOGIN',
-    REFRESH_INSCRIPTIONS = 'REFRESH_INSCRIPTIONS',
     USER_MOVE = 'USER_MOVE',
-    REFRESH_TIMES = 'REFRESH_TIMES'
+    REFRESH = 'REFRESH',
+    TIME_SAVED = 'TIME_SAVED'
 }

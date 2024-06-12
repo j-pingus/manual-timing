@@ -7,14 +7,15 @@ import {ManualTimeService} from "../../services/manual.time.service";
 import {BackendMessageService} from "../../services/backend-message.service";
 import {TimingAction} from "../../domain/event-bus-message";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {TimeRecord} from "../../domain/time-record";
 
 @Component({
   selector: 'app-timer',
   standalone: true,
-    imports: [
-        MatButtonModule,
-        MatProgressBarModule
-    ],
+  imports: [
+    MatButtonModule,
+    MatProgressBarModule
+  ],
   templateUrl: './timer.component.html',
   styleUrl: './timer.component.css'
 })
@@ -26,6 +27,7 @@ export class TimerComponent {
   startTimer = 0;
   lastRecord = 0;
   readyRate = 0;
+  timeTaken: Array<TimeRecord> = [];
   constructor(private dialog: MatDialogRef<TimerComponent>,
               @Inject(MAT_DIALOG_DATA) private timerData: TimerData,
               private manualTimeService: ManualTimeService,
@@ -35,7 +37,7 @@ export class TimerComponent {
       if (message.eventId == timerData.eventId &&
         message.heatId == timerData.heatId &&
         message.laneId == timerData.lane &&
-        message.action == TimingAction.REFRESH_TIMES) {
+        message.action == TimingAction.REFRESH) {
         const index = timerData.times.findIndex(t => t.distance == message.distance);
         if (index != -1) {
           this.removeTime(index);
@@ -45,7 +47,8 @@ export class TimerComponent {
   }
 
   private setTextWithDistance() {
-    this.buttonText = 'next: ' + this.timerData.times[0].distance + 'm'
+    if (this.timerData.times.length > 0)
+      this.buttonText = 'next: ' + this.timerData.times[0].distance + 'm';
   }
 
   buttonPushed() {
@@ -70,7 +73,7 @@ export class TimerComponent {
   private updateTimerText() {
     var ellapsed = Date.now() - this.startTimer;
     this.timerText = this.millisToText(ellapsed);
-    this.readyRate = (Date.now()-this.lastRecord)/this.timerData.minimumDelay*100;
+    this.readyRate = (Date.now() - this.lastRecord) / this.timerData.minimumDelay * 100;
   }
 
   private millisToText(ellapsed: number): string {
@@ -95,6 +98,8 @@ export class TimerComponent {
       event: this.timerData.eventId
     };
     this.manualTimeService.save(time).subscribe();
+    this.timerData.times[0].time=time.time;
+    this.timeTaken.push(this.timerData.times[0]);
     this.removeTime(0);
   }
 
@@ -102,7 +107,7 @@ export class TimerComponent {
     this.timerData.times.splice(index, 1);
     if (this.timerData.times.length == 0) {
       clearInterval(this.interval);
-      this.dialog.close();
+      this.dialog.close(this.timeTaken);
     }
     this.setTextWithDistance();
   }

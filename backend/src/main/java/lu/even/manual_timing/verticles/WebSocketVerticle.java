@@ -78,7 +78,7 @@ public class WebSocketVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start(Promise<Void> startPromise) throws Exception {
+  public void start(Promise<Void> startPromise) {
     HttpServer httpServer = vertx.createHttpServer();
     this.bus = vertx.eventBus();
     configure(httpServer);
@@ -91,6 +91,5 @@ public class WebSocketVerticle extends AbstractVerticle {
         startPromise.fail(http.cause());
       }
     });
-    super.start(startPromise);
   }
 }

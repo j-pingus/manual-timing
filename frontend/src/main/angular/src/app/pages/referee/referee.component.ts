@@ -23,7 +23,7 @@ import {ManualTimeDirective} from "../../directives/manual-time.directive";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Inscription} from "../../domain/inscription";
 import {InscriptionComponent} from "../../dialogs/inscription/inscription.component";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TimeRecord} from "../../domain/time-record";
 import {TimerComponent} from "../../dialogs/timer/timer.component";
 import {TimerData} from "../../domain/timer-data";
@@ -77,10 +77,10 @@ export class RefereeComponent implements OnDestroy, OnInit {
     this.subscription.add(messageService.subscribe(message => {
       //Refresh if data changed
       if (this.eventId == message.eventId) {
-        if (message.action === TimingAction.REFRESH_INSCRIPTIONS) {
+        if (message.action === TimingAction.REFRESH) {
           this.getEventInscriptions();
         }
-        if (this.user.lane == message.laneId && message.action === TimingAction.REFRESH_TIMES) {
+        if (this.user.lane == message.laneId && message.action === TimingAction.TIME_SAVED) {
           this.heats[message.heatId - 1].times.forEach(tr => {
             if (tr.distance == message.distance) {
               tr.time = this.manualTime.transform(message.body);
@@ -190,7 +190,7 @@ export class RefereeComponent implements OnDestroy, OnInit {
   }
 
   openTimer(heat: Heat) {
-    if (this.user.lane) {
+    if (this.user.lane !== undefined && this.user.lane >= 0) {
       var data: TimerData = {
         times: JSON.parse(JSON.stringify(heat.times)),
         eventId: this.eventId,
@@ -198,7 +198,17 @@ export class RefereeComponent implements OnDestroy, OnInit {
         lane: this.user.lane,
         minimumDelay: this.poolConfig.minTimeSeconds * 1000
       }
-      this.dialog.open(TimerComponent, {data});
+      const dialogRef:MatDialogRef<TimerComponent,Array<TimeRecord>> = this.dialog.open(TimerComponent, {data});
+      dialogRef.afterClosed().subscribe(times => {
+        if(times)
+        times.forEach(time=>{
+          heat.times.forEach( heatTime=>{
+            if(time.distance==heatTime.distance){
+              heatTime.time=time.time;
+            }
+          })
+        })
+      });
     }
   }
 
