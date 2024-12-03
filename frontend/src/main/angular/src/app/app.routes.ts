@@ -5,6 +5,7 @@ import {ControlComponent} from "./pages/control/control.component";
 import {RefereesComponent} from "./pages/control/referees/referees.component";
 import {RaceComponent} from "./pages/control/race/race.component";
 import {PrintEventComponent} from "./pages/print-event/print-event.component";
+import {CallRoomComponent} from "./pages/call-room/call-room.component";
 
 export const routes: Routes = [
   {
@@ -32,6 +33,10 @@ export const routes: Routes = [
   {
     path: 'print-event/:event',
     component: PrintEventComponent
+  },
+  {
+    path: 'call-room/:event/:heat',
+    component: CallRoomComponent
   },
   {path: '**', component: SelectionComponent}
 ];

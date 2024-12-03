@@ -32,4 +32,8 @@ export class HomeComponent {
   navigateHome() {
     this.router.navigate(['/']);
   }
+
+  navigateCallRoom() {
+    this.router.navigate(['/call-room',1,1]);
+  }
 }

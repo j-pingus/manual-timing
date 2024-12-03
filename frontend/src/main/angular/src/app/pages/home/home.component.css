@@ -23,10 +23,6 @@
   width: 90vw;
 }
 
-span {
-  flex: 1 1 auto;
-}
-
 .filler {
   flex: 1 0 auto;
 }

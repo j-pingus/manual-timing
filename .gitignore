@@ -197,3 +197,5 @@ target/
 /database/*.db
 /security/*.jks
 /security/*.cer
+/backend/*.log
+/*.log

@@ -1,8 +1,12 @@
 <mat-toolbar class="noprint" color="primary">
   <span>CNW Manual Timing</span>
+  <button mat-mini-fab color="accent" aria-label="go to home page" matTooltip="Call room page"
+          (click)="navigateCallRoom()">
+    <mat-icon>campaign</mat-icon>
+  </button>
   <span class="filler"></span>
 
-  <button mat-mini-fab color="primary" aria-label="go to home page" matTooltip="Select another lane"
+  <button mat-mini-fab color="none" aria-label="go to home page" matTooltip="go back to home page"
           (click)="navigateHome()">
     <mat-icon>home</mat-icon>
   </button>

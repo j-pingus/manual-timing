@@ -1,0 +1,55 @@
+mat-card{
+  background-color: rgba(255, 255, 255, 0.7);
+
+}
+
+.title{
+  display:flex;
+  flex-flow: wrap;
+  align-items: center;
+  border-bottom: 1px solid black;
+}
+div.title span+span{
+  text-align: center;
+}
+div:nth-child(odd).lane{
+  background-color: rgba(7, 63, 138, 0.2);
+}
+.lane{
+  display:flex;
+  flex-flow: wrap;
+  align-items: center;
+}
+.laneId {
+  flex: 0 0 35px;
+  margin:5px;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  background-color: #073f8a;
+}
+.swimmer{
+  flex: 0 1 auto;
+  width: 8rem;
+  display:inline-block;
+  text-align: right;
+  margin-right: 5px;
+}
+.time{
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 4rem;
+}
+span.time+span.time{
+  border-left:1px solid black;
+}
+.data{
+  margin-top: 25vh;
+  border:4px dashed greenyellow;
+  background-color: lightblue;
+  padding: 10px;
+  display:none;
+}
