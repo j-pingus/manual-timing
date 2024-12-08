@@ -58,7 +58,8 @@ div:nth-child(odd).heat{
 }
 .time{
   flex: 0 0 auto;
-  margin: auto;
+  margin-left: 8px;
+  margin-top: 16px;
   width: 6.7rem;
 }
 .data{

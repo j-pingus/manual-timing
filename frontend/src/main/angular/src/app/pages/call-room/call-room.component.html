@@ -18,11 +18,19 @@
     <div class="title">
       <span class="laneId">lane</span>
       <span class="swimmer">swimmer</span>
+      <span class="time">club</span>
+      <span class="time">entry time</span>
+      <span class="time">nation</span>
+      <span class="time">YOB</span>
     </div>
     <div class="lane" *ngFor="let lane of lanes">
       <span class="laneId">{{lane.lane}}</span>
       <span class="swimmer"><a href="javascript:void(0)"
                                (click)="popup(lane.inscription)">{{lane.inscription?.name}}</a></span>
+      <span class="time">&nbsp;{{lane.inscription.clubcode}}</span>
+      <span class="time">&nbsp;{{lane.inscription.entrytime}}</span>
+      <span class="time">&nbsp;{{lane.inscription.nation}}</span>
+      <span class="time">&nbsp;{{lane.inscription.agetext}}</span>
     </div>
   </mat-card-content>
 </mat-card>

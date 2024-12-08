@@ -31,13 +31,13 @@
         <span class="swimmer"><a href="javascript:void(0)"
                                  (click)="popup(heat.inscription)">{{heat.inscription?.name}}</a></span>
 
-        <button mat-mini-fab color="primary"
+        <!--button mat-mini-fab color="primary"
                 aria-label="Starts internal application timer"
                 matTooltip="Use application timer"
                 (click)="openTimer(heat)"
                 class="startTimer">
           <mat-icon>watch</mat-icon>
-        </button>
+        </button-->
         <mat-form-field appearance="fill" class="time" *ngFor="let time of heat.times;let i=index">
           <mat-label>{{time.distance}}m</mat-label>
           <input
@@ -50,6 +50,7 @@
             (blur)="save(heat.id,time,model)"
             type="tel">
         </mat-form-field>
+        <span class="filler"> </span>
       </ng-container>
     </div>
   </mat-card-content>
